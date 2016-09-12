@@ -1,0 +1,15 @@
+diff -r 30910b2d2dca build.sh
+--- a/build.sh	Fri Sep 09 17:47:52 2016 -0400
++++ b/build.sh	Mon Sep 12 22:47:12 2016 +0200
+@@ -6,7 +6,10 @@
+ ########################################
+ # the following commands must be executed in this directory
+ 
+-aclocal -I m4
++pkg_inc_path=$(echo `which pkg-config` | sed -e "s/bin\/pkg-config/share\/aclocal/")
++libtool_inc_path=$(echo `which libtool` | sed -e "s/bin\/libtool/share\/aclocal/")
++
++aclocal -I m4 -I $pkg_inc_path -I $libtool_inc_path
+ 
+ ltarg="-i"
+ if test -f "`which glibtoolize`" ; then
