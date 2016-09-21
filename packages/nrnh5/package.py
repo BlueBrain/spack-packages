@@ -24,7 +24,7 @@ class Nrnh5(Package):
     homepage = "https://bbpteam.epfl.ch/reps/user/kumbhar/nrnh5/"
     url      = "ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5"
 
-    version('master', git='ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5')
+    version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5')
 
     depends_on('cmake@2.8.12:', type='build')
     depends_on("mpi")
@@ -42,3 +42,14 @@ class Nrnh5(Package):
             cmake('..', *options)
             make()
             make('install')
+
+    #for convenience, set include path and library to link. this is
+    #just for convenience purpose for neuron build which doesn't use
+    #cmake to find package automatically
+    def setup_dependent_package(self, module, dspec):
+
+        libname = 'libnrnh5core.a'
+        libdir = find_library_path(libname, self.prefix.lib64, self.prefix.lib)
+
+        self.spec.include_path = '%s/nrnh5' %(self.spec.prefix.include)
+        self.spec.static_library = join_path(libdir, libname)

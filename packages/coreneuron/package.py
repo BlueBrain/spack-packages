@@ -39,9 +39,9 @@ class Coreneuron(Package):
     depends_on('cmake@2.8.12:', type='build')
     depends_on("mpi")
     depends_on("nrnh5", when='+hdf5')
+    depends_on('hdf5', when='+hdf5')
 
     #optional dependencies
-    depends_on('hdf5', when='+hdf5')
     depends_on('neurodamus', when='+neurodamus', type='build')
     depends_on('reportinglib', when='+report')
     depends_on('boost', when='+tests')
@@ -50,10 +50,9 @@ class Coreneuron(Package):
 
         with working_dir("spack-build", create=True):
             options = std_cmake_args
-            #options.extend([
-            #    '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-            #    '-DCOMPILE_LIBRARY_TYPE=STATIC',
-            #    ])
+            options.extend([
+                '-DCOMPILE_LIBRARY_TYPE=STATIC',
+                ])
 
             if '+tests' in spec:
                 options.extend(['-DUNIT_TESTS:BOOL=ON', '-DFUNCTIONAL_TESTS:BOOL=ON'])

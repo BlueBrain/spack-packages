@@ -24,7 +24,7 @@ class Reportinglib(Package):
     homepage = "https://bbpcode.epfl.ch/code/a/sim/reportinglib/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/reportinglib/bbp"
 
-    version('master', git='ssh://bbpcode.epfl.ch/sim/reportinglib/bbp')
+    version('develop', git='ssh://bbpcode.epfl.ch/sim/reportinglib/bbp')
 
     depends_on('cmake@2.8.12:', type='build')
     depends_on("mpi")

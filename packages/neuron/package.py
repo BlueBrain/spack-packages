@@ -23,19 +23,25 @@ class Neuron(Package):
 
     homepage = "https://www.neuron.yale.edu/"
     url      = "http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz"
+    list_url = "http://www.neuron.yale.edu/ftp/neuron/versions/"
+    list_depth = 2
 
-    version('master', hg='http://www.neuron.yale.edu/hg/neuron/nrn')
+    #version('yale', hg='http://www.neuron.yale.edu/hg/neuron/nrn')
+    version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
 
     #always patch build.sh with m4 macro paths for libtool
     patch('build.patch')
 
     variant('mpi', default=True,
                         description='Enable distributed memory parallelism')
+    variant('hdf5', default=False, description='Enable HDF5 interface')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
     depends_on('mpi', when='+mpi')
+    depends_on("nrnh5", when='+hdf5')
+    depends_on('hdf5', when='+hdf5')
 
     #on osx platform, pkg-config can't be built without clang
     depends_on('pkg-config', type='build', when=sys.platform != 'darwin')
@@ -46,7 +52,6 @@ class Neuron(Package):
         build = Executable('./build.sh')
         build()
 
-        #with working_dir("spack-build", create=True):
         options = []
         options.extend(
                 ['--prefix=%s' % prefix,
@@ -54,7 +59,6 @@ class Neuron(Package):
                  '--without-nrnpython',
                  '--disable-rx3d'
                 ])
-
 
         if '+mpi' not in spec:
             options.extend(['--without-paranrn'])
@@ -65,6 +69,18 @@ class Neuron(Package):
         if(sys.platform == 'darwin'):
             options.extend(['macdarwin=no'])
 
+        #todo: might go into setup_env of nrnh5
+        if spec.satisfies('+hdf5'):
+            compiler_flags = '-DCORENEURON_HDF5=1 -I%s' % (spec['nrnh5'].include_path)
+            link_library = '%s -lhdf5' % (spec['nrnh5'].static_library)
+            options.extend(['LIBS=%s' % link_library])
+            options.extend(['CFLAGS=%s' % compiler_flags])
+            options.extend(['CXXFLAGS=%s' % compiler_flags])
+
         configure(*options)
         make()
         make('install')
+
+    def setup_environment(self, spack_env, run_env):
+	arch = self.spec.architecture.target
+        run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
