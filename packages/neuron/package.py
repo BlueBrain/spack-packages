@@ -29,8 +29,8 @@ class Neuron(Package):
     #version('yale', hg='http://www.neuron.yale.edu/hg/neuron/nrn')
     version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
 
-    #always patch build.sh with m4 macro paths for libtool
-    patch('build.patch')
+    #patch is  trivial so handle it in patch()
+    #patch('build.patch')
 
     variant('mpi', default=True,
                         description='Enable distributed memory parallelism')
@@ -46,6 +46,18 @@ class Neuron(Package):
     #on osx platform, pkg-config can't be built without clang
     depends_on('pkg-config', type='build', when=sys.platform != 'darwin')
     depends_on('pkg-config%clang', type='build', when=sys.platform == 'darwin')
+
+    def patch(self):
+        #for coreneuron, remove GLOBAL and TABLE
+        filter_file(r'GLOBAL minf', r'RANGE minf', 'src/nrnoc/hh.mod')
+        filter_file(r'TABLE minf', r':TABLE minf', "src/nrnoc/hh.mod")
+
+        #neuron use aclocal which should have proper include paths
+        pkgconfig_inc = '-I %s/share/aclocal/' % (self.spec['pkg-config'].prefix)
+        libtool_inc = '-I %s/share/aclocal/' % (self.spec['libtool'].prefix)
+        replace_string = 'aclocal -I m4 %s %s' % (pkgconfig_inc, libtool_inc)
+
+        filter_file(r'aclocal -I m4', r'%s' % replace_string, "build.sh")
 
     def install(self, spec, prefix):
 
