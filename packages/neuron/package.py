@@ -13,7 +13,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-import sys
+import os, sys
 
 class Neuron(Package):
 
@@ -34,7 +34,7 @@ class Neuron(Package):
 
     variant('mpi', default=True,
                         description='Enable distributed memory parallelism')
-    variant('hdf5', default=False, description='Enable HDF5 interface')
+    variant('hdf5', default=True, description='Enable HDF5 interface')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
@@ -83,11 +83,15 @@ class Neuron(Package):
 
         #todo: might go into setup_env of nrnh5
         if spec.satisfies('+hdf5'):
+
             compiler_flags = '-DCORENEURON_HDF5=1 -I%s' % (spec['nrnh5'].include_path)
-            link_library = '%s -lhdf5' % (spec['nrnh5'].static_library)
-            options.extend(['LIBS=%s' % link_library])
+            link_library = '%s -lhdf5' % (spec['nrnh5'].link_library)
+
             options.extend(['CFLAGS=%s' % compiler_flags])
             options.extend(['CXXFLAGS=%s' % compiler_flags])
+
+            options.extend(['LIBS=%s' % link_library])
+            options.extend(['LDFLAGS=-L%s' % spec['nrnh5'].library_path])
 
         configure(*options)
         make()
@@ -96,3 +100,7 @@ class Neuron(Package):
     def setup_environment(self, spack_env, run_env):
 	arch = self.spec.architecture.target
         run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
+
+    def setup_dependent_environment(self, spack_env, run_env, extension_spec):
+	arch = self.spec.architecture.target
+        spack_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))

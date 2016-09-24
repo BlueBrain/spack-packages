@@ -29,9 +29,9 @@ class Coreneuron(Package):
     version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron', branch='sandbox/kumbhar/nrnh5')
 
     variant('openmp', default=True, description="Enable OpenMP support")
-    variant('hdf5', default=False, description="Enable HDF5 data reading support")
-    variant('neurodamus', default=False, description="Build mechanisms from Neurodamus")
-    variant('report', default=False, description="Enable soma/compartment report with ReportingLib")
+    variant('hdf5', default=True, description="Enable HDF5 data reading support")
+    variant('neurodamus', default=True, description="Build mechanisms from Neurodamus")
+    variant('report', default=True, description="Enable soma/compartment report with ReportingLib")
     variant('tests', default=False, description="Enable building tests")
 
     #mandatory dependencies
@@ -40,6 +40,7 @@ class Coreneuron(Package):
     depends_on("mpi")
     depends_on("nrnh5", when='+hdf5')
     depends_on('hdf5', when='+hdf5')
+    depends_on('neurodamus', when='+neurodamus')
 
     #optional dependencies
     depends_on('neurodamus', when='+neurodamus', type='build')
@@ -54,16 +55,23 @@ class Coreneuron(Package):
                 '-DCOMPILE_LIBRARY_TYPE=STATIC',
                 ])
 
-            if '+tests' in spec:
+            if spec.satisfies('+tests'):
                 options.extend(['-DUNIT_TESTS:BOOL=ON', '-DFUNCTIONAL_TESTS:BOOL=ON'])
             else:
                 options.extend(['-DUNIT_TESTS:BOOL=OFF', '-DFUNCTIONAL_TESTS:BOOL=OFF'])
 
-            if '+report' in spec:
+            if spec.satisfies('+report'):
                 options.extend(['-DENABLE_REPORTINGLIB:BOOL=ON'])
 
-            if '+hdf5' not in spec:
+            if spec.satisfies('~hdf5'):
                 options.extend(['-DENABLE_HDF5:BOOL=OFF'])
+
+            if spec.satisfies('+neurodamus'):
+                modlib_dir = '%s/lib/modlib' % (self.spec['neurodamus'].prefix)
+                modfile_list = '%s/coreneuron_modlist.txt' % (modlib_dir)
+
+                options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
+                options.extend(['-DADDITIONAL_MECHS=%s' % (modfile_list)])
 
             cmake('..', *options)
             make()

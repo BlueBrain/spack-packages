@@ -35,10 +35,8 @@ class Nrnh5(Package):
         with working_dir("spack-build", create=True):
             options = std_cmake_args
             options.extend([
-                '-DBUILD_TESTS=OFF',
                 '-DBUILD_SHARED_LIBS=OFF'
                 ])
-
             cmake('..', *options)
             make()
             make('install')
@@ -52,4 +50,5 @@ class Nrnh5(Package):
         libdir = find_library_path(libname, self.prefix.lib64, self.prefix.lib)
 
         self.spec.include_path = '%s/nrnh5' %(self.spec.prefix.include)
-        self.spec.static_library = join_path(libdir, libname)
+        self.spec.library_path = libdir
+        self.spec.link_library = "-lnrnh5core"
