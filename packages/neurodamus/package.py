@@ -39,13 +39,7 @@ class Neurodamus(Package):
         with working_dir(prefix):
 
             modlib = 'lib/modlib'
-
-            #remove VirtualElectrode.mod
-            rm = which('rm')
-            rm('%s/VirtualElectrode.mod' % (modlib))
-
             nrnivmodl = which('nrnivmodl')
-
             compile_flags = ''
 
             #on os-x there is no mallinfo
