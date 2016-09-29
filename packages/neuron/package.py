@@ -53,6 +53,7 @@ class Neuron(Package):
         filter_file(r'TABLE minf', r':TABLE minf', "src/nrnoc/hh.mod")
 
         #neuron use aclocal which should have proper include paths
+        #this is only required on osx but doesn't hurt on other platforms
         pkgconfig_inc = '-I %s/share/aclocal/' % (self.spec['pkg-config'].prefix)
         libtool_inc = '-I %s/share/aclocal/' % (self.spec['libtool'].prefix)
         replace_string = 'aclocal -I m4 %s %s' % (pkgconfig_inc, libtool_inc)
@@ -91,7 +92,7 @@ class Neuron(Package):
             options.extend(['CXXFLAGS=%s' % compiler_flags])
 
             options.extend(['LIBS=%s' % link_library])
-            options.extend(['LDFLAGS=-L%s' % spec['nrnh5'].library_path])
+            options.extend(['LDFLAGS=-L%s -L%s' % (spec['nrnh5'].prefix.lib, spec['hdf5'].prefix.lib)])
 
         configure(*options)
         make()

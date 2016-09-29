@@ -47,8 +47,6 @@ class Nrnh5(Package):
     def setup_dependent_package(self, module, dspec):
 
         libname = 'libnrnh5core.a'
-        libdir = self.prefix.lib
 
         self.spec.include_path = '%s/nrnh5' %(self.spec.prefix.include)
-        self.spec.library_path = libdir
         self.spec.link_library = "-lnrnh5core"
