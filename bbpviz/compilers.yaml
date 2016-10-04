@@ -1,0 +1,56 @@
+compilers:
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /usr/bin/clang
+      cxx: /usr/bin/clang++
+      f77: null
+      fc: null
+    spec: clang@3.4.2
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /usr/lib64/ccache/gcc
+      cxx: /usr/lib64/ccache/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.4.7
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icpc
+      f77: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/ifort
+      fc: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/ifort
+    spec: intel@15.0.0
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-hmoqz37cd4wndmpiu3r5vckufbifl5xi/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-hmoqz37cd4wndmpiu3r5vckufbifl5xi/bin/g++
+      f77: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-hmoqz37cd4wndmpiu3r5vckufbifl5xi/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-hmoqz37cd4wndmpiu3r5vckufbifl5xi/bin/gfortran
+    spec: gcc@4.9.3
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/icc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/icpc
+      f77: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/ifort
+      fc: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/ifort
+    spec: intel@17.0.0
+- compiler:
+    modules: [mpc/1.0.2]
+    operating_system: redhat6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/g++
+      f77: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
+      ldflags: "-L/gpfs/bbp.cscs.ch/apps/viz/tools/mpc/mpc-1.0.2/install/lib"
+    spec: gcc@4.9.0

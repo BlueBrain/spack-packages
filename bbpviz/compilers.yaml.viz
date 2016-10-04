@@ -1,0 +1,46 @@
+compilers:
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /usr/bin/clang
+      cxx: /usr/bin/clang++
+      f77: null
+      fc: null
+    spec: clang@3.4.2
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /usr/lib64/ccache/gcc
+      cxx: /usr/lib64/ccache/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.4.7
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-kg6xx4y4mbh24xd2jdmp4jhvsdo2hteg/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-kg6xx4y4mbh24xd2jdmp4jhvsdo2hteg/bin/g++
+      f77: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-kg6xx4y4mbh24xd2jdmp4jhvsdo2hteg/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.4.7/gcc-4.9.3-kg6xx4y4mbh24xd2jdmp4jhvsdo2hteg/bin/gfortran
+    spec: gcc@4.9.3
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.9.3/gcc-5.4.0-asvpldy2ksipnxtzgjzutuig2yysetjp/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.9.3/gcc-5.4.0-asvpldy2ksipnxtzgjzutuig2yysetjp/bin/g++
+      f77: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.9.3/gcc-5.4.0-asvpldy2ksipnxtzgjzutuig2yysetjp/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/opt/spack/linux-redhat6-x86_64/gcc-4.9.3/gcc-5.4.0-asvpldy2ksipnxtzgjzutuig2yysetjp/bin/gfortran
+    spec: gcc@5.4.0
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icpc
+      f77: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/ifort
+      fc: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/ifort
+    spec: intel@15.0.0
