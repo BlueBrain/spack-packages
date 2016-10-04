@@ -1,5 +1,9 @@
 # README #
 
+```bash
+spack repo add --scope site ~/workarena/systems/lugviz/softwares/sources/spack/var/spack/repos/bbp
+```
+
 ## MAC ##
 
 ### BBP Packages ###
