@@ -150,3 +150,96 @@ Compiler config as:
       fc: null
     spec: intel@17.0.0
 ```
+
+
+##BG-Q Configuration
+
+```bash
+$cat .spack/compilers.yaml
+compilers:
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /usr/lib64/ccache/gcc
+      cxx: /usr/lib64/ccache/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.4.7
+- compiler:
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc_r
+      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc++
+      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
+      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
+    spec: xl@12.1
+- compiler:
+    modules: []
+    operating_system: CNK
+    paths:
+      cc: /usr/bin/bgxlc_r
+      cxx: /usr/bin/bgxlc++
+      f77: /usr/bin/bgxlf_r
+      fc: /usr/bin/bgxlf2008
+    spec: xl@12.1
+- compiler:
+    modules: []
+    operating_system: CNK
+    paths:
+      cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
+      cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
+      f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+      fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+    spec: gcc@4.4.7
+```
+
+```bash
+$cat .spack/packages.yaml
+packages:
+    mpich:
+        paths:
+            mpich@3.2%xl@12.1 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
+            mpich@3.2%gcc@4.4.7 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@system: /usr
+        buildable: False
+        version: [system]
+    cmake:
+        paths:
+            cmake@2.8.12: /gpfs/bbp.cscs.ch/apps/bgq/tools/cmake/cmake-2.8.12/install
+        buildable: False
+        version: [2.8.12]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+
+    all:
+        compiler: [xl,gcc]
+        providers:
+            mpi: [mpich]
+```
+
+### Installation
+```bash
+spack install -v mod2c %gcc os=redhat6
+
+spack spec coreneuron%xl ~hdf5 ~neurodamus ~report os=CNK ^mpich ^mod2c os=redhat6
+spack install -v coreneuron%gcc ~hdf5 ~neurodamus ~report os=CNK ^mpich%gcc ^mod2c os=redhat6
+spack spec coreneuron%xl ~hdf5 ~neurodamus ~report os=CNK arch=bgq-CNK-powerpc ^mpich
+```
