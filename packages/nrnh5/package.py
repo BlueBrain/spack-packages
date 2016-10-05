@@ -26,17 +26,31 @@ class Nrnh5(Package):
 
     version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5')
 
+    variant('zlib', default=False, description="Link with Zlib")
+
     depends_on('cmake@2.8.12:', type='build')
     depends_on("mpi")
     depends_on("hdf5")
+    depends_on("zlib", when='+zlib')
 
     def install(self, spec, prefix):
 
         with working_dir("spack-build", create=True):
-            options = std_cmake_args
-            options.extend([
-                '-DBUILD_SHARED_LIBS=OFF'
-                ])
+            options = [
+                '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+                '-DBUILD_SHARED_LIBS=OFF',
+                ]
+
+            #for bg-q, our cmake is not setup properly
+            if str(spec.architecture) == 'bgq-CNK-ppc64':
+                options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx,
+                                ])
+
+            if spec.satisfies('+zlib'):
+                options.extend(['-DZLIB_ROOT=%s' % spec['zlib'].prefix,
+                                '-DENABLE_ZLIB_LINK:BOOL=ON'])
+
             cmake('..', *options)
             make()
             make('install')

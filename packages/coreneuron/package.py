@@ -27,7 +27,9 @@ class Coreneuron(Package):
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
     version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron', branch='sandbox/kumbhar/nrnh5')
+    version('master', git='ssh://bbpcode.epfl.ch/sim/coreneuron')
 
+    variant('mpi', default=True, description="Enable MPI support")
     variant('openmp', default=True, description="Enable OpenMP support")
     variant('hdf5', default=True, description="Enable HDF5 data reading support")
     variant('neurodamus', default=True, description="Build mechanisms from Neurodamus")
@@ -50,10 +52,11 @@ class Coreneuron(Package):
     def install(self, spec, prefix):
 
         with working_dir("spack-build", create=True):
-            options = std_cmake_args
-            options.extend([
+
+            options = [
+                '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
                 '-DCOMPILE_LIBRARY_TYPE=STATIC',
-                ])
+                ]
 
             if spec.satisfies('+tests'):
                 options.extend(['-DUNIT_TESTS:BOOL=ON', '-DFUNCTIONAL_TESTS:BOOL=ON'])
@@ -66,12 +69,21 @@ class Coreneuron(Package):
             if spec.satisfies('~hdf5'):
                 options.extend(['-DENABLE_HDF5:BOOL=OFF'])
 
+            if spec.satisfies('~mpi'):
+                options.extend(['-DENABLE_MPI:BOOL=OFF'])
+
             if spec.satisfies('+neurodamus'):
                 modlib_dir = '%s/lib/modlib' % (self.spec['neurodamus'].prefix)
                 modfile_list = '%s/coreneuron_modlist.txt' % (modlib_dir)
 
                 options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
                 options.extend(['-DADDITIONAL_MECHS=%s' % (modfile_list)])
+
+            #for bg-q, our cmake is not setup properly
+            if spec.satisfies('+mpi') and str(spec.architecture) == 'bgq-CNK-ppc64':
+                options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx
+                                ])
 
             cmake('..', *options)
             make()

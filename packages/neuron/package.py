@@ -34,7 +34,7 @@ class Neuron(Package):
 
     variant('mpi', default=True,
                         description='Enable distributed memory parallelism')
-    variant('hdf5', default=True, description='Enable HDF5 interface')
+    variant('hdf5', default=False, description='Enable HDF5 interface')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
