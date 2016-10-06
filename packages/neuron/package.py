@@ -105,19 +105,22 @@ class Neuron(Package):
 
     def get_python_options(self, spec):
         options = []
-        if spec.satisfies('+python'):
-            py_prefix = spec['python'].prefix
-            py_version_string = 'python{0}'.format(spec['python'].version.up_to(2))
-            py_lib = spec['python'].prefix.lib64
 
-            options.extend(['--with-nrnpython',
-                            'PYINCDIR=%s/include/%s' %
-                            (py_prefix, py_version_string),
-                            'PYLIB=-L%s -l%s' %
-                            (py_lib, py_version_string),
-                            'PYLIBDIR=%s' % py_lib,
-                            'PYLIBLINK=-L%s -l%s' %
-                            (py_lib, py_version_string)])
+        if spec.satisfies('+python'):
+            options.extend(['--with-nrnpython'])
+
+            if spec.satisfies('+cross-compile'):
+                py_prefix = spec['python'].prefix
+                py_version_string = 'python{0}'.format(spec['python'].version.up_to(2))
+                py_lib = spec['python'].prefix.lib64
+
+                options.extend(['PYINCDIR=%s/include/%s' %
+                                (py_prefix, py_version_string),
+                                'PYLIB=-L%s -l%s' %
+                                (py_lib, py_version_string),
+                                'PYLIBDIR=%s' % py_lib,
+                                'PYLIBLINK=-L%s -l%s' %
+                                (py_lib, py_version_string)])
         else:
             options.extend(['--without-nrnpython'])
         return options
