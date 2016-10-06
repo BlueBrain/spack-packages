@@ -30,7 +30,7 @@ class Nrnh5(Package):
     depends_on("hdf5")
     depends_on("zlib", when='+zlib')
 
-    def get_arch_build_options(self):
+    def get_arch_build_options(self, spec):
         return []
 
     @when('arch=bgq-CNK-ppc64')
