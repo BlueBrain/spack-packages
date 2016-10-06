@@ -93,14 +93,14 @@ class Neuron(Package):
     def get_hdf5_options(self, spec):
         options = []
         if spec.satisfies('+hdf5'):
-            compiler_flags = '-DCORENEURON_HDF5=1 -I%s' % (spec['nrnh5'].include_path)
+            compiler_flags = '-DCORENEURON_HDF5=1 -I%s -I%s' % (spec['nrnh5'].include_path, spec['hdf5'].prefix.include)
             link_library = '%s -lhdf5' % (spec['nrnh5'].link_library)
+            ld_flags = '-L%s -L%s' % (spec['nrnh5'].prefix.lib, spec['hdf5'].prefix.lib)
 
             options.extend(['CFLAGS=%s' % compiler_flags])
             options.extend(['CXXFLAGS=%s' % compiler_flags])
+            options.extend(['LIBS= %s %s' % (ld_flags, link_library)])
 
-            options.extend(['LIBS=%s' % link_library])
-            options.extend(['LDFLAGS=-L%s -L%s' % (spec['nrnh5'].prefix.lib, spec['hdf5'].prefix.lib)])
         return options
 
     def get_python_options(self, spec):
@@ -132,9 +132,9 @@ class Neuron(Package):
         options = []
         if spec.satisfies('+cross-compile'):
             options.extend(self.get_cross_compile_options(spec))
-        options.extend(self.get_hdf5_options(spec))
-        options.extend(self.get_python_options(spec))
         options.extend(self.get_mpi_options(spec))
+        options.extend(self.get_python_options(spec))
+        options.extend(self.get_hdf5_options(spec))
         return options
 
     def install(self, spec, prefix):
