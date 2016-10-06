@@ -17,26 +17,32 @@ from spack import *
 
 class Coreneuron(Package):
 
-    """
-    CoreNEURON is a simplified engine for the NEURON simulator optimised for both
-    memory usage and computational speed. Its goal is to simulate massive cell
-    networks with minimal memory footprint and optimal performance.
-    """
+    """CoreNEURON is a simplified engine for the NEURON simulator
+    optimised for both memory usage and computational speed. Its goal
+    is to simulate massive cell networks with minimal memory footprint
+    and optimal performance."""
 
     homepage = "https://github.com/BlueBrain/CoreNeuron"
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron', branch='sandbox/kumbhar/nrnh5')
+    version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
+            branch='sandbox/kumbhar/nrnh5')
     version('master', git='ssh://bbpcode.epfl.ch/sim/coreneuron')
 
-    variant('mpi', default=True, description="Enable MPI support")
-    variant('openmp', default=True, description="Enable OpenMP support")
-    variant('hdf5', default=True, description="Enable HDF5 data reading support")
-    variant('neurodamus', default=True, description="Build mechanisms from Neurodamus")
-    variant('report', default=True, description="Enable soma/compartment report with ReportingLib")
-    variant('tests', default=False, description="Enable building tests")
+    variant('mpi', default=True,
+            description="Enable MPI support")
+    variant('openmp', default=True,
+            description="Enable OpenMP support")
+    variant('hdf5', default=True,
+            description="Enable CoreNeuron HDF5 support")
+    variant('neurodamus', default=True,
+            description="Build MOD files from Neurodamus")
+    variant('report', default=True,
+            description="Enable soma/compartment report using ReportingLib")
+    variant('tests', default=False,
+            description="Enable building tests")
 
-    #mandatory dependencies
+    # mandatory dependencies
     depends_on('mod2c', type='build')
     depends_on('cmake@2.8.12:', type='build')
     depends_on("mpi")
@@ -44,24 +50,36 @@ class Coreneuron(Package):
     depends_on('hdf5', when='+hdf5')
     depends_on('neurodamus', when='+neurodamus')
 
-    #optional dependencies
+    # optional dependencies
     depends_on('neurodamus', when='+neurodamus', type='build')
     depends_on('reportinglib', when='+report')
     depends_on('boost', when='+tests')
+
+    def get_arch_compile_options(self, spec):
+        return []
+
+    @when('arch=bgq-CNK-ppc64')
+    def get_arch_compile_options(self, spec):
+        options = []
+        # for bg-q, our cmake is not setup properly
+        if spec.satisfies('+mpi'):
+            options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                            '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
+        return options
 
     def install(self, spec, prefix):
 
         with working_dir("spack-build", create=True):
 
-            options = [
-                '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                '-DCOMPILE_LIBRARY_TYPE=STATIC',
-                ]
+            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+                       '-DCOMPILE_LIBRARY_TYPE=STATIC']
 
             if spec.satisfies('+tests'):
-                options.extend(['-DUNIT_TESTS:BOOL=ON', '-DFUNCTIONAL_TESTS:BOOL=ON'])
+                options.extend(['-DUNIT_TESTS:BOOL=ON',
+                                '-DFUNCTIONAL_TESTS:BOOL=ON'])
             else:
-                options.extend(['-DUNIT_TESTS:BOOL=OFF', '-DFUNCTIONAL_TESTS:BOOL=OFF'])
+                options.extend(['-DUNIT_TESTS:BOOL=OFF',
+                                '-DFUNCTIONAL_TESTS:BOOL=OFF'])
 
             if spec.satisfies('+report'):
                 options.extend(['-DENABLE_REPORTINGLIB:BOOL=ON'])
@@ -79,11 +97,7 @@ class Coreneuron(Package):
                 options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
                 options.extend(['-DADDITIONAL_MECHS=%s' % (modfile_list)])
 
-            #for bg-q, our cmake is not setup properly
-            if spec.satisfies('+mpi') and str(spec.architecture) == 'bgq-CNK-ppc64':
-                options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx
-                                ])
+            options.extend(self.get_arch_compile_options(spec))
 
             cmake('..', *options)
             make()

@@ -13,20 +13,21 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-import sys, shutil
+import sys
+import os
+import shutil
+
 
 class Neurodamus(Package):
 
-    """
-    Library of channels developed by Blue Brain Project, EPFL
-    """
+    """Library of channels developed by Blue Brain Project, EPFL"""
 
     homepage = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp', branch='sandbox/kumbhar/corebluron_h5')
+    version('develop', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
+            branch='sandbox/kumbhar/corebluron_h5')
 
-    #mandatory dependencies
     depends_on("mpi")
     depends_on("hdf5")
     depends_on("neuron")
@@ -40,14 +41,27 @@ class Neurodamus(Package):
 
             modlib = 'lib/modlib'
             nrnivmodl = which('nrnivmodl')
-            compile_flags = '-I%s -I%s' % (spec['reportinglib'].prefix.include, spec['hdf5'].prefix.include)
-            link_flags = '-L%s -lreportinglib -L%s -lhdf5' % (spec['reportinglib'].prefix.lib64, spec['hdf5'].prefix.lib)
+            compile_flags = '-I%s -I%s' % (spec['reportinglib'].prefix.include,
+                                           spec['hdf5'].prefix.include)
+            link_flags = '-L%s -lreportinglib -L%s -lhdf5' % (
+                         spec['reportinglib'].prefix.lib64,
+                         spec['hdf5'].prefix.lib)
 
-            #on os-x there is no mallinfo
+            # on os-x there is no mallinfo
             if(sys.platform == 'darwin'):
-                compile_flags += '-DDISABLE_MALLINFO'
+                compile_flags += ' -DDISABLE_MALLINFO'
 
-            nrnivmodl('-incflags', compile_flags, '-loadflags', link_flags, modlib)
+            nrnivmodl('-incflags', compile_flags,
+                      '-loadflags', link_flags, modlib)
+
+            self.check_install(spec)
+
+    def check_install(self, spec):
+        arch = self.spec['neuron'].archdir
+        special = '%s/special' % join_path(self.prefix, arch)
+
+        if not os.path.isfile(special):
+            raise RuntimeError("Neurodamus installion check failed!")
 
     def setup_environment(self, spack_env, run_env):
         arch = self.spec['neuron'].archdir

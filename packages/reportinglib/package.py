@@ -17,9 +17,7 @@ from spack import *
 
 class Reportinglib(Package):
 
-    """
-    Soma and full compartment report library developed at BBP
-    """
+    """Soma and full compartment report library developed at BBP"""
 
     homepage = "https://bbpcode.epfl.ch/code/a/sim/reportinglib/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/reportinglib/bbp"
@@ -32,16 +30,12 @@ class Reportinglib(Package):
     def install(self, spec, prefix):
 
         with working_dir("spack-build", create=True):
-            options = [
-                '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                '-DCOMPILE_LIBRARY_TYPE=STATIC',
-                ]
+            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+                       '-DCOMPILE_LIBRARY_TYPE=STATIC']
 
-            #for bg-q, our cmake is not setup properly
-            if str(spec.architecture) == 'bgq-CNK-ppc64':
-                options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx
-                                ])
+            # especially for bg-q
+            options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                            '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
 
             cmake('..', *options)
             make()

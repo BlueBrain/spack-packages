@@ -13,13 +13,12 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-import os, sys
+import sys
+
 
 class NeuronNmodl(Package):
 
-    """
-    NEURON's nocmodl for cross compiling environment
-    """
+    """NEURON's nocmodl for cross compiling environment"""
 
     homepage = "https://www.neuron.yale.edu/"
     url      = "http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz"
@@ -32,13 +31,13 @@ class NeuronNmodl(Package):
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
 
-    #on osx platform, pkg-config can't be built without clang
+    # on osx platform, pkg-config can't be built without clang
     depends_on('pkg-config', type='build', when=sys.platform != 'darwin')
     depends_on('pkg-config%clang', type='build', when=sys.platform == 'darwin')
 
     def patch(self):
-        #neuron use aclocal which should have proper include paths
-        #this is only required on osx but doesn't hurt on other platforms
+        # neuron use aclocal which should have proper include paths
+        # this is only required on osx but doesn't hurt on other platforms
         pkgconfig_inc = '-I %s/share/aclocal/' % (self.spec['pkg-config'].prefix)
         libtool_inc = '-I %s/share/aclocal/' % (self.spec['libtool'].prefix)
         replace_string = 'aclocal -I m4 %s %s' % (pkgconfig_inc, libtool_inc)
@@ -58,13 +57,11 @@ class NeuronNmodl(Package):
         build = Executable('./build.sh')
         build()
 
-        options = [
-                 '--prefix=%s' % prefix,
-                 '--with-nmodl-only',
-                 '--without-x'
-                ]
+        options = ['--prefix=%s' % prefix,
+                   '--with-nmodl-only',
+                   '--without-x']
 
-        #on os-x disable building carbon 'click' utility which is deprecated
+        # on os-x disable building carbon
         if(sys.platform == 'darwin'):
             options.extend(['macdarwin=no'])
 

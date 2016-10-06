@@ -17,15 +17,12 @@ from spack import *
 
 class Nrnh5(Package):
 
-    """
-    HDF5 interface for neuron and coreneuron
-    """
+    """HDF5 interface for neuron and coreneuron"""
 
     homepage = "https://bbpteam.epfl.ch/reps/user/kumbhar/nrnh5/"
     url      = "ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5"
 
     version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5')
-
     variant('zlib', default=False, description="Link with Zlib")
 
     depends_on('cmake@2.8.12:', type='build')
@@ -36,16 +33,12 @@ class Nrnh5(Package):
     def install(self, spec, prefix):
 
         with working_dir("spack-build", create=True):
-            options = [
-                '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                '-DBUILD_SHARED_LIBS=OFF',
-                ]
+            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+                       '-DBUILD_SHARED_LIBS=OFF']
 
-            #for bg-q, our cmake is not setup properly
-            if str(spec.architecture) == 'bgq-CNK-ppc64':
-                options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx,
-                                ])
+            # especially for bg-q
+            options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                            '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
 
             if spec.satisfies('+zlib'):
                 options.extend(['-DZLIB_ROOT=%s' % spec['zlib'].prefix,
@@ -55,12 +48,9 @@ class Nrnh5(Package):
             make()
             make('install')
 
-    #for convenience, set include path and library to link. this is
-    #just for convenience purpose for neuron build which doesn't use
-    #cmake to find package automatically
+    # for convenience, set include path and library to link. this is
+    # just for convenience purpose for neuron build which doesn't use
+    # cmake to find package automatically
     def setup_dependent_package(self, module, dspec):
-
-        libname = 'libnrnh5core.a'
-
-        self.spec.include_path = '%s/nrnh5' %(self.spec.prefix.include)
+        self.spec.include_path = '%s/nrnh5' % (self.spec.prefix.include)
         self.spec.link_library = "-lnrnh5core"

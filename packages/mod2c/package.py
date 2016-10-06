@@ -17,11 +17,9 @@ from spack import *
 
 class Mod2c(Package):
 
-    """
-    MOD2C is NMODL to C converter adapted for CoreNEURON simulator.
+    """MOD2C is NMODL to C converter adapted for CoreNEURON simulator.
     More information about NMODL can be found NEURON simulator
-    documentation at Yale University.
-    """
+    documentation at Yale University."""
 
     homepage = "https://github.com/BlueBrain/mod2c"
     url      = "ssh://bbpcode.epfl.ch/sim/mod2c"
