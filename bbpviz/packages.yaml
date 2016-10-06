@@ -18,10 +18,6 @@ packages:
         paths:
             mvapich2@2.0.1 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/tools/mvapich2/mvapich2-2.0.1-nocuda-slurm-14.03.4.2/install
         buildable: False
-#    python:
-#        paths:
-#            python@2.7.12 arch=linux-redhat6-x86_64: python-2.7.12-gcc-4.9.3-v57mz37
-#        buildable: False
     autoconf:
         paths:
             autoconf@system: /usr
@@ -47,7 +43,13 @@ packages:
             tcl@8.5: /usr
         version: [8.5]
         buildable: False
-
+    python:
+        paths:
+            python@system: /usr
+        version: [system]
+        buildable: False
+    hdf5:
+        variants: ~fortran
     all:
         compiler: [gcc, intel@17.0.0, intel@15.0.0]
         providers:
