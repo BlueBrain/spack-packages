@@ -242,4 +242,10 @@ spack install mod2c %gcc os=redhat6
 spack install coreneuron@master%xl ~hdf5 ~neurodamus ~report os=CNK ^bgqmpi ^mod2c%gcc os=redhat6
 spack install reportinglib%xl os=CNK ^bgqmpi os=CNK
 spack install nrnh5%xl +zlib os=CNK ^bgqmpi
+
+spack install -v neuron-nmodl%gcc os=redhat6
+spack install -v neuron%xl +mpi +with-nmodlonly os=CNK ^bgqmpi ^neuron-nmodl%gcc os=redhat6
+spack install -v neurodamus%xl os=CNK ^bgqmpi ^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64 ^neuron-nmodl%gcc os=redhat6
 ```
+
+Note that the dependency of neuron for neurodamus is copied by checking spec of previous installation of neuron. And same for neuron-nmodl.

@@ -40,15 +40,16 @@ class Neurodamus(Package):
 
             modlib = 'lib/modlib'
             nrnivmodl = which('nrnivmodl')
-            compile_flags = ''
+            compile_flags = '-I%s -I%s' % (spec['reportinglib'].prefix.include, spec['hdf5'].prefix.include)
+            link_flags = '-L%s -lreportinglib -L%s -lhdf5' % (spec['reportinglib'].prefix.lib64, spec['hdf5'].prefix.lib)
 
             #on os-x there is no mallinfo
             if(sys.platform == 'darwin'):
                 compile_flags += '-DDISABLE_MALLINFO'
 
-            nrnivmodl('-incflags', compile_flags, modlib)
+            nrnivmodl('-incflags', compile_flags, '-loadflags', link_flags, modlib)
 
     def setup_environment(self, spack_env, run_env):
-        arch = self.spec.architecture.target
+        arch = self.spec['neuron'].archdir
         run_env.prepend_path('PATH', join_path(self.prefix, arch))
         run_env.set('HOC_LIBRARY_PATH', join_path(self.prefix, 'lib/hoclib'))
