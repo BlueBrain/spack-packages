@@ -39,6 +39,11 @@ packages:
             zlib@1.2.3%xl@12.1 arch=bgq-CNK-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/zlib/zlib-1.2.3/install
         buildable: False
         version: [1.2.3]
+    python:
+        paths:
+            python@2.6.7: /gpfs/bbp.cscs.ch/apps/bgq/external/python/python-2.6.7/install/python2.6.7-20131119/
+        version: [2.6.7]
+        buildable: False
 
     all:
         compiler: [xl,gcc]
