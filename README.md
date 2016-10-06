@@ -246,6 +246,24 @@ spack install nrnh5%xl +zlib os=CNK ^bgqmpi
 spack install -v neuron-nmodl%gcc os=redhat6
 spack install -v neuron%xl +mpi +with-nmodlonly os=CNK ^bgqmpi ^neuron-nmodl%gcc os=redhat6
 spack install -v neurodamus%xl os=CNK ^bgqmpi ^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64 ^neuron-nmodl%gcc os=redhat6
+spack install -v coreneuron@master%xl ~hdf5 +neurodamus +report os=CNK ^bgqmpi ^mod2c%gcc os=redhat6 ^neurodamus@develop%xl@12.1 arch=bgq-CNK-ppc64 ^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64 ^neuron-nmodl%gcc os=redhat6
 ```
 
-Note that the dependency of neuron for neurodamus is copied by checking spec of previous installation of neuron. And same for neuron-nmodl.
+Note that the dependency of neuron for neurodamus is copied by checking spec of previous installation of neuron. And same for neuron-nmodl. For example:
+```bash
+
+spack spec neurodamus%xl os=CNK ^bgqmpi ^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64 ^neuron-nmodl%gcc os=redhat6
+.........
+Concretized
+------------------------------
+  neurodamus@develop%xl@12.1 arch=bgq-CNK-ppc64
+        ^bgqmpi@3.2%xl@12.1 arch=bgq-CNK-ppc64
+              ^hdf5@1.8.15%xl@12.1+cxx~debug+fortran+mpi+shared~szip~threadsafe arch=bgq-CNK-ppc64
+                    ^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64
+```
+Use above concretized for coreneuron. but again neurodamus depend on:
+```bash
+.....
+^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64 ^neuron-nmodl%gcc os=redhat6
+```
+So have to add those!
