@@ -107,7 +107,7 @@ class Neuron(Package):
         options = []
 
         if spec.satisfies('+python'):
-            options.extend(['--with-nrnpython'])
+            options.extend(['--with-nrnpython', '--disable-pysetup'])
 
             if spec.satisfies('+cross-compile'):
                 py_prefix = spec['python'].prefix
@@ -143,7 +143,9 @@ class Neuron(Package):
     def install(self, spec, prefix):
         options = ['--prefix=%s' % prefix,
                    '--without-iv',
-                   '--disable-rx3d']
+                   '--disable-rx3d',
+                   '--disable-shared',
+                   'linux_nrnmech=no']
 
         options.extend(self.get_configure_options(spec))
         build = Executable('./build.sh')
