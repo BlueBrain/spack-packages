@@ -30,15 +30,22 @@ class Nrnh5(Package):
     depends_on("hdf5")
     depends_on("zlib", when='+zlib')
 
+    def get_arch_build_options(self):
+        return []
+
+    @when('arch=bgq-CNK-ppc64')
+    def get_arch_build_options(self, spec):
+        return ['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx,
+                '-DENABLE_MPI_LIB_LINK:BOOL=OFF']
+
     def install(self, spec, prefix):
 
         with working_dir("spack-build", create=True):
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
                        '-DBUILD_SHARED_LIBS=OFF']
 
-            # especially for bg-q
-            options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                            '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
+            options.extend(self.get_arch_build_options(spec))
 
             if spec.satisfies('+zlib'):
                 options.extend(['-DZLIB_ROOT=%s' % spec['zlib'].prefix,
