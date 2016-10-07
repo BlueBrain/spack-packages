@@ -51,6 +51,11 @@ packages:
             cmake@3.6.2: /usr/local                                                                                      
         buildable: False                                                                                                
         version: [3.6.2]
+    python:                                                                                                           
+        paths:                                                                                                          
+            python@2.7.10: /usr                                                                                      
+        buildable: False                                                                                                
+        version: [2.7.10]
 ```
 
 Install GCC and MPICH as:
