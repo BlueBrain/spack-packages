@@ -45,6 +45,18 @@ packages:
         version: [2.6.7]
         buildable: False
 
+    #BBP Packages
+    mod2c:
+        compiler: [gcc]
+    neuron-nmodl:
+        compiler: [gcc]
+    nrnh5:
+        variants: +zlib
+    neuron:
+        variants: +mpi +hdf5 +cross-compile
+    coreneuron:
+        variants: +hdf5 +neurodamus +report
+
     all:
         compiler: [xl,gcc]
         providers:

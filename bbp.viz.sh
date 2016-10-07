@@ -12,9 +12,12 @@ set -e
 
 #gcc
 #spack install gcc@4.9.3 %gcc
+
 #start using gcc
 #spack load gcc@4.9.3
+
 #spack compiler find
+
 #install mpich
 #spack install mpich@3.2 %gcc@4.9.3
 
@@ -49,7 +52,8 @@ module purge all
 spack reindex
 spack install mod2c  %intel
 spack install nrnh5 %intel ^intelmpi
-spack install -v neuron +mpi +hdf5 %intel ^intelmpi
+spack install neuron +mpi +hdf5 %intel ^intelmpi
 spack install reportinglib %intel ^intelmpi
 spack install neurodamus %intel ^intelmpi
 spack install coreneuron +report +hdf5 %intel ^intelmpi
+
