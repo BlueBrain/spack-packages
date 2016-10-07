@@ -1,16 +1,31 @@
 # README #
 
-```bash
-spack repo add --scope site ~/workarena/systems/lugviz/softwares/sources/spack/var/spack/repos/bbp
-```
 
 ##Update .bashrc
 ```bash
+
+git clone git@bitbucket.org:pkumbhar/spack.git
+
 export SPACK_ROOT=$HOME/workarena/systems/.../softwares/sources/spack
 export PATH=$SPACK_ROOT/bin:$PATH
 source $SPACK_ROOT/share/spack/setup-env.sh
 MODULES_HOME=`spack location -i environment-modules`
 source ${MODULES_HOME}/Modules/init/bash
+```
+
+```bash
+git clone git@bitbucket.org:pkumbhar/spack-bbp.git bbp
+spack repo add --scope site ~/workarena/systems/lugviz/softwares/sources/spack/var/spack/repos/bbp
+spack install environment-modules
+```
+
+```bash
+#start using gcc
+spack load gcc@4.9.3
+spack compiler find
+
+#install mpich
+#spack install mpich@3.2 %gcc@4.9.3
 ```
 
 ## MAC ##
@@ -57,12 +72,55 @@ packages:
 #### Intel ####
 
 ```bash
-spack install mod2c  %intel@15.0.0
-spack install nrnh5 %intel@15.0.0 ^intelmpi
-spack install neuron +mpi +hdf5 %intel@15.0.0 ^intelmpi
-spack install reportinglib %intel@15.0.0 ^intelmpi
-spack install neurodamus %intel@15.0.0 ^intelmpi
-spack install coreneuron +report +hdf5 %intel@15.0.0 ^intelmpi
+set -x
+set -e
+
+#gcc
+#spack install gcc@4.9.3 %gcc
+
+#start using gcc
+#spack load gcc@4.9.3
+
+#spack compiler find
+
+#install mpich
+#spack install mpich@3.2 %gcc@4.9.3
+
+spack install hdf5 +mpi %gcc@4.9.3 ^mvapich2
+
+spack uninstall -y -f -d -a neuron
+spack uninstall -y -f -d -a coreneuron
+spack uninstall -y -f -d -a nrnh5
+spack uninstall -y -f -d -a mod2c
+spack uninstall -y -f -d -a reportinglib
+spack uninstall -y -f -d -a neurodamus
+spack uninstall -y -f -d -a neuron-nmodl
+
+spack reindex
+spack install mod2c %gcc@4.9.3
+spack install nrnh5 %gcc@4.9.3 ^mvapich2
+spack install neuron +mpi +hdf5 %gcc@4.9.3 ^mvapich2
+spack install reportinglib %gcc@4.9.3 ^mvapich2
+spack install neurodamus %gcc@4.9.3 ^mvapich2
+spack install coreneuron +report +hdf5 %gcc@4.9.3 ^mvapich2
+
+export IFORTCFG=/gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/cf/icc.cfg
+export ICPCCFG=/gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/cf/icc.cfg
+export ICCCFG=/gpfs/bbp.cscs.ch/home/kumbhar/workarena/systems/lugviz/softwares/sources/spack/cf/icc.cfg
+
+#HDF5 execute some tests which causes libimf.so error
+#module load intel/icomposer-2015.0.09
+module load intel/compilers_and_libraries_2017.0.098
+spack install --dirty hdf5 +mpi %intel ^intelmpi
+module purge all
+
+spack reindex
+spack install mod2c  %intel
+spack install nrnh5 %intel ^intelmpi
+spack install -v neuron +mpi +hdf5 %intel ^intelmpi
+spack install reportinglib %intel ^intelmpi
+spack install neurodamus %intel ^intelmpi
+spack install coreneuron +report +hdf5 %intel ^intelmpi
 ```
 
 Packages.yaml file as:
@@ -255,15 +313,15 @@ spack uninstall -f -a -d -y neuron
 spack uninstall -f -a -d -y reportinglib
 spack uninstall -f -a -d -y coreneuron
 spack uninstall -f -a -d -y neurodamus
+spack uninstall -f -a -d -y neuron-nmodl
 
-spack install mod2c %gcc os=redhat6
-spack install reportinglib%xl os=CNK ^bgqmpi os=CNK
-spack install nrnh5%xl +zlib os=CNK ^bgqmpi
-spack install neuron-nmodl%gcc os=redhat6
+spack install mod2c os=redhat6
+spack install reportinglib ^bgqmpi
+spack install nrnh5 +zlib ^bgqmpi
 
-spack install neuron%xl +mpi +hdf5 +cross-compile os=CNK ^bgqmpi ^neuron-nmodl%gcc os=redhat6 ^nrnh5@develop%xl@12.1+zlib arch=bgq-CNK-ppc64
-spack install neurodamus%xl os=CNK ^bgqmpi ^neuron@develop%xl@12.1+hdf5+mpi+python+cross-compile arch=bgq-CNK-ppc64 ^neuron-nmodl%gcc os=redhat6 ^nrnh5@develop%xl@12.1+zlib arch=bgq-CNK-ppc64
-spack install coreneuron@master%xl +hdf5 +neurodamus +report os=CNK ^bgqmpi ^mod2c%gcc os=redhat6 ^neurodamus@develop%xl@12.1 arch=bgq-CNK-ppc64 ^neuron@develop%xl@12.1+hdf5+mpi+python+cross-compile arch=bgq-CNK-ppc64 ^neuron-nmodl%gcc os=redhat6 ^nrnh5@develop%xl@12.1+zlib arch=bgq-CNK-ppc64
+spack install neuron +mpi +cross-compile ^bgqmpi ^neuron-nmodl os=redhat6
+spack install neurodamus ^neuron+mpi+cross-compile ^bgqmpi ^neuron-nmodl os=redhat6
+spack install coreneuron +hdf5 +neurodamus +report ^bgqmpi ^mod2c os=redhat6 ^neurodamus ^neuron+mpi+cross-compile ^neuron-nmodl os=redhat6 ^nrnh5+zlib
 ```
 
 Note that the dependency of neuron for neurodamus is copied by checking spec of previous installation of neuron. And same for neuron-nmodl. For example:
