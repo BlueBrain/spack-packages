@@ -4,6 +4,15 @@
 spack repo add --scope site ~/workarena/systems/lugviz/softwares/sources/spack/var/spack/repos/bbp
 ```
 
+##Update .bashrc
+```bash
+export SPACK_ROOT=$HOME/workarena/systems/.../softwares/sources/spack
+export PATH=$SPACK_ROOT/bin:$PATH
+source $SPACK_ROOT/share/spack/setup-env.sh
+MODULES_HOME=`spack location -i environment-modules`
+source ${MODULES_HOME}/Modules/init/bash
+```
+
 ## MAC ##
 
 ### BBP Packages ###
