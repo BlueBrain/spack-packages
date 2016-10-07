@@ -30,6 +30,40 @@ spack compiler find
 
 ## MAC ##
 
+From homebrew install cmake (on Sierra, CMake can't be built):
+```bash
+/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+brew install cmake
+
+#find out version and path
+$ which cmake
+/usr/local/bin/cmake
+
+$ cmake --version
+cmake version 3.6.2
+```
+
+Create ~/.spack/packages.yaml with below entry (change paths/version) :
+```bash
+packages: 
+    cmake:                                                                                                           
+        paths:                                                                                                          
+            cmake@3.6.2: /usr/local                                                                                      
+        buildable: False                                                                                                
+        version: [3.6.2]
+```
+
+Install GCC and MPICH as:
+```bash
+spack install environment-modules
+spack install gcc@4.9.3
+spack install mpich@3.2 %gcc@4.9.3
+```
+
+Now update your .profile as:
+```bash
+```
+
 ### BBP Packages ###
 
 ```bash
