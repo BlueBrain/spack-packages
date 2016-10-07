@@ -53,8 +53,7 @@ packages:
         version: [3.6.2]
     python:                                                                                                           
         paths:                                                                                                          
-            python@2.7.10: /usr                                                                                      
-        buildable: False                                                                                                
+            python@2.7.10%clang: /usr                                                                                                                                                                                     
         version: [2.7.10]
 ```
 
