@@ -5,6 +5,7 @@
 ```bash
 
 git clone git@bitbucket.org:pkumbhar/spack.git
+git clone https://pkumbhar@bitbucket.org/pkumbhar/spack.git
 
 export SPACK_ROOT=$HOME/workarena/systems/.../softwares/sources/spack
 export PATH=$SPACK_ROOT/bin:$PATH
@@ -14,8 +15,10 @@ source ${MODULES_HOME}/Modules/init/bash
 ```
 
 ```bash
-git clone git@bitbucket.org:pkumbhar/spack-bbp.git bbp
-spack repo add --scope site ~/workarena/systems/lugviz/softwares/sources/spack/var/spack/repos/bbp
+cd var/spack/repos/
+git clone git@bitbucket.org:pkumbhar/spack-bbp.git bap
+git clone https://pkumbhar@bitbucket.org/pkumbhar/spack-bbp.git bbp
+spack repo add --scope site `pwd`/bbp
 spack install environment-modules
 ```
 
