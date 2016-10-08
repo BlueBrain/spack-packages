@@ -1,0 +1,71 @@
+packages:
+    craympi:
+        paths:
+            craympi@3.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: /opt/cray/mpt/7.2.2/gni/mpich2-intel/14.0/
+        buildable: False
+        #modules:
+        #    craympi@3.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: PrgEnv-intel/5.2.82
+    mpich:
+        paths:
+            mpich@7.2.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: /opt/cray/mpt/7.2.2/gni/mpich2-intel/14.0/
+        #modules:
+        #    mpich@7.2.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: PrgEnv-intel/5.2.82
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@system: /usr
+        buildable: False
+        version: [system]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    cmake:
+        paths:
+            cmake@3.0.2: /apps/santis/cmake/3.0.2
+        buildable: False
+        version: [3.0.2]
+    hdf5:
+        paths:
+            hdf5@1.8.16%intel@15.0.1.133 arch=cray-CNL-sandybridge: /opt/cray/hdf5-parallel/1.8.11/intel/130/
+        buildable: False
+        version: [1.8.16]
+    zlib:
+        paths:
+            zlib@1.2.8%intel@15.0.1.133 arch=cray-CNL-sandybridge: /apps/daint/5.2.UP02/easybuild/software/zlib/1.2.8-CrayGNU-5.2.40/
+        buildable: False
+        version: [1.2.8]
+    python:
+        #paths:
+        #    python@2.7.6: /apps/daint/5.2.UP02/python2.7/2.7.6/
+        modules:
+             python@2.7.6: python/2.7.6
+        version: [2.7.6]
+        buildable: False
+    mod2c:
+        compiler: [gcc]
+    neuron-nmodl:
+        compiler: [gcc]
+    nrnh5:
+        variants: +zlib
+#        compiler: [intel]
+    neuron:
+        variants: +mpi +hdf5 +cross-compile ~python
+    coreneuron:
+        variants: +hdf5 +neurodamus +report
+
+    all:
+        compiler: [intel,gcc,cray]
+        #providers:
+        #    mpi: [craympi]

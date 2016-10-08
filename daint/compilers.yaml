@@ -1,0 +1,596 @@
+compilers:
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.1.6
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.1.6
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.2.5
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.2.5
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.4
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.4
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.1.7
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.1.7
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.2.6
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.2.6
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.5
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.5
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.1.8
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.1.8
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.0
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.6
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.6
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.1.9
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.1.9
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.1
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.1
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.7
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.7
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.2.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.2.0
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.10
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.10
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.4.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.4.0
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.2.1
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.2.1
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.12
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.12
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.4.1
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.4.1
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.2.2
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.2.2
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.14
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.14
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.4.5
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.4.5
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.2.3
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.2.3
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.2
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.2
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.4.6
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.4.6
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.2.4
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.2.4
+- compiler:
+    modules:
+    - PrgEnv-cray
+    - cce/8.3.3
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: cce@8.3.3
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.7.2
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.7.2
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.8.1
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.8.1
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.9.1
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.9.1
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/5.1.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@5.1.0
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.7.3
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.7.3
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.8.2
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.8.2
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.9.2
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.9.2
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/5.3.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@5.3.0
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.8.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.8.0
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.9.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.9.0
+- compiler:
+    modules:
+    - PrgEnv-gnu
+    - gcc/4.9.3
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: gcc@4.9.3
+- compiler:
+    modules:
+    - PrgEnv-intel
+    - intel/13.0.1.117
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: intel@13.0.1.117
+- compiler:
+    modules:
+    - PrgEnv-intel
+    - intel/14.0.1.106
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: intel@14.0.1.106
+- compiler:
+    modules:
+    - PrgEnv-intel
+    - intel/15.0.1.133
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: intel@15.0.1.133
+- compiler:
+    modules:
+    - PrgEnv-intel
+    - intel/13.1.3.192
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: intel@13.1.3.192
+- compiler:
+    modules:
+    - PrgEnv-intel
+    - intel/14.0.2.144
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: intel@14.0.2.144
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/13.10.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@13.10.0
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/14.9.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@14.9.0
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/15.9.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@15.9.0
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/14.1.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@14.1.0
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/15.3.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@15.3.0
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/16.3.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@16.3.0
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/14.7.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@14.7.0
+- compiler:
+    modules:
+    - PrgEnv-pgi
+    - pgi/15.7.0
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: pgi@15.7.0
+- compiler:
+    modules: []
+    operating_system: SuSE11
+    paths:
+      cc: /opt/cray/craype/2.4.0/bin/cc
+      cxx: /opt/cray/craype/2.4.0/bin/CC
+      f77: /opt/cray/craype/2.4.0/bin/ftn
+      fc: /opt/cray/craype/2.4.0/bin/ftn
+    spec: cce@3.12
+- compiler:
+    modules: []
+    operating_system: SuSE11
+    paths:
+      cc: null
+      cxx: null
+      f77: /usr/bin/gfortran-4.3
+      fc: /usr/bin/gfortran-4.3
+    spec: gcc@4.3.4
+- compiler:
+    modules: []
+    operating_system: SuSE11
+    paths:
+      cc: /usr/bin/gcc-4.6
+      cxx: /usr/bin/g++-4.6
+      f77: /usr/bin/gfortran-4.6
+      fc: /usr/bin/gfortran-4.6
+    spec: gcc@4.6
+- compiler:
+    modules: []
+    operating_system: SuSE11
+    paths:
+      cc: /usr/bin/gcc-4.7
+      cxx: /usr/bin/g++-4.7
+      f77: null
+      fc: null
+    spec: gcc@4.7
+- compiler:
+    modules: []
+    operating_system: SuSE11
+    paths:
+      cc: /usr/bin/gcc-4.3
+      cxx: /usr/bin/g++-4.3
+      f77: null
+      fc: null
+    spec: gcc@4.3
