@@ -70,9 +70,22 @@ class Neuron(Package):
                 '--host=powerpc64',
                 '--without-memacs']
 
+    @when('arch=cray-CNL-sandybridge')
+    def get_cross_compile_options(self, spec):
+        return ['--without-memacs',
+                '--without-nmodl',
+                'CC=cc',
+                'CXX=CC',
+                'MPICC=cc',
+                'MPICXX=CC']
+
     def get_neuron_arch_dir(self):
         arch = self.spec.architecture.target
         return arch
+
+    @when('arch=cray-CNL-sandybridge')
+    def get_neuron_arch_dir(self):
+        return 'x86_64'
 
     @when('arch=bgq-CNK-ppc64')
     def get_neuron_arch_dir(self):

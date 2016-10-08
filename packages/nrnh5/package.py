@@ -39,6 +39,11 @@ class Nrnh5(Package):
                 '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx,
                 '-DENABLE_MPI_LIB_LINK:BOOL=OFF']
 
+    # intel15 doesn't compile gtest
+    @when('cray-CNL-sandybridge')
+    def get_arch_build_options(self, spec):
+        return ['-DBUILD_TESTS:OFF=OFF']
+
     def install(self, spec, prefix):
 
         with working_dir("spack-build", create=True):

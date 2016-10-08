@@ -25,7 +25,7 @@ class NeuronNmodl(Package):
     list_url = "http://www.neuron.yale.edu/ftp/neuron/versions/"
     list_depth = 2
 
-    version('develop', hg='http://www.neuron.yale.edu/hg/neuron/nrn')
+    version('develop', git='https://github.com/nrnhines/nrn.git')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
