@@ -51,7 +51,7 @@ packages:
     hdf5:
         variants: ~fortran
     all:
-        compiler: [gcc, intel@17.0.0, intel@15.0.0]
+        compiler: [gcc@4.9.3, intel@17.0.0, intel@15.0.0]
         providers:
             mpi: [mvapich2, intelmpi]
             blas: [mkl]
