@@ -1,8 +1,8 @@
 packages:
-    bgqmpi:
+    mpich:
         paths:
-            bgqmpi@3.2%xl@12.1 arch=bgq-CNK-powerpc: /bgsys/drivers/ppcfloor/comm/
-            bgqmpi@3.2%gcc@4.4.7 arch=bgq-CNK-powerpc: /bgsys/drivers/ppcfloor/comm/
+            mpich@3.2%xl@12.1 arch=bgq-CNK-powerpc: /bgsys/drivers/ppcfloor/comm/xl
+            mpich@3.2%gcc@4.4.7 arch=bgq-CNK-powerpc: /bgsys/drivers/ppcfloor/comm/gcc
         buildable: False
     autoconf:
         paths:
