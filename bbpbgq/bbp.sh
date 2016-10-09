@@ -7,7 +7,7 @@
 #SBATCH --account=proj16
 #SBATCH --exclusive
 
-set -e
+#set -e
 
 spack uninstall -f -a -d -y mod2c
 spack uninstall -f -a -d -y nrnh5
