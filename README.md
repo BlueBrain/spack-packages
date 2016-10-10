@@ -1,13 +1,20 @@
 # README #
 
+## Clone repos
+```bash
+
+cd $HOME/workarena/software/sources/spack
+
+git clone git@bitbucket.org:pkumbhar/spack.git # OR git clone https://pkumbhar@bitbucket.org/pkumbhar/spack.git
+
+cd spack
+git remote add llnl https://github.com/llnl/spack.git
+git remote add github git@bitbucket.org:pkumbhar/spack.git
+```
 
 ##Update .bashrc
 ```bash
-
-git clone git@bitbucket.org:pkumbhar/spack.git
-git clone https://pkumbhar@bitbucket.org/pkumbhar/spack.git
-
-export SPACK_ROOT=$HOME/workarena/systems/.../softwares/sources/spack
+export SPACK_ROOT=$HOME/workarena/software/sources/spack
 export PATH=$SPACK_ROOT/bin:$PATH
 source $SPACK_ROOT/share/spack/setup-env.sh
 MODULES_HOME=`spack location -i environment-modules`
@@ -19,21 +26,21 @@ cd var/spack/repos/
 git clone git@bitbucket.org:pkumbhar/spack-bbp.git bap
 git clone https://pkumbhar@bitbucket.org/pkumbhar/spack-bbp.git bbp
 spack repo add --scope site `pwd`/bbp
+```
+
+Install environment-module
+```bash
 spack install environment-modules
 ```
 
+Populate compilers using:
 ```bash
-#start using gcc
-spack load gcc@4.9.3
-spack compiler find
-
-#install mpich
-#spack install mpich@3.2 %gcc@4.9.3
+spack compilers
 ```
 
-## MAC ##
+### MAC Specifics ###
 
-From homebrew install cmake (on Sierra, CMake can't be built):
+On latest Sierra, CMake can't be built with GCC. Hence, install using brew:
 ```bash
 /usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 brew install cmake
@@ -60,15 +67,13 @@ packages:
         version: [2.7.10]
 ```
 
+#### Mac Specifics End ####
+
+
 Install GCC and MPICH as:
 ```bash
-spack install environment-modules
 spack install gcc@4.9.3
 spack install mpich@3.2 %gcc@4.9.3
-```
-
-Now update your .profile as:
-```bash
 ```
 
 ### BBP Packages ###
