@@ -23,7 +23,7 @@ source ${MODULES_HOME}/Modules/init/bash
 
 ```bash
 cd var/spack/repos/
-git clone git@bitbucket.org:pkumbhar/spack-bbp.git bap
+git clone git@bitbucket.org:pkumbhar/spack-bbp.git bbp
 git clone https://pkumbhar@bitbucket.org/pkumbhar/spack-bbp.git bbp
 spack repo add --scope site `pwd`/bbp
 ```
