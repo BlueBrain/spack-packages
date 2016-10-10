@@ -86,6 +86,21 @@ Now install MPICH:
 spack install mpich@3.2 %gcc@4.9.3
 ```
 
+##### MAC Specific ####
+```
+    hdf5:
+        variants: ~fortran
+
+    all:
+        compiler: [gcc@4.9.3]
+        providers:
+            mpi: [mpich@3.2]
+```
+Install HDF5 packages:
+```
+spack install hdf5 +mpi %gcc ^mpich
+```
+
 ### BBP Packages ###
 
 ```bash
