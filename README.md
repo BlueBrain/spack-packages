@@ -73,6 +73,16 @@ packages:
 Install GCC and MPICH as:
 ```bash
 spack install gcc@4.9.3
+
+#might need
+source $SPACK_ROOT/share/spack/setup-env.sh
+
+spack load gcc
+spack compiler find
+```
+
+Now install MPICH:
+```
 spack install mpich@3.2 %gcc@4.9.3
 ```
 
