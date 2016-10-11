@@ -93,9 +93,11 @@ Add hdf5 to build without fortran (in case you are going to use clang for some i
         providers:
             mpi: [mpich@3.2]
 ```
-Install HDF5 packages:
+For our packages, we typically need HDF5 and Python packages:
 ```
-spack install hdf5 +mpi %gcc ^mpich
+spack install hdf5 +mpi
+spack install python
+
 ```
 
 ### BBP Packages ###
