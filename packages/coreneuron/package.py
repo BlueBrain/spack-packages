@@ -33,8 +33,6 @@ class Coreneuron(Package):
             description="Enable MPI support")
     variant('openmp', default=True,
             description="Enable OpenMP support")
-    variant('hdf5', default=True,
-            description="Enable CoreNeuron HDF5 support")
     variant('neurodamus', default=True,
             description="Build MOD files from pre-compiled Neurodamus")
     variant('neurodamusmod', default=False,
@@ -47,9 +45,9 @@ class Coreneuron(Package):
     # mandatory dependencies
     depends_on('mod2c', type='build')
     depends_on('cmake@2.8.12:', type='build')
-    depends_on("mpi")
-    depends_on("nrnh5", when='+hdf5')
-    depends_on('hdf5', when='+hdf5')
+    depends_on("mpi", when='+mpi')
+    depends_on("nrnh5", when='@develop')
+    depends_on('hdf5', when='@develop')
 
     # optional dependencies
     depends_on('neurodamus@coreneuronsetup', when='+neurodamus')
@@ -65,6 +63,9 @@ class Coreneuron(Package):
             if spec.satisfies('+mpi'):
                 options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
                                 '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
+            if spec.satisfies('@develop'):
+                options.extend(['-DENABLE_ZLIB_LINK=ON'])
+
         return options
 
     def install(self, spec, prefix):

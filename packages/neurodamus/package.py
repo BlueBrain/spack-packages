@@ -33,7 +33,6 @@ class Neurodamus(Package):
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
 
-    depends_on("mpi", when='+compile')
     depends_on("hdf5", when='+compile')
     depends_on("neuron", when='+compile')
     depends_on('reportinglib', when='+compile')
