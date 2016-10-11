@@ -61,10 +61,6 @@ packages:
             cmake@3.6.2: /usr/local                                                                                      
         buildable: False                                                                                                
         version: [3.6.2]
-    python:                                                                                                           
-        paths:                                                                                                          
-            python@2.7.10%clang: /usr                                                                                                                                                                                     
-        version: [2.7.10]
 ```
 
 #### Mac Specifics End ####
@@ -87,6 +83,7 @@ spack install mpich@3.2 %gcc@4.9.3
 ```
 
 ##### MAC Specific ####
+Add hdf5 to build without fortran (in case you are going to use clang for some installations).
 ```
     hdf5:
         variants: ~fortran
@@ -96,9 +93,11 @@ spack install mpich@3.2 %gcc@4.9.3
         providers:
             mpi: [mpich@3.2]
 ```
-Install HDF5 packages:
+For our packages, we typically need HDF5 and Python packages:
 ```
-spack install hdf5 +mpi %gcc ^mpich
+spack install hdf5 +mpi
+spack install python
+
 ```
 
 ### BBP Packages ###
