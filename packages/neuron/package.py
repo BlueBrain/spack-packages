@@ -29,6 +29,7 @@ class Neuron(Package):
     # version('yale', hg='http://www.neuron.yale.edu/hg/neuron/nrn')
     version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron',
             branch='bbpcode_trunk')
+    version('master', git='https://github.com/nrnhines/nrn.git')
 
     variant('mpi', default=True, description='Enable distributed memory parallelism')
     variant('python', default=True, description='Enable python')
@@ -62,34 +63,31 @@ class Neuron(Package):
         filter_file(r'aclocal -I m4', r'%s' % replace_string, "build.sh")
 
     def get_cross_compile_options(self, spec):
-        return []
+        options = []
 
-    @when('arch=bgq-CNK-ppc64')
-    def get_cross_compile_options(self, spec):
-        return ['--enable-bluegeneQ',
-                '--host=powerpc64',
-                '--without-memacs']
+        if 'bgq' in self.spec.architecture:
+            options.extend(['--enable-bluegeneQ',
+                            '--host=powerpc64',
+                            '--without-memacs'])
 
-    @when('arch=cray-CNL-sandybridge')
-    def get_cross_compile_options(self, spec):
-        return ['--without-memacs',
-                '--without-nmodl',
-                'CC=cc',
-                'CXX=CC',
-                'MPICC=cc',
-                'MPICXX=CC']
+        if 'cray' in self.spec.architecture:
+            options.extend(['--without-memacs',
+                            '--without-nmodl',
+                            'CC=%s' % self.compiler.cc,
+                            'CXX=%s' % self.compiler.cxx,
+                            'MPICC=%s' % self.compiler.cc,
+                            'MPICXX=%s' % self.compiler.cxx])
+        return options
 
     def get_neuron_arch_dir(self):
         arch = self.spec.architecture.target
+
+        if 'bgq' in self.spec.architecture:
+            arch = 'powerpc64'
+        if 'cray' in self.spec.architecture:
+            arch = 'x86_64'
+
         return arch
-
-    @when('arch=cray-CNL-sandybridge')
-    def get_neuron_arch_dir(self):
-        return 'x86_64'
-
-    @when('arch=bgq-CNK-ppc64')
-    def get_neuron_arch_dir(self):
-        return 'powerpc64'
 
     def pre_make(self, spec):
         if spec.satisfies('+cross-compile'):

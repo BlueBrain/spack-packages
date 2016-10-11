@@ -21,9 +21,7 @@ class NeuronNmodl(Package):
     """NEURON's nocmodl for cross compiling environment"""
 
     homepage = "https://www.neuron.yale.edu/"
-    url      = "http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz"
-    list_url = "http://www.neuron.yale.edu/ftp/neuron/versions/"
-    list_depth = 2
+    url      = "https://github.com/nrnhines/nrn.git"
 
     version('develop', git='https://github.com/nrnhines/nrn.git')
 
@@ -46,11 +44,12 @@ class NeuronNmodl(Package):
 
     def get_neuron_arch_dir(self):
         arch = self.spec.architecture.target
-        return arch
 
-    @when('arch=bgq-redhat6-ppc64')
-    def get_neuron_arch_dir(self):
-        return 'powerpc64'
+        if 'bgq' in self.spec.architecture:
+            arch = 'powerpc64'
+        if 'cray' in self.spec.architecture:
+            arch = 'x86_64'
+        return arch
 
     def install(self, spec, prefix):
 

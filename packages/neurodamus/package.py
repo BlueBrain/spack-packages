@@ -27,34 +27,41 @@ class Neurodamus(Package):
 
     version('develop', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
             branch='sandbox/kumbhar/corebluron_h5')
+    version('master', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp')
+    version('coreneuronsetup', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
+            branch='coreneuronsetup')
 
-    depends_on("mpi")
-    depends_on("hdf5")
-    depends_on("neuron")
-    depends_on('reportinglib')
+    variant('compile', default=True, description='Compile and create executable using nrnivmodl')
+
+    depends_on("mpi", when='+compile')
+    depends_on("hdf5", when='+compile')
+    depends_on("neuron", when='+compile')
+    depends_on('reportinglib', when='+compile')
+
 
     def install(self, spec, prefix):
 
         shutil.copytree('lib', '%s/lib' % (prefix), symlinks=False)
 
-        with working_dir(prefix):
+        if spec.satisfies('+compile'):
+            with working_dir(prefix):
 
-            modlib = 'lib/modlib'
-            nrnivmodl = which('nrnivmodl')
-            compile_flags = '-I%s -I%s' % (spec['reportinglib'].prefix.include,
-                                           spec['hdf5'].prefix.include)
-            link_flags = '-L%s -lreportinglib -L%s -lhdf5' % (
-                         spec['reportinglib'].prefix.lib64,
-                         spec['hdf5'].prefix.lib)
+                modlib = 'lib/modlib'
+                nrnivmodl = which('nrnivmodl')
+                compile_flags = '-I%s -I%s' % (spec['reportinglib'].prefix.include,
+                                               spec['hdf5'].prefix.include)
+                link_flags = '-L%s -lreportinglib -L%s -lhdf5' % (
+                             spec['reportinglib'].prefix.lib64,
+                             spec['hdf5'].prefix.lib)
 
-            # on os-x there is no mallinfo
-            if(sys.platform == 'darwin'):
-                compile_flags += ' -DDISABLE_MALLINFO'
+                # on os-x there is no mallinfo
+                if(sys.platform == 'darwin'):
+                    compile_flags += ' -DDISABLE_MALLINFO'
 
-            nrnivmodl('-incflags', compile_flags,
-                      '-loadflags', link_flags, modlib)
+                nrnivmodl('-incflags', compile_flags,
+                          '-loadflags', link_flags, modlib)
 
-            self.check_install(spec)
+                self.check_install(spec)
 
     def check_install(self, spec):
         arch = self.spec['neuron'].archdir
@@ -64,6 +71,7 @@ class Neurodamus(Package):
             raise RuntimeError("Neurodamus installion check failed!")
 
     def setup_environment(self, spack_env, run_env):
-        arch = self.spec['neuron'].archdir
-        run_env.prepend_path('PATH', join_path(self.prefix, arch))
-        run_env.set('HOC_LIBRARY_PATH', join_path(self.prefix, 'lib/hoclib'))
+        if self.spec.satisfies('+compile'):
+            arch = self.spec['neuron'].archdir
+            run_env.prepend_path('PATH', join_path(self.prefix, arch))
+            run_env.set('HOC_LIBRARY_PATH', join_path(self.prefix, 'lib/hoclib'))

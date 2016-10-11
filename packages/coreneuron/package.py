@@ -36,7 +36,9 @@ class Coreneuron(Package):
     variant('hdf5', default=True,
             description="Enable CoreNeuron HDF5 support")
     variant('neurodamus', default=True,
-            description="Build MOD files from Neurodamus")
+            description="Build MOD files from pre-compiled Neurodamus")
+    variant('neurodamusmod', default=False,
+            description="Build only MOD files from Neurodamus")
     variant('report', default=True,
             description="Enable soma/compartment report using ReportingLib")
     variant('tests', default=False,
@@ -48,23 +50,21 @@ class Coreneuron(Package):
     depends_on("mpi")
     depends_on("nrnh5", when='+hdf5')
     depends_on('hdf5', when='+hdf5')
-    depends_on('neurodamus', when='+neurodamus')
 
     # optional dependencies
-    depends_on('neurodamus', when='+neurodamus', type='build')
+    depends_on('neurodamus@coreneuronsetup', when='+neurodamus')
+    depends_on('neurodamus@coreneuronsetup~compile', when='+neurodamusmod')
     depends_on('reportinglib', when='+report')
     depends_on('boost', when='+tests')
 
     def get_arch_compile_options(self, spec):
-        return []
-
-    @when('arch=bgq-CNK-ppc64')
-    def get_arch_compile_options(self, spec):
         options = []
+
         # for bg-q, our cmake is not setup properly
-        if spec.satisfies('+mpi'):
-            options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                            '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
+        if 'bgq' in self.spec.architecture:
+            if spec.satisfies('+mpi'):
+                options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
         return options
 
     def install(self, spec, prefix):

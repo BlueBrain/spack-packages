@@ -31,18 +31,18 @@ class Nrnh5(Package):
     depends_on("zlib", when='+zlib')
 
     def get_arch_build_options(self, spec):
-        return []
+        options = []
 
-    @when('arch=bgq-CNK-ppc64')
-    def get_arch_build_options(self, spec):
-        return ['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx,
-                '-DENABLE_MPI_LIB_LINK:BOOL=OFF']
+        if 'bgq' in self.spec.architecture:
+            options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
+                            '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx,
+                            '-DENABLE_MPI_LIB_LINK:BOOL=OFF'])
 
-    # intel15 doesn't compile gtest
-    @when('cray-CNL-sandybridge')
-    def get_arch_build_options(self, spec):
-        return ['-DBUILD_TESTS:OFF=OFF']
+        # intel15 doesn't compile gtest
+        if 'cray' in self.spec.architecture:
+            options.extend(['-DBUILD_TESTS:OFF=OFF'])
+
+        return options
 
     def install(self, spec, prefix):
 
