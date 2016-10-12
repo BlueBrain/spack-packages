@@ -1,0 +1,28 @@
+compilers:
+- compiler:
+    modules: []
+    operating_system: elcapitan
+    paths:
+      cc: /usr/bin/clang
+      cxx: /usr/bin/clang++
+      f77: null
+      fc: null
+    spec: clang@7.3.0-apple
+- compiler:
+    modules: []
+    operating_system: elcapitan
+    paths:
+      cc: /usr/bin/gcc
+      cxx: /usr/bin/g++
+      f77: null
+      fc: null
+    spec: gcc@4.2.1
+- compiler:
+    modules: []
+    operating_system: elcapitan
+    paths:
+      cc: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/gcc
+      cxx: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/g++
+      f77: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/gfortran
+      fc: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/gfortran
+    spec: gcc@4.9.3

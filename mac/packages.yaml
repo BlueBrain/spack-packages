@@ -1,0 +1,18 @@
+packages:
+    cmake:
+        paths:
+            cmake@3.6.2: /usr/local
+        buildable: False
+        version: [3.6.2]
+    #don't add this otherwise spec command doesn't complete
+    #python:
+    #    paths:
+    #        python@2.7.10%clang: /usr
+    #    version: [2.7.10]
+    hdf5:
+        variants: ~fortran
+
+    all:
+        compiler: [gcc@4.9.3]
+        providers:
+            mpi: [mpich@3.2]
