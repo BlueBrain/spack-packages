@@ -35,6 +35,7 @@ class Neurodamus(Package):
 
     depends_on("hdf5", when='+compile')
     depends_on("neuron", when='+compile')
+    depends_on("neuron@develop", when='@develop+compile')
     depends_on('reportinglib', when='+compile')
 
 

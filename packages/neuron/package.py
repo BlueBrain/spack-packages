@@ -33,15 +33,14 @@ class Neuron(Package):
 
     variant('mpi', default=True, description='Enable distributed memory parallelism')
     variant('python', default=True, description='Enable python')
-    variant('hdf5', default=True, description='Enable HDF5 interface')
     variant('cross-compile', default=False, description='Also use nmodl-only installation')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
     depends_on('mpi', when='+mpi')
-    depends_on("nrnh5", when='+hdf5')
-    depends_on('hdf5', when='+hdf5')
+    depends_on("nrnh5", when='@develop')
+    depends_on('hdf5', when='@develop')
     depends_on('python', when='+python')
     depends_on('neuron-nmodl', when='+cross-compile', type='build')
 
@@ -103,7 +102,7 @@ class Neuron(Package):
     # options for hdf5 branch
     def get_hdf5_options(self, spec):
         options = []
-        if spec.satisfies('+hdf5'):
+        if spec.satisfies('@develop'):
             compiler_flags = '-DCORENEURON_HDF5=1 -I%s -I%s' % (spec['nrnh5'].include_path, spec['hdf5'].prefix.include)
             link_library = '%s -lhdf5' % (spec['nrnh5'].link_library)
             ld_flags = '-L%s -L%s' % (spec['nrnh5'].prefix.lib, spec['hdf5'].prefix.lib)
