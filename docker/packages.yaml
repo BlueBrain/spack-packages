@@ -1,0 +1,22 @@
+packages:
+    qt:
+        paths:
+            qt@4.8.6%gcc@4.8 arch=linux-Ubuntu14-x86_64: /usr
+        buildable: False
+        version: [4.8.6]
+
+    cube:
+        variants: +gui
+
+    boost:
+        version: [1.51.0]
+
+    python:
+        paths:
+            python@2.7.12%gcc@4.8 arch=linux-Ubuntu14-x86_64: /usr
+        buildable: False
+        version: [2.7.1]
+
+    all:
+        providers:
+            mpi: [mpich]
