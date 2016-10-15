@@ -6,8 +6,9 @@ spack uninstall -y -f -d -a mod2c
 spack uninstall -y -f -d -a reportinglib
 spack uninstall -y -f -d -a neurodamus
 
-
-##spack install hdf5 +mpi %gcc ^mpich
+spack install mpich@3.2 %gcc@4.9.3
+spack install hdf5 +mpi
+spack install python
 
 spack install mod2c %gcc
 spack install nrnh5 %gcc ^mpich
