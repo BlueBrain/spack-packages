@@ -10,7 +10,7 @@ packages:
         buildable: False
         version: [2.7.1]
 
- 	openssl:
+    openssl:
         paths:
             openssl@system: /false/path
         version: [system]
