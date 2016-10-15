@@ -2,7 +2,6 @@ packages:
     qt:
         paths:
             qt@4.8.6%gcc@4.8 arch=linux-Ubuntu14-x86_64: /usr
-        buildable: False
         version: [4.8.6]
 
     python:
