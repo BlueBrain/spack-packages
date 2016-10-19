@@ -12,6 +12,9 @@ packages:
     hdf5:
         variants: ~fortran
 
+    boost:
+        version: [1.51.0]
+
     all:
         compiler: [gcc@4.9.3]
         providers:

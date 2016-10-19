@@ -3,8 +3,8 @@ compilers:
     modules: []
     operating_system: elcapitan
     paths:
-      cc: /usr/bin/clang
-      cxx: /usr/bin/clang++
+      cc: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+      cxx: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
       f77: null
       fc: null
     spec: clang@7.3.0-apple
