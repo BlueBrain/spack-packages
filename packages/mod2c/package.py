@@ -30,7 +30,9 @@ class Mod2c(Package):
 
     def install(self, spec, prefix):
 
-        with working_dir("spack-build", create=True):
+        build_dir = "spack-build-%s" % spec.version
+
+        with working_dir(build_dir, create=True):
             cmake('..', '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix)
             make()
             make('install')

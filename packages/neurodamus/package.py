@@ -25,17 +25,17 @@ class Neurodamus(Package):
     homepage = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
-            branch='sandbox/kumbhar/corebluron_h5')
     version('master', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp')
-    version('coreneuronsetup', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
+    version('develop', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
             branch='coreneuronsetup')
+    version('hdf', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
+            branch='sandbox/kumbhar/corebluron_h5')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
 
     depends_on("hdf5", when='+compile')
     depends_on("neuron", when='+compile')
-    depends_on("neuron@develop", when='@develop+compile')
+    depends_on("neuron@hdf", when='@hdf+compile')
     depends_on('reportinglib', when='+compile')
 
 
@@ -44,6 +44,7 @@ class Neurodamus(Package):
         shutil.copytree('lib', '%s/lib' % (prefix), symlinks=False)
 
         if spec.satisfies('+compile'):
+
             with working_dir(prefix):
 
                 modlib = 'lib/modlib'

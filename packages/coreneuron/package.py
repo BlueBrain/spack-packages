@@ -13,6 +13,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
+import os
 
 
 class Coreneuron(Package):
@@ -25,17 +26,13 @@ class Coreneuron(Package):
     homepage = "https://github.com/BlueBrain/CoreNeuron"
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
+    version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron')
+    version('hdf', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
             branch='sandbox/kumbhar/nrnh5')
-    version('master', git='ssh://bbpcode.epfl.ch/sim/coreneuron')
 
     variant('mpi', default=True,
             description="Enable MPI support")
-    variant('openmp', default=True,
-            description="Enable OpenMP support")
-    variant('neurodamus', default=True,
-            description="Build MOD files from pre-compiled Neurodamus")
-    variant('neurodamusmod', default=False,
+    variant('neurodamusmod', default=True,
             description="Build only MOD files from Neurodamus")
     variant('report', default=True,
             description="Enable soma/compartment report using ReportingLib")
@@ -46,12 +43,11 @@ class Coreneuron(Package):
     depends_on('mod2c', type='build')
     depends_on('cmake@2.8.12:', type='build')
     depends_on("mpi", when='+mpi')
-    depends_on("nrnh5", when='@develop')
-    depends_on('hdf5', when='@develop')
+    depends_on("nrnh5", when='@hdf')
+    depends_on('hdf5', when='@hdf')
 
     # optional dependencies
-    depends_on('neurodamus@coreneuronsetup', when='+neurodamus')
-    depends_on('neurodamus@coreneuronsetup~compile', when='+neurodamusmod')
+    depends_on('neurodamus@develop~compile', when='+neurodamusmod')
     depends_on('reportinglib', when='+report')
     depends_on('boost', when='+tests')
 
@@ -63,14 +59,16 @@ class Coreneuron(Package):
             if spec.satisfies('+mpi'):
                 options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
                                 '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
-            if spec.satisfies('@develop'):
+            if spec.satisfies('@hdf'):
                 options.extend(['-DENABLE_ZLIB_LINK=ON'])
 
         return options
 
     def install(self, spec, prefix):
 
-        with working_dir("spack-build", create=True):
+        build_dir = "spack-build-%s" % spec.version
+
+        with working_dir(build_dir, create=True):
 
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
                        '-DCOMPILE_LIBRARY_TYPE=STATIC']
@@ -91,12 +89,25 @@ class Coreneuron(Package):
             if spec.satisfies('~mpi'):
                 options.extend(['-DENABLE_MPI:BOOL=OFF'])
 
-            if spec.satisfies('+neurodamus'):
-                modlib_dir = '%s/lib/modlib' % (self.spec['neurodamus'].prefix)
-                modfile_list = '%s/coreneuron_modlist.txt' % (modlib_dir)
+            mech_set = False
+            modlib_dir = ''
 
-                options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
+            if 'MOD_FILE_DIR' in os.environ:
+                modlib_dir = os.environ['MOD_FILE_DIR']
+                mech_set = True
+                if not os.path.isdir(modlib_dir):
+                    raise RuntimeError("MOD_FILE_DIR environment variable set but directory doesn't exist!")
+
+            if spec.satisfies('+neurodamusmod'):
+                neurodamus_dir = self.spec['neurodamus'].prefix
+                modlib_dir = '%s;%s/lib/modlib' % (modlib_dir, neurodamus_dir)
+                modfile_list = '%s/lib/modlib/coreneuron_modlist.txt' % (neurodamus_dir)
+
                 options.extend(['-DADDITIONAL_MECHS=%s' % (modfile_list)])
+                mech_set = True
+
+            if mech_set:
+                options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
 
             options.extend(self.get_arch_compile_options(spec))
 

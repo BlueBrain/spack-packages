@@ -27,9 +27,9 @@ class Neuron(Package):
     list_depth = 2
 
     # version('yale', hg='http://www.neuron.yale.edu/hg/neuron/nrn')
-    version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron',
+    version('develop', git='https://github.com/nrnhines/nrn.git')
+    version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron',
             branch='bbpcode_trunk')
-    version('master', git='https://github.com/nrnhines/nrn.git')
 
     variant('mpi', default=True, description='Enable distributed memory parallelism')
     variant('python', default=True, description='Enable python')
@@ -39,8 +39,8 @@ class Neuron(Package):
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
     depends_on('mpi', when='+mpi')
-    depends_on("nrnh5", when='@develop')
-    depends_on('hdf5', when='@develop')
+    depends_on("nrnh5", when='@hdf')
+    depends_on('hdf5', when='@hdf')
     depends_on('python', when='+python')
     depends_on('neuron-nmodl', when='+cross-compile', type='build')
 
@@ -102,7 +102,7 @@ class Neuron(Package):
     # options for hdf5 branch
     def get_hdf5_options(self, spec):
         options = []
-        if spec.satisfies('@develop'):
+        if spec.satisfies('@hdf'):
             compiler_flags = '-DCORENEURON_HDF5=1 -I%s -I%s' % (spec['nrnh5'].include_path, spec['hdf5'].prefix.include)
             link_library = '%s -lhdf5' % (spec['nrnh5'].link_library)
             ld_flags = '-L%s -L%s' % (spec['nrnh5'].prefix.lib, spec['hdf5'].prefix.lib)
@@ -166,13 +166,20 @@ class Neuron(Package):
             options.extend(['macdarwin=no'])
 
         self.pre_make(spec)
-        configure(*options)
-        make()
-        make('install')
+
+        build_dir = "spack-build-%s" % spec.version
+
+        with working_dir(build_dir, create=True):
+            source_directory = self.stage.source_path
+            config = Executable(join_path(source_directory, 'configure'))
+            config(*options)
+            make()
+            make('install')
 
     def setup_environment(self, spack_env, run_env):
         arch = self.get_neuron_arch_dir()
         run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
+        self.spec.archdir = arch
 
     def setup_dependent_environment(self, spack_env, run_env, extension_spec):
         arch = self.get_neuron_arch_dir()
