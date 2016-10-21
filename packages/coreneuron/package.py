@@ -26,7 +26,8 @@ class Coreneuron(Package):
     homepage = "https://github.com/BlueBrain/CoreNeuron"
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron')
+    version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
+            preferred=True)
     version('hdf', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
             branch='sandbox/kumbhar/nrnh5')
 

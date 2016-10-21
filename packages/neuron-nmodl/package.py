@@ -14,42 +14,18 @@
 ##############################################################################
 from spack import *
 import sys
+from spack.pkg.bbp.neuron import Neuron
 
 
-class NeuronNmodl(Package):
+class NeuronNmodl(Neuron):
 
     """NEURON's nocmodl for cross compiling environment"""
-
-    homepage = "https://www.neuron.yale.edu/"
-    url      = "https://github.com/nrnhines/nrn.git"
-
-    version('develop', git='https://github.com/nrnhines/nrn.git')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
-
-    # on osx platform, pkg-config can't be built without clang
     depends_on('pkg-config', type='build', when=sys.platform != 'darwin')
     depends_on('pkg-config%clang', type='build', when=sys.platform == 'darwin')
-
-    def patch(self):
-        # neuron use aclocal which should have proper include paths
-        # this is only required on osx but doesn't hurt on other platforms
-        pkgconfig_inc = '-I %s/share/aclocal/' % (self.spec['pkg-config'].prefix)
-        libtool_inc = '-I %s/share/aclocal/' % (self.spec['libtool'].prefix)
-        replace_string = 'aclocal -I m4 %s %s' % (pkgconfig_inc, libtool_inc)
-
-        filter_file(r'aclocal -I m4', r'%s' % replace_string, "build.sh")
-
-    def get_neuron_arch_dir(self):
-        arch = self.spec.architecture.target
-
-        if 'bgq' in self.spec.architecture:
-            arch = 'powerpc64'
-        if 'cray' in self.spec.architecture:
-            arch = 'x86_64'
-        return arch
 
     def install(self, spec, prefix):
 
@@ -60,18 +36,6 @@ class NeuronNmodl(Package):
                    '--with-nmodl-only',
                    '--without-x']
 
-        # on os-x disable building carbon
-        if(sys.platform == 'darwin'):
-            options.extend(['macdarwin=no'])
-
         configure(*options)
         make()
         make('install')
-
-    def setup_environment(self, spack_env, run_env):
-        arch = self.get_neuron_arch_dir()
-        run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
-
-    def setup_dependent_environment(self, spack_env, run_env, extension_spec):
-        arch = self.get_neuron_arch_dir()
-        spack_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
