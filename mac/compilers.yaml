@@ -21,8 +21,17 @@ compilers:
     modules: []
     operating_system: elcapitan
     paths:
-      cc: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/gcc
-      cxx: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/g++
-      f77: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/gfortran
-      fc: /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.2.1/gcc-4.9.3-3yghgmzvmbiqmem7lpu2dmcqz6qoqcjd/bin/gfortran
+      cc: /usr/local/Cellar/llvm/3.9.0/bin/clang
+      cxx: /usr/local/Cellar/llvm/3.9.0/bin/clang++
+      f77: null
+      fc: null
+    spec: clang@3.9.0
+- compiler:
+    modules: []
+    operating_system: elcapitan
+    paths:
+      cc: /usr/local/bin/gcc-4.9
+      cxx: /usr/local/bin/g++-4.9
+      f77: /usr/local/bin/gfortran-4.9
+      fc: /usr/local/bin/gfortran-4.9
     spec: gcc@4.9.3

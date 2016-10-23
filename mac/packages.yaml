@@ -1,14 +1,61 @@
 packages:
+
     cmake:
         paths:
-            cmake@3.6.2: /usr/local
+            cmake@system: /usr/local
+            cmake@3.5.2: /usr/local
         buildable: False
-        version: [3.6.2]
-    #don't add this otherwise spec command doesn't complete
-    #python:
-    #    paths:
-    #        python@2.7.10%clang: /usr
-    #    version: [2.7.10]
+        version: [system, 3.5.2]
+
+    autoconf:
+        paths:
+            autoconf@system: /usr/local
+        buildable: False
+        version: [system]
+
+    automake:
+        paths:
+            automake@system: /usr/local
+        buildable: False
+        version: [system]
+
+    libtool:
+        paths:
+            libtool@system: /usr/local
+        buildable: False
+        version: [system]
+
+    openssl:
+        paths:
+            openssl@system: /fake/path
+        buildable: False
+        version: [system]
+
+    flex:
+        paths:
+            flex@system: /usr/local
+        buildable: False
+        version: [system]
+
+    bison:
+        paths:
+            bison@system: /usr/local
+        buildable: False
+        version: [system]
+
+    pkg-config:
+        paths:
+            pkg-config@system%clang@7.3.0-apple: /usr/local
+            pkg-config@system%gcc: /usr/local
+        buildable: False
+        version: [system]
+
+    environment-modules:
+        paths:
+            environment-modules@system: /usr/local/opt/modules
+        buildable: False
+        version: [system]
+
     hdf5:
         variants: ~fortran
 
@@ -16,6 +63,6 @@ packages:
         version: [1.51.0]
 
     all:
-        compiler: [gcc@4.9.3]
+        compiler: [gcc@4.9.3, clang@7.3.0-apple]
         providers:
-            mpi: [mpich@3.2]
+            mpi: [mpich]
