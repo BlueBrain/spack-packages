@@ -74,8 +74,6 @@ class Neuron(Package):
         if 'cray' in self.spec.architecture:
             options.extend(['--without-memacs',
                             '--without-nmodl',
-                            'CC=%s' % self.compiler.cc,
-                            'CXX=%s' % self.compiler.cxx,
                             'MPICC=%s' % self.compiler.cc,
                             'MPICXX=%s' % self.compiler.cxx])
         return options
@@ -165,7 +163,9 @@ class Neuron(Package):
 
         options = ['--prefix=%s' % prefix,
                    '--without-iv',
-                   '--disable-rx3d']
+                   '--disable-rx3d',
+                   'CC=%s' % self.compiler.cc,
+                   'CXX=%s' % self.compiler.cxx]
 
         options.extend(self.get_configure_options(spec))
         build = Executable('./build.sh')
