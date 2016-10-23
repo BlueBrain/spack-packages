@@ -44,6 +44,10 @@ set -e
 
 dependency_install
 
+# hdf5 issue
+spack load hdf5 +mpi %gcc ^mvapich2
+spack load hdf5 +mpi %intel ^intelmpi
+
 #packages without MPI dependency
 spack install --dirty mod2c@develop %intel
 spack install --dirty mod2c@github %intel
