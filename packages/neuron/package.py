@@ -26,14 +26,16 @@ class Neuron(Package):
     list_url = "http://www.neuron.yale.edu/ftp/neuron/versions/"
     list_depth = 2
 
-    # version('yale', hg='http://www.neuron.yale.edu/hg/neuron/nrn')
-    version('develop', git='https://github.com/nrnhines/nrn.git', preferred=True)
+    # version('develop', git='https://github.com/nrnhines/nrn.git', preferred=True)
+    version('develop', git='https://github.com/nrnhines/nrn-hg2git.git',
+            preferred=True)
     version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron',
             branch='bbpcode_trunk')
 
-    variant('mpi', default=True, description='Enable distributed memory parallelism')
+    variant('mpi', default=True, description='Enable MPI parallelism')
     variant('python', default=True, description='Enable python')
-    variant('cross-compile', default=False, description='Also use nmodl-only installation')
+    variant('static', default=False, description='Build static libraries')
+    variant('cross-compile', default=False, description='Build for cross-compile environment')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
@@ -143,27 +145,31 @@ class Neuron(Package):
 
     def get_configure_options(self, spec):
         options = []
+
+        if spec.satisfies('+static'):
+            options.extend(['--disable-shared',
+                            'linux_nrnmech=no'])
+        # on os-x disable building carbon 'click' utility which is deprecated
+        if(sys.platform == 'darwin'):
+            options.extend(['macdarwin=no'])
+
         if spec.satisfies('+cross-compile'):
             options.extend(self.get_cross_compile_options(spec))
+
         options.extend(self.get_mpi_options(spec))
         options.extend(self.get_python_options(spec))
         options.extend(self.get_hdf5_options(spec))
         return options
 
     def install(self, spec, prefix):
+
         options = ['--prefix=%s' % prefix,
                    '--without-iv',
-                   '--disable-rx3d',
-                   '--disable-shared',
-                   'linux_nrnmech=no']
+                   '--disable-rx3d']
 
         options.extend(self.get_configure_options(spec))
         build = Executable('./build.sh')
         build()
-
-        # on os-x disable building carbon 'click' utility which is deprecated
-        if(sys.platform == 'darwin'):
-            options.extend(['macdarwin=no'])
 
         self.pre_make(spec)
 

@@ -28,6 +28,7 @@ class Coreneuron(Package):
 
     version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
             preferred=True)
+    version('github', git='https://github.com/BlueBrain/CoreNeuron.git')
     version('hdf', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
             branch='sandbox/kumbhar/nrnh5')
 
@@ -42,6 +43,7 @@ class Coreneuron(Package):
 
     # mandatory dependencies
     depends_on('mod2c', type='build')
+    depends_on('mod2c@github', type='build', when='@github')
     depends_on('cmake@2.8.12:', type='build')
     depends_on("mpi", when='+mpi')
     depends_on("nrnh5", when='@hdf')

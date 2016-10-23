@@ -24,7 +24,8 @@ class Mod2c(Package):
     homepage = "https://github.com/BlueBrain/mod2c"
     url      = "ssh://bbpcode.epfl.ch/sim/mod2c"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/mod2c')
+    version('develop', git='ssh://bbpcode.epfl.ch/sim/mod2c', preferred=True)
+    version('github', git='https://github.com/BlueBrain/mod2c.git')
 
     depends_on('cmake@2.8.12:', type='build')
 
