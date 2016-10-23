@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name="build"
+#SBATCH --job-name="build-neuron-stack"
 #SBATCH --time=2:00:00
 #SBATCH --partition=interactive
 #SBATCH --nodes=1
@@ -7,53 +7,72 @@
 #SBATCH --account=proj16
 #SBATCH --exclusive
 
-#gcc
-#spack install gcc %gcc
-#start using gcc
-#spack load gcc
-#spack compiler find
+#Module issue
+export LD_LIBRARY_PATH=/gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64/lib/:$LD_LIBRARY_PATH
 
-export IFORTCFG=$HOME/spackconfig/bbpviz/cfg/ifort.cfg
-export ICPCCFG=$HOME/spackconfig/bbpviz/cfg/icc.cfg
-export ICCCFG=$HOME/spackconfig/bbpviz/cfg/icc.cfg
+##### UNINSTALL PACKAGE #####
+uninstall_package() {
+    spack uninstall -y -f -d -a neuron
+    spack uninstall -y -f -d -a coreneuron
+    spack uninstall -y -f -d -a mod2c
+    spack uninstall -y -f -d -a nrnh5
+    spack uninstall -y -f -d -a reportinglib
+    spack uninstall -y -f -d -a neurodamus
+    spack uninstall -y -f -d -a neuron-nmodl
+}
 
-#spack uninstall -a -f -d -y hdf5
+#### WE WILL INSTALL PYTHON AND HDF5 ONCE
+dependency_install() {
+    spack install --dirty hdf5 +mpi %gcc ^mvapich2
+    spack install --dirty hdf5 +mpi %intel ^intelmpi
+}
 
-#uninstall all packages
-spack uninstall -y -f -d -a neuron
-spack uninstall -y -f -d -a coreneuron
-spack uninstall -y -f -d -a nrnh5
-spack uninstall -y -f -d -a mod2c
-spack uninstall -y -f -d -a reportinglib
-spack uninstall -y -f -d -a neurodamus
-spack uninstall -y -f -d -a neuron-nmodl
-
-set -e
-
-#install hdf5, HDF5 execute some tests which causes libimf.so error
-spack install hdf5 +mpi %gcc ^mvapich2
-module load intel/compilers_and_libraries_2017.0.098
-spack install --dirty hdf5 +mpi %intel ^intelmpi
-module purge all
-
-spack reindex
-
+#### COMPILER TOOLCHAINS ####
 compiler_with_mpi=(
-    '%gcc ^mvapich2'
     '%intel ^intelmpi'
+    '%gcc ^mvapich2'
 )
 
-#serial
-spack install mod2c %intel
-spack install mod2c %gcc
+#in case there are inconsistencies
+spack reindex
+
+uninstall_package
+#spack uninstall -a -f -d -y hdf5
+
+#stop on error
+set -e
+
+dependency_install
+
+#packages without MPI dependency
+spack install --dirty mod2c@develop %intel
+spack install --dirty mod2c@github %intel
+
+spack install --dirty mod2c@develop %gcc
+spack install --dirty mod2c@github %gcc
+
 
 for compiler_mpi in "${compiler_with_mpi[@]}"
 do
-    spack install nrnh5 $compiler_mpi
-    spack install neuron +mpi +hdf5 $compiler_mpi
-    spack install reportinglib $compiler_mpi
-    spack install neurodamus +compile $compiler_mpi
-    spack install neurodamus@coreneuronsetup +compile $compiler_mpi
-    spack install coreneuron +report $compiler_mpi
-    spack install coreneuron@develop +report $compiler_mpi
+    spack install -v --dirty nrnh5@develop $compiler_mpi
+
+    spack install -v --dirty neuron@develop +mpi $compiler_mpi
+    spack install -v --dirty neuron@hdf +mpi $compiler_mpi
+
+    spack install -v --dirty reportinglib $compiler_mpi
+
+    spack install -v --dirty neurodamus@master +compile $compiler_mpi
+    spack install -v --dirty neurodamus@develop +compile $compiler_mpi
+    spack install -v --dirty neurodamus@hdf +compile $compiler_mpi
+
+    spack install -v --dirty coreneuron@develop +report $compiler_mpi
+    spack install -v --dirty coreneuron@github +report $compiler_mpi
+    spack install -v --dirty coreneuron@hdf +report $compiler_mpi
 done
+
+spack install -v --dirty mod2c@develop %pgi
+spack install -v --dirty coreneuron@develop +report %pgi ^mvapich2
+
+spack install -v --dirty mod2c@github %pgi
+#need to push the fix to github repos
+#spack install --dirty coreneuron@github +report %pgi ^mvapich2

@@ -4,7 +4,6 @@ packages:
             #intelmpi@5.0.1%intel@15.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/impi/5.0.1.035/intel64
             #intelmpi@4.1.1%intel@15.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/impi/4.1.1.036/intel64
             intelmpi@6.0%intel@17.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64/
-            #intelmpi@6.0%intel@17.0.0 arch=linux-redhat6-x86_64: intel/compilers_and_libraries_2017.0.098
         buildable: False
     mkl:
         paths:
@@ -30,9 +29,9 @@ packages:
         version: [system]
     pkg-config:
         paths:
-            pkg-config@system: /usr
+            pkg-config@0.29.1: /usr
         buildable: False
-        version: [system]
+        version: [0.29.1]
     libtool:
         paths:
             libtool@system: /usr
@@ -48,10 +47,16 @@ packages:
             python@system: /usr
         version: [system]
         buildable: False
+    cuda:
+        modules:
+            cuda@6.0: cuda/6.0
+        version: [6.0]
+        buildable: False
+
     hdf5:
         variants: ~fortran
     all:
-        compiler: [gcc@4.9.3, intel@17.0.0, intel@15.0.0]
+        compiler: [gcc@4.9.0, intel@17.0.0, intel@15.0.0]
         providers:
             mpi: [mvapich2, intelmpi]
             blas: [mkl]
