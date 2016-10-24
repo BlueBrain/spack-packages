@@ -26,9 +26,9 @@ class Nrnh5(Package):
     variant('zlib', default=False, description="Link with Zlib")
 
     depends_on('cmake@2.8.12:', type='build')
-    depends_on("mpi")
-    depends_on("hdf5")
-    depends_on("zlib", when='+zlib')
+    depends_on('mpi@2.2:')
+    depends_on('hdf5')
+    depends_on('zlib', when='+zlib')
 
     def get_arch_build_options(self, spec):
         options = []

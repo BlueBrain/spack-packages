@@ -40,10 +40,10 @@ class Neuron(Package):
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
-    depends_on('mpi', when='+mpi')
+    depends_on('mpi@2.2:', when='+mpi')
     depends_on("nrnh5", when='@hdf')
     depends_on('hdf5', when='@hdf')
-    depends_on('python', when='+python')
+    depends_on('python@2.6:', when='+python')
     depends_on('neuron-nmodl', when='+cross-compile', type='build')
 
     # on osx platform, pkg-config can't be built without clang
@@ -117,11 +117,13 @@ class Neuron(Package):
         options = []
 
         if spec.satisfies('+python'):
-            options.extend(['--with-nrnpython', '--disable-pysetup'])
+            py_prefix = spec['python'].prefix
+            py_version_string = 'python{0}'.format(spec['python'].version.up_to(2))
+            python_exec = '%s/bin/%s' % (py_prefix, py_version_string)
+
+            options.extend(['--with-nrnpython=%s' % python_exec, '--disable-pysetup'])
 
             if spec.satisfies('+cross-compile'):
-                py_prefix = spec['python'].prefix
-                py_version_string = 'python{0}'.format(spec['python'].version.up_to(2))
                 py_lib = spec['python'].prefix.lib64
 
                 options.extend(['PYINCDIR=%s/include/%s' %

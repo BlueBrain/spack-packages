@@ -25,7 +25,7 @@ class Reportinglib(Package):
     version('develop', git='ssh://bbpcode.epfl.ch/sim/reportinglib/bbp')
 
     depends_on('cmake@2.8.12:', type='build')
-    depends_on("mpi")
+    depends_on('mpi@2.2:')
 
     def install(self, spec, prefix):
 

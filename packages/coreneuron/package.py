@@ -45,8 +45,8 @@ class Coreneuron(Package):
     depends_on('mod2c', type='build')
     depends_on('mod2c@github', type='build', when='@github')
     depends_on('cmake@2.8.12:', type='build')
-    depends_on("mpi", when='+mpi')
-    depends_on("nrnh5", when='@hdf')
+    depends_on('mpi@2.2:', when='+mpi')
+    depends_on('nrnh5', when='@hdf')
     depends_on('hdf5', when='@hdf')
 
     # optional dependencies
