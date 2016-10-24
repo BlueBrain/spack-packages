@@ -33,8 +33,8 @@ class Reportinglib(Package):
 
         with working_dir(build_dir, create=True):
 
-            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                       '-DCOMPILE_LIBRARY_TYPE=STATIC']
+            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix]
+            #'-DCOMPILE_LIBRARY_TYPE=STATIC']
 
             # especially for bg-q
             options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,

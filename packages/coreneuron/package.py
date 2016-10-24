@@ -27,7 +27,7 @@ class Coreneuron(Package):
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
     version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
-            preferred=True)
+            branch='sandbox/kumbhar/pgi_fix', preferred=True)
     version('github', git='https://github.com/BlueBrain/CoreNeuron.git')
     version('hdf', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
             branch='sandbox/kumbhar/nrnh5')
@@ -40,6 +40,8 @@ class Coreneuron(Package):
             description="Enable soma/compartment report using ReportingLib")
     variant('tests', default=False,
             description="Enable building tests")
+    variant('gpu', default=False,
+            description="Enable GPU build")
 
     # mandatory dependencies
     depends_on('mod2c', type='build')
@@ -48,6 +50,7 @@ class Coreneuron(Package):
     depends_on('mpi@2.2:', when='+mpi')
     depends_on('nrnh5', when='@hdf')
     depends_on('hdf5', when='@hdf')
+    depends_on('cuda', when='+gpu')
 
     # optional dependencies
     depends_on('neurodamus@develop~compile', when='+neurodamusmod')
@@ -91,6 +94,17 @@ class Coreneuron(Package):
 
             if spec.satisfies('~mpi'):
                 options.extend(['-DENABLE_MPI:BOOL=OFF'])
+
+            if spec.satisfies('+gpu'):
+                gcc = which("gcc")
+                options.extend(['-DCUDA_HOST_COMPILER=%s' % gcc,
+                                '-DCUDA_PROPAGATE_HOST_FLAGS=OFF',
+                                '-DENABLE_SELECTIVE_GPU_PROFILING=ON',
+                                '-DENABLE_OPENACC=ON',
+                                '-DENABLE_OPENACC_INFO=ON'])
+                #PGI compiler not able to compile nrnreport.cpp when enabled
+                #OpenMP, OpenACC and Reporting. Disable ReportingLib
+                options.extend(['-DENABLE_REPORTINGLIB:BOOL=OFF'])
 
             mech_set = False
             modlib_dir = ''
