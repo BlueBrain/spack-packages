@@ -24,37 +24,23 @@ dev_packages=(
 )
 
 compilers=(
-    '%gcc'
     '%clang'
+    '%gcc'
 )
-
-
-#### WE WILL INSTALL PYTHON AND HDF5 ONCE
-dependency_install() {
-	for compiler in "${compilers[@]}"
-    do
-		  spack install python $compiler
-		  spack install mpich $compiler
-		  spack install hdf5 $compiler
-	done
-}
 
 ##### UNINSTALL PACKAGE #####
 uninstall_package() {
 	for package in "${dev_packages[@]}"
     do
-		  spack uninstall -a -f -d -y $package
+	    spack uninstall -a -f -d -y $package
 	done
 }
 
 #if any inconsistent packages
 spack reindex
 
-# uninstall packages
+# uninstall all packages
 uninstall_package
-
-# install dependency packages like python and hdf5
-dependency_install
 
 # stop if iany package installation fails
 set -e
@@ -64,10 +50,6 @@ for compiler in "${compilers[@]}"
 do
 	for package in "${dev_packages[@]}"
     do
-        # neurodamus doesnt build with Clanf compiler
-        if [[ $compiler == *"clang"* ]] && [[ $package == *"neurodamus"* ]]; then
-            continue
-        fi
         spack install $package $compiler
     done
 done

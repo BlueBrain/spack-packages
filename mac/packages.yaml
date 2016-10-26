@@ -2,26 +2,26 @@ packages:
 
     cmake:
         paths:
-            cmake@system: /usr/local
-            cmake@3.5.2: /usr/local
+            cmake@system: /usr/local/Cellar/cmake/3.5.2
+            cmake@3.5.2: /usr/local/Cellar/cmake/3.5.2
         buildable: False
         version: [system, 3.5.2]
 
     autoconf:
         paths:
-            autoconf@system: /usr/local
+            autoconf@system: /usr/local/Cellar/autoconf/2.69
         buildable: False
         version: [system]
 
     automake:
         paths:
-            automake@system: /usr/local
+            automake@system: /usr/local/Cellar/automake/1.15
         buildable: False
         version: [system]
 
     libtool:
         paths:
-            libtool@system: /usr/local
+            libtool@system: /usr/local/Cellar/libtool/2.4.6_1
         buildable: False
         version: [system]
 
@@ -33,31 +33,52 @@ packages:
 
     flex:
         paths:
-            flex@system: /usr/local
+            flex@system: /usr/local/Cellar/flex/2.5.39
         buildable: False
         version: [system]
 
     bison:
         paths:
-            bison@system: /usr/local
+            bison@system: /usr/local/Cellar/bison/3.0.4
         buildable: False
         version: [system]
 
     pkg-config:
         paths:
-            pkg-config@system%clang@7.3.0-apple: /usr/local
-            pkg-config@system%gcc: /usr/local
+            pkg-config@system%clang@7.3.0-apple: /usr/local/Cellar/pkg-config/0.29.1
+            pkg-config@system%gcc: /usr/local/Cellar/pkg-config/0.29.1
         buildable: False
         version: [system]
 
     environment-modules:
         paths:
-            environment-modules@system: /usr/local/opt/modules
+            environment-modules@system: /usr/local/Cellar/modules/3.2.10
         buildable: False
         version: [system]
 
+    python:
+        paths:
+            python@2.7.10: /System/Library/Frameworks/Python.framework/Versions/2.7
+        buildable: False
+        version: [2.7.10]
+
     hdf5:
-        variants: ~fortran
+        paths:
+            hdf5@1.8.17: /usr/local/Cellar/hdf5/1.8.17
+        buildable: False
+        version: [1.8.17]
+
+    zlib:
+        paths:
+            zlib@1.2.8: /usr/local/Cellar/zlib/1.2.8
+        buildable: False
+        version: [1.2.8]
+
+    mpich:
+        paths:
+            mpich@3.2: /usr/local/Cellar/open-mpi/2.0.1
+        buildable: False
+        version: [3.2]
 
     boost:
         version: [1.51.0]
