@@ -44,20 +44,25 @@ packages:
         buildable: False
     python:
         paths:
-            python@system: /usr
-        version: [system]
+            python@2.6.6: /usr
+        version: [2.6.6]
         buildable: False
     cuda:
         modules:
             cuda@6.0: cuda/6.0
         version: [6.0]
         buildable: False
-
+    mpich:
+        modules:
+            mpich@3.2: pgi/mpich/16.5
+        buildable: False
+        version: [3.2]
     hdf5:
-        variants: ~fortran
+        variants: ~fortran ~shared
+
     all:
         compiler: [gcc@4.9.0, intel@17.0.0, intel@15.0.0]
         providers:
-            mpi: [mvapich2, intelmpi]
+            mpi: [mvapich2, intelmpi, mpich]
             blas: [mkl]
             lapack: [mkl]

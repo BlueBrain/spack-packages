@@ -45,7 +45,7 @@ compilers:
       fc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
     spec: gcc@4.9.0
 - compiler:
-    modules: [pgi/pgi64/16.5]
+    modules: []
     operating_system: redhat6
     paths:
       cc: /gpfs/bbp.cscs.ch/apps/viz/tools/pgi/16.5/linux86-64/16.5/bin/pgcc
