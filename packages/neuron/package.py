@@ -197,9 +197,11 @@ class Neuron(Package):
     def setup_environment(self, spack_env, run_env):
         arch = self.get_neuron_arch_dir()
         run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
-        self.spec.archdir = arch
 
     def setup_dependent_environment(self, spack_env, run_env, extension_spec):
         arch = self.get_neuron_arch_dir()
         spack_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
-        self.spec.archdir = arch
+
+    def setup_dependent_package(self, module, dspec):
+        arch = self.get_neuron_arch_dir()
+        dspec.package.archdir = arch

@@ -65,14 +65,11 @@ class Neurodamus(Package):
                 self.check_install(spec)
 
     def check_install(self, spec):
-        arch = self.spec['neuron'].archdir
-        special = '%s/special' % join_path(self.prefix, arch)
-
+        special = '%s/special' % join_path(self.prefix, self.archdir)
         if not os.path.isfile(special):
             raise RuntimeError("Neurodamus installion check failed!")
 
     def setup_environment(self, spack_env, run_env):
         if self.spec.satisfies('+compile'):
-            arch = self.spec['neuron'].archdir
-            run_env.prepend_path('PATH', join_path(self.prefix, arch))
+            run_env.prepend_path('PATH', join_path(self.prefix, self.archdir))
             run_env.set('HOC_LIBRARY_PATH', join_path(self.prefix, 'lib/hoclib'))
