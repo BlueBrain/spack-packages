@@ -27,7 +27,7 @@ class Coreneuron(Package):
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
     version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
-            branch='sandbox/kumbhar/pgi_fix', preferred=True)
+            preferred=True)
     version('github', git='https://github.com/BlueBrain/CoreNeuron.git')
     version('hdf', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
             branch='sandbox/kumbhar/nrnh5')
@@ -47,11 +47,11 @@ class Coreneuron(Package):
     depends_on('mod2c', type='build')
     depends_on('mod2c@github', type='build', when='@github')
     depends_on('cmake@2.8.12:', type='build')
-    depends_on('mpi@2.2:', when='+mpi')
+    depends_on('mpi', when='+mpi')
     depends_on('nrnh5', when='@hdf')
     depends_on('hdf5', when='@hdf')
+    depends_on('zlib', when='@hdf')
     depends_on('cuda', when='+gpu')
-
     # optional dependencies
     depends_on('neurodamus@develop~compile', when='+neurodamusmod')
     depends_on('reportinglib', when='+report')
@@ -65,9 +65,6 @@ class Coreneuron(Package):
             if spec.satisfies('+mpi'):
                 options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
                                 '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
-            if spec.satisfies('@hdf'):
-                options.extend(['-DENABLE_ZLIB_LINK=ON'])
-
         return options
 
     def install(self, spec, prefix):
@@ -89,7 +86,11 @@ class Coreneuron(Package):
             if spec.satisfies('+report'):
                 options.extend(['-DENABLE_REPORTINGLIB:BOOL=ON'])
 
-            if spec.satisfies('~hdf5'):
+            if spec.satisfies('@hdf'):
+                options.extend(['-DENABLE_HDF5:BOOL=ON',
+                                '-DZLIB_ROOT=%s' % spec['zlib'].prefix,
+                                '-DENABLE_ZLIB_LINK:BOOL=ON'])
+            else:
                 options.extend(['-DENABLE_HDF5:BOOL=OFF'])
 
             if spec.satisfies('~mpi'):
@@ -131,3 +132,8 @@ class Coreneuron(Package):
             cmake('..', *options)
             make()
             make('install')
+
+    # for mvapich2 we or module need to setup following
+    # env variable to turn on multi-threading support
+    def setup_environment(self, spack_env, run_env):
+        run_env.set('MV2_ENABLE_AFFINITY', '0')

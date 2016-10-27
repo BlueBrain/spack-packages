@@ -23,12 +23,11 @@ class Nrnh5(Package):
     url      = "ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5"
 
     version('develop', git='ssh://bbpcode.epfl.ch/user/kumbhar/nrnh5')
-    variant('zlib', default=False, description="Link with Zlib")
 
     depends_on('cmake@2.8.12:', type='build')
-    depends_on('mpi@2.2:')
+    depends_on('mpi')
     depends_on('hdf5')
-    depends_on('zlib', when='+zlib')
+    depends_on('zlib')
 
     def get_arch_build_options(self, spec):
         options = []
@@ -52,17 +51,20 @@ class Nrnh5(Package):
 
             options.extend(self.get_arch_build_options(spec))
 
-            if spec.satisfies('+zlib'):
-                options.extend(['-DZLIB_ROOT=%s' % spec['zlib'].prefix,
-                                '-DENABLE_ZLIB_LINK:BOOL=ON'])
+            options.extend(['-DZLIB_ROOT=%s' % spec['zlib'].prefix,
+                            '-DENABLE_ZLIB_LINK:BOOL=ON'])
 
             cmake('..', *options)
             make()
             make('install')
 
-    # for convenience, set include path and library to link. this is
-    # just for convenience purpose for neuron build which doesn't use
-    # cmake to find package automatically
+    # As NEURON is using autotools, set include paths and library to link.
     def setup_dependent_package(self, module, dspec):
-        self.spec.include_path = '%s/nrnh5' % (self.spec.prefix.include)
-        self.spec.link_library = "-lnrnh5core"
+
+        inc_path = '-I%s/nrnh5 -I%s' % (self.spec.prefix.include, self.spec['hdf5'].prefix.include)
+        link_lib = '-L%s -lnrnh5core -L%s -lhdf5 -L%s -lz' % (
+                    self.spec.prefix.lib, self.spec['hdf5'].prefix.lib,
+                    self.spec['zlib'].prefix.lib)
+
+        self.spec.include_path =  inc_path
+        self.spec.link_library = link_lib

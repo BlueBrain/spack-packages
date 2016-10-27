@@ -34,15 +34,14 @@ class Neuron(Package):
 
     variant('mpi', default=True, description='Enable MPI parallelism')
     variant('python', default=True, description='Enable python')
-    variant('static', default=False, description='Build static libraries')
+    variant('static', default=True, description='Build static libraries')
     variant('cross-compile', default=False, description='Build for cross-compile environment')
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
-    depends_on('mpi@2.2:', when='+mpi')
+    depends_on('mpi', when='+mpi')
     depends_on("nrnh5", when='@hdf')
-    depends_on('hdf5', when='@hdf')
     depends_on('python@2.6:', when='+python')
     depends_on('neuron-nmodl', when='+cross-compile', type='build')
 
@@ -103,13 +102,12 @@ class Neuron(Package):
     def get_hdf5_options(self, spec):
         options = []
         if spec.satisfies('@hdf'):
-            compiler_flags = '-DCORENEURON_HDF5=1 -I%s -I%s' % (spec['nrnh5'].include_path, spec['hdf5'].prefix.include)
-            link_library = '%s -lhdf5' % (spec['nrnh5'].link_library)
-            ld_flags = '-L%s -L%s' % (spec['nrnh5'].prefix.lib, spec['hdf5'].prefix.lib)
+            compiler_flags = '-DCORENEURON_HDF5=1 %s' % spec['nrnh5'].include_path
+            link_library = '%s' % spec['nrnh5'].link_library
 
             options.extend(['CFLAGS=%s' % compiler_flags])
             options.extend(['CXXFLAGS=%s' % compiler_flags])
-            options.extend(['LIBS= %s %s' % (ld_flags, link_library)])
+            options.extend(['LIBS=%s' % link_library])
 
         return options
 
@@ -143,6 +141,17 @@ class Neuron(Package):
         else:
             return ['--without-paranrn']
 
+    def get_compiler_options(self, spec):
+        options =  []
+
+        #pgi has proble with compiling neuron in static mode
+        #even for static variant, build shared
+        if spec.satisfies('%pgi'):
+            options.extend(['CFLAGS=-fPIC',
+                            'CXXFLAGS=-fPIC',
+                            '--enable-shared'])
+        return options
+
     def get_configure_options(self, spec):
         options = []
 
@@ -159,6 +168,7 @@ class Neuron(Package):
         options.extend(self.get_mpi_options(spec))
         options.extend(self.get_python_options(spec))
         options.extend(self.get_hdf5_options(spec))
+        options.extend(self.get_compiler_options(spec))
         return options
 
     def install(self, spec, prefix):
