@@ -18,11 +18,14 @@ uninstall_package() {
     spack uninstall -y -f -d -a neuron-nmodl
 }
 
+##### EXTRA OPTIONS FOR INSTALL #####
+extra_opt="--log-format=junit --dirty"
+
 #### WE WILL INSTALL PYTHON AND HDF5 ONCE
-dependency_install() {
-    spack install --dirty hdf5 +mpi %gcc ^mvapich2
-    spack install --dirty hdf5 +mpi %intel ^intelmpi
-}
+#dependency_install() {
+#    spack install $extra_opt hdf5 +mpi %gcc ^mvapich2
+#    spack install $extra_opt hdf5 +mpi %intel ^intelmpi
+#}
 
 
 #### COMPILER TOOLCHAINS ####
@@ -38,43 +41,38 @@ spack reindex
 # uninstall all packages
 uninstall_package
 
-# uninstall hdf5 : not often!
-#spack uninstall -a -f -d -y hdf5
-
 #stop on error
 set -e
 
-dependency_install
-
 #packages without MPI dependency
-spack install --dirty mod2c@develop %intel
-spack install --dirty mod2c@github %intel
+spack install $extra_opt mod2c@develop %intel
+spack install $extra_opt mod2c@github %intel
 
-spack install --dirty mod2c@develop %gcc
-spack install --dirty mod2c@github %gcc
+spack install $extra_opt mod2c@develop %gcc
+spack install $extra_opt mod2c@github %gcc
 
-spack install --dirty mod2c@develop %pgi
-spack install --dirty mod2c@github %pgi
+spack install $extra_opt mod2c@develop %pgi
+spack install $extra_opt mod2c@github %pgi
 
 for compiler_mpi in "${compiler_with_mpi[@]}"
 do
     # we dont have hdf5 compiled with PGI
     if [[ $compiler_mpi != *"pgi"* ]]; then
-        spack install --dirty nrnh5@develop $compiler_mpi
-        spack install --dirty neuron@hdf +mpi $compiler_mpi
+        spack install $extra_opt nrnh5@develop $compiler_mpi
+        spack install $extra_opt neuron@hdf +mpi $compiler_mpi
     fi
 
-    spack install --dirty neuron@develop +mpi $compiler_mpi
-    spack install --dirty reportinglib $compiler_mpi
+    spack install $extra_opt neuron@develop +mpi $compiler_mpi
+    spack install $extra_opt reportinglib $compiler_mpi
 
     # we dont have hdf5 compiled with PGI
     if [[ $compiler_mpi != *"pgi"* ]]; then
-        spack install --dirty neurodamus@master +compile $compiler_mpi
-        spack install --dirty neurodamus@develop +compile $compiler_mpi
-        spack install --dirty neurodamus@hdf +compile $compiler_mpi
-        spack install --dirty coreneuron@hdf +mpi +report $compiler_mpi
+        spack install $extra_opt neurodamus@master +compile $compiler_mpi
+        spack install $extra_opt neurodamus@develop +compile $compiler_mpi
+        spack install $extra_opt neurodamus@hdf +compile $compiler_mpi
+        spack install $extra_opt coreneuron@hdf +mpi +report $compiler_mpi
     fi
 
-    spack install --dirty coreneuron@develop +mpi +report $compiler_mpi
-    spack install --dirty coreneuron@github +mpi +report $compiler_mpi
+    spack install $extra_opt coreneuron@develop +mpi +report $compiler_mpi
+    spack install $extra_opt coreneuron@github +mpi +report $compiler_mpi
 done

@@ -1,23 +1,5 @@
 compilers:
 - compiler:
-    modules: []
-    operating_system: redhat6
-    paths:
-      cc: /usr/bin/clang
-      cxx: /usr/bin/clang++
-      f77: null
-      fc: null
-    spec: clang@3.4.2
-- compiler:
-    modules: []
-    operating_system: redhat6
-    paths:
-      cc: /usr/lib64/ccache/gcc
-      cxx: /usr/lib64/ccache/g++
-      f77: /usr/bin/gfortran
-      fc: /usr/bin/gfortran
-    spec: gcc@4.4.7
-- compiler:
     modules: [intel/icomposer-2015.0.090]
     operating_system: redhat6
     paths:
@@ -43,6 +25,10 @@ compilers:
       cxx: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/g++
       f77: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
       fc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
+    #flags:
+    #  cflags: -O3 -g
+    #  cxxflags: -O3 -g
+    #  cppflags: -O3 -g
     spec: gcc@4.9.0
 - compiler:
     modules: []
