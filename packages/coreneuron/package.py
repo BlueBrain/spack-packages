@@ -70,7 +70,11 @@ class Coreneuron(Package):
         with working_dir(build_dir, create=True):
 
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                       '-DCOMPILE_LIBRARY_TYPE=STATIC']
+                       '-DCOMPILE_LIBRARY_TYPE=STATIC',
+                       '-DCMAKE_C_FLAGS=%s' % '-O2',
+                       '-DCMAKE_CXX_FLAGS=%s' % '-O2',
+                       '-DCMAKE_BUILD_TYPE=CUSTOM'
+                       ]
 
             if spec.satisfies('+tests'):
                 options.extend(['-DUNIT_TESTS:BOOL=ON',

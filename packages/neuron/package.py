@@ -103,7 +103,7 @@ class Neuron(Package):
     def get_hdf5_options(self, spec):
         options = []
         if spec.satisfies('@hdf'):
-            compiler_flags = '-DCORENEURON_HDF5=1 %s' % spec['nrnh5'].include_path
+            compiler_flags = '-O2 -DCORENEURON_HDF5=1 %s' % spec['nrnh5'].include_path
             link_library = '%s' % spec['nrnh5'].link_library
 
             options.extend(['CFLAGS=%s' % compiler_flags])
@@ -143,14 +143,17 @@ class Neuron(Package):
             return ['--without-paranrn']
 
     def get_compiler_options(self, spec):
-        options =  []
+        options = []
 
-        #pgi has proble with compiling neuron in static mode
-        #even for static variant, build shared
+        # pgi has proble with compiling neuron in static mode
+        # even for static variant, build shared
         if spec.satisfies('%pgi'):
-            options.extend(['CFLAGS=-fPIC',
-                            'CXXFLAGS=-fPIC',
+            options.extend(['CFLAGS=-fPIC -O2',
+                            'CXXFLAGS=-fPIC -O2',
                             '--enable-shared'])
+        else:
+            options.extend(['CFLAGS=-O2', 'CXXFLAGS=-O2'])
+
         return options
 
     def get_configure_options(self, spec):
