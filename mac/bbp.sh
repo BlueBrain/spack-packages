@@ -14,18 +14,20 @@ dev_packages=(
 
     'reportinglib'
 
-    'neurodamus@master'
-    'neurodamus@develop'
     'neurodamus@hdf'
+    'neurodamus@develop'
+    'neurodamus@master'
 
     'coreneuron@develop'
     'coreneuron@github'
     'coreneuron@hdf'
+    'neuronperfmodels'
+    'coreneuron@perfmodels'
 )
 
 compilers=(
-    '%clang'
     '%gcc'
+    '%clang'
 )
 
 ##### UNINSTALL PACKAGE #####

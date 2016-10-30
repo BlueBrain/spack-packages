@@ -3,35 +3,18 @@ compilers:
     modules: []
     operating_system: elcapitan
     paths:
-      cc: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-      cxx: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
-      f77: null
-      fc: null
-    spec: clang@7.3.0-apple
-- compiler:
-    modules: []
-    operating_system: elcapitan
-    paths:
-      cc: /usr/bin/gcc
-      cxx: /usr/bin/g++
-      f77: null
-      fc: null
-    spec: gcc@4.2.1
-- compiler:
-    modules: []
-    operating_system: elcapitan
-    paths:
-      cc: /usr/local/Cellar/llvm/3.9.0/bin/clang
-      cxx: /usr/local/Cellar/llvm/3.9.0/bin/clang++
+      cc: /usr/local/bin/clang
+      cxx: /usr/local/bin/clang++
       f77: null
       fc: null
     spec: clang@3.9.0
 - compiler:
+    flags: {}
     modules: []
     operating_system: elcapitan
     paths:
-      cc: /usr/local/bin/gcc-4.9
-      cxx: /usr/local/bin/g++-4.9
-      f77: /usr/local/bin/gfortran-4.9
-      fc: /usr/local/bin/gfortran-4.9
+      cc: /usr/local/bin/gcc
+      cxx: /usr/local/bin/g++
+      f77: /usr/local/bin/gfortran
+      fc: /usr/local/bin/gfortran
     spec: gcc@4.9.3
