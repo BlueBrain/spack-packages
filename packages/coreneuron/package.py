@@ -26,22 +26,16 @@ class Coreneuron(Package):
     homepage = "https://github.com/BlueBrain/CoreNeuron"
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
-            preferred=True)
-    version('github', git='https://github.com/BlueBrain/CoreNeuron.git')
-    version('hdf', git='ssh://bbpcode.epfl.ch/sim/coreneuron',
-            branch='sandbox/kumbhar/nrnh5')
+    version('develop',    git='ssh://bbpcode.epfl.ch/sim/coreneuron', preferred=True)
+    version('github',     git='https://github.com/BlueBrain/CoreNeuron.git')
+    version('hdf',        git='ssh://bbpcode.epfl.ch/sim/coreneuron', branch='sandbox/kumbhar/nrnh5')
+    version('perfmodels', git='ssh://bbpcode.epfl.ch/sim/coreneuron')
 
-    variant('mpi', default=True,
-            description="Enable MPI support")
-    variant('neurodamusmod', default=True,
-            description="Build only MOD files from Neurodamus")
-    variant('report', default=True,
-            description="Enable soma/compartment report using ReportingLib")
-    variant('tests', default=False,
-            description="Enable building tests")
-    variant('gpu', default=False,
-            description="Enable GPU build")
+    variant('mpi',           default=True,  description="Enable MPI support")
+    variant('neurodamusmod', default=True,  description="Build only MOD files from Neurodamus")
+    variant('report',        default=True,  description="Enable soma/compartment report using ReportingLib")
+    variant('tests',         default=False, description="Enable building tests")
+    variant('gpu',           default=False, description="Enable GPU build")
 
     # mandatory dependencies
     depends_on('mod2c', type='build')
@@ -52,8 +46,10 @@ class Coreneuron(Package):
     depends_on('hdf5', when='@hdf')
     depends_on('zlib', when='@hdf')
     depends_on('cuda', when='+gpu')
+
     # optional dependencies
     depends_on('neurodamus@develop~compile', when='+neurodamusmod')
+    depends_on('neuronperfmodels', when='@perfmodels')
     depends_on('reportinglib', when='+report')
     depends_on('boost', when='+tests')
 
@@ -103,8 +99,8 @@ class Coreneuron(Package):
                                 '-DENABLE_SELECTIVE_GPU_PROFILING=ON',
                                 '-DENABLE_OPENACC=ON',
                                 '-DENABLE_OPENACC_INFO=ON'])
-                #PGI compiler not able to compile nrnreport.cpp when enabled
-                #OpenMP, OpenACC and Reporting. Disable ReportingLib
+                # PGI compiler not able to compile nrnreport.cpp when enabled
+                # OpenMP, OpenACC and Reporting. Disable ReportingLib
                 options.extend(['-DENABLE_REPORTINGLIB:BOOL=OFF'])
 
             mech_set = False
@@ -116,7 +112,10 @@ class Coreneuron(Package):
                 if not os.path.isdir(modlib_dir):
                     raise RuntimeError("MOD_FILE_DIR environment variable set but directory doesn't exist!")
 
-            if spec.satisfies('+neurodamusmod'):
+            if spec.satisfies('@perfmodels'):
+                modlib_dir = self.nrnperf_modfiles
+                mech_set = True
+            elif spec.satisfies('+neurodamusmod'):
                 neurodamus_dir = self.spec['neurodamus'].prefix
                 modlib_dir = '%s;%s/lib/modlib' % (modlib_dir, neurodamus_dir)
                 modfile_list = '%s/lib/modlib/coreneuron_modlist.txt' % (neurodamus_dir)
@@ -133,7 +132,10 @@ class Coreneuron(Package):
             make()
             make('install')
 
-    # for mvapich2 we or module need to setup following
-    # env variable to turn on multi-threading support
     def setup_environment(self, spack_env, run_env):
+        exe = '%s/coreneuron_exec' % self.prefix.bin
+        run_env.set('CORENEURON_EXE', exe)
+
+        # for mvapich2 module we need to setup MV2_ENABLE_AFFINITY
+        # env variable to turn on multi-threading support
         run_env.set('MV2_ENABLE_AFFINITY', '0')

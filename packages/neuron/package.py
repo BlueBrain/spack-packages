@@ -15,6 +15,7 @@
 from spack import *
 import os
 import sys
+import shutil
 
 
 class Neuron(Package):
@@ -194,6 +195,14 @@ class Neuron(Package):
             make()
             make('install')
 
+            # some models for performance benchmarking need exp2syn.mod.
+            # lets copy that to separate directory so that later packages
+            # could use this file instead of separate copy in their repos
+            modir = '%s/mod' % prefix
+            os.mkdir(modir)
+            exp2syn = '%s/src/nrnoc/exp2syn.mod' % source_directory
+            shutil.copy(exp2syn, modir)
+
     def setup_environment(self, spack_env, run_env):
         arch = self.get_neuron_arch_dir()
         run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
@@ -205,3 +214,4 @@ class Neuron(Package):
     def setup_dependent_package(self, module, dspec):
         arch = self.get_neuron_arch_dir()
         dspec.package.archdir = arch
+        os.environ['NEURON_ARCH_DIR'] = str(arch)
