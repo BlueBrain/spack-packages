@@ -16,6 +16,7 @@ uninstall_package() {
     spack uninstall -y -f -d -a reportinglib
     spack uninstall -y -f -d -a neurodamus
     spack uninstall -y -f -d -a neuron-nmodl
+    spack uninstall -y -f -d -a neuronperfmodels
 }
 
 ##### EXTRA OPTIONS FOR INSTALL #####
@@ -41,6 +42,9 @@ spack reindex
 # uninstall all packages
 uninstall_package
 
+#remove stages / downloads
+spack purge -s -d
+
 #stop on error
 set -e
 
@@ -56,6 +60,10 @@ spack install $extra_opt mod2c@github %pgi
 
 for compiler_mpi in "${compiler_with_mpi[@]}"
 do
+
+    # remove previous stages/downloads from different compilers
+    spack purge -s -d
+
     # we dont have hdf5 compiled with PGI
     if [[ $compiler_mpi != *"pgi"* ]]; then
         spack install $extra_opt nrnh5@develop $compiler_mpi
@@ -75,4 +83,6 @@ do
 
     spack install $extra_opt coreneuron@develop +mpi +report $compiler_mpi
     spack install $extra_opt coreneuron@github +mpi +report $compiler_mpi
+    spack install $extra_opt neuronperfmodels $compiler_mpi
+    spack install $extra_opt coreneuron@perfmodels +mpi +report $compiler_mpi
 done
