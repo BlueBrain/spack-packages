@@ -26,11 +26,12 @@ class Neuronperfmodels(Package):
     homepage = "ssh://bbpcode.epfl.ch/user/kumbhar/nrnperfmodels"
     url      = "ssh://bbpcode.epfl.ch/user/kumbhar/nrnperfmodels"
 
-    version('1.0', git='ssh://bbpcode.epfl.ch/user/kumbhar/nrnperfmodels', submodules=True)
+    version('1.0', git=url, submodules=True, preferred=True)
+    version('modfiles', git=url, submodules=True)
 
-    depends_on('reportinglib')
-    depends_on("neuron")
-    depends_on("hdf5")
+    depends_on('reportinglib',  when="@1.0:")
+    depends_on("neuron", when="@1.0:")
+    depends_on("hdf5", when="@1.0:")
 
     def arch_specific_flags(self):
         flags = ''
@@ -122,45 +123,45 @@ class Neuronperfmodels(Package):
                         continue
                     shutil.copy(filepath, path)
 
-    def build_single_exec(self, spec, prefix):
+    def build_single_exec(self, spec, prefix, modpath):
         with working_dir(prefix):
-            modpath = 'modfiles'
-            self.copy_compatible_mod_files(spec, modpath)
             incflags, ldflags = self.neurodamus_flags(spec)
             cflags = '%s %s' % (incflags, self.arch_specific_flags())
             self.create_special(cflags, ldflags, modpath)
 
-            # for coreneuron, we need exp2syn.mod file from NEURON
-            ex2syn = '%s/mod/exp2syn.mod' % spec['neuron'].prefix
-            shutil.copy(ex2syn, modpath)
-
     def install(self, spec, prefix):
-        self.build_neurodamus(spec, prefix)
-        self.build_nrntraub(spec, prefix)
-        self.build_dentate(spec, prefix)
-        self.build_ringtest(spec, prefix)
-        self.build_tqperf(spec, prefix)
-        self.build_single_exec(spec, prefix)
+        with working_dir(prefix):
+            modpath = 'modfiles'
+            self.copy_compatible_mod_files(spec, modpath)
+
+            if self.spec.satisfies('@1.0:'):
+                self.build_single_exec(spec, prefix, modpath)
+                self.build_neurodamus(spec, prefix)
+                self.build_nrntraub(spec, prefix)
+                self.build_dentate(spec, prefix)
+                self.build_ringtest(spec, prefix)
+                self.build_tqperf(spec, prefix)
 
     def setup_environment(self, spack_env, run_env):
-        archdir = os.environ['NEURON_ARCH_DIR']
         prefix = self.prefix
-
-        neurodamus_exe = '%s/neurodamus/lib/%s/special' % (prefix, archdir)
-        nrntraub_exe = '%s/nrntraub/%s/special' % (prefix, archdir)
-        dentate_exe = '%s/reduced_dentate/%s/special' % (prefix, archdir)
-        ringtest_exe = '%s/%s/bin/nrniv' % (self.spec['neuron'].prefix, archdir)
-        tqperf_exe = '%s/tqperf/%s/special' % (prefix, archdir)
-        nrnperf_exe = '%s/%s/special' % (prefix, archdir)
         modfiles = '%s/modfiles' % prefix
-
-        run_env.set('NEURODAMUS_EXE', neurodamus_exe)
-        run_env.set('TRAUB_EXE', nrntraub_exe)
-        run_env.set('DENTATE_EXE', dentate_exe)
-        run_env.set('RINGTEST_EXE', ringtest_exe)
-        run_env.set('TQPERF_EXE', tqperf_exe)
-        run_env.set('NRNPERF_EXE', nrnperf_exe)
         run_env.set('NRNPERF_MODFILES', modfiles)
+
+        if self.spec.satisfies('@1.0:'):
+            archdir = os.environ['NEURON_ARCH_DIR']
+            neurodamus_exe = '%s/neurodamus/lib/%s/special' % (prefix, archdir)
+            nrntraub_exe = '%s/nrntraub/%s/special' % (prefix, archdir)
+            dentate_exe = '%s/reduced_dentate/%s/special' % (prefix, archdir)
+            ringtest_exe = '%s/%s/bin/nrniv' % (self.spec['neuron'].prefix, archdir)
+            tqperf_exe = '%s/tqperf/%s/special' % (prefix, archdir)
+            nrnperf_exe = '%s/%s/special' % (prefix, archdir)
+
+            run_env.set('NEURODAMUS_EXE', neurodamus_exe)
+            run_env.set('TRAUB_EXE', nrntraub_exe)
+            run_env.set('DENTATE_EXE', dentate_exe)
+            run_env.set('RINGTEST_EXE', ringtest_exe)
+            run_env.set('TQPERF_EXE', tqperf_exe)
+            run_env.set('NRNPERF_EXE', nrnperf_exe)
 
     def setup_dependent_package(self, module, dspec):
         dspec.package.nrnperf_modfiles = '%s/modfiles' % self.prefix

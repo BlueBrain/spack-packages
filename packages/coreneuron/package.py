@@ -25,15 +25,16 @@ class Coreneuron(Package):
 
     homepage = "https://github.com/BlueBrain/CoreNeuron"
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
+    github_url = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop',    git='ssh://bbpcode.epfl.ch/sim/coreneuron', preferred=True)
-    version('github',     git='https://github.com/BlueBrain/CoreNeuron.git')
-    version('hdf',        git='ssh://bbpcode.epfl.ch/sim/coreneuron', branch='sandbox/kumbhar/nrnh5')
-    version('perfmodels', git='ssh://bbpcode.epfl.ch/sim/coreneuron')
+    version('develop',    git=url, preferred=True)
+    version('github',     git=github_url)
+    version('hdf',        git=url, branch='sandbox/kumbhar/nrnh5')
+    version('perfmodels', git=url)
 
     variant('mpi',           default=True,  description="Enable MPI support")
     variant('neurodamusmod', default=True,  description="Build only MOD files from Neurodamus")
-    variant('report',        default=True,  description="Enable soma/compartment report using ReportingLib")
+    variant('report',        default=True,  description="Enable reports using ReportingLib")
     variant('tests',         default=False, description="Enable building tests")
     variant('gpu',           default=False, description="Enable GPU build")
 
@@ -49,7 +50,7 @@ class Coreneuron(Package):
 
     # optional dependencies
     depends_on('neurodamus@develop~compile', when='+neurodamusmod')
-    depends_on('neuronperfmodels', when='@perfmodels')
+    depends_on('neuronperfmodels@modfiles', when='@perfmodels')
     depends_on('reportinglib', when='+report')
     depends_on('boost', when='+tests')
 

@@ -25,11 +25,9 @@ class Neurodamus(Package):
     homepage = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
 
-    version('master', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp')
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
-            branch='coreneuronsetup')
-    version('hdf', git='ssh://bbpcode.epfl.ch/sim/neurodamus/bbp',
-            branch='sandbox/kumbhar/corebluron_h5')
+    version('master',  git=url)
+    version('develop', git=url, branch='coreneuronsetup')
+    version('hdf',     git=url, branch='sandbox/kumbhar/corebluron_h5')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
 
