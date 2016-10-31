@@ -32,6 +32,7 @@ class Neuronperfmodels(Package):
     depends_on('reportinglib',  when="@1.0:")
     depends_on("neuron", when="@1.0:")
     depends_on("hdf5", when="@1.0:")
+    depends_on("mpi")
 
     def arch_specific_flags(self):
         flags = ''
@@ -64,6 +65,12 @@ class Neuronperfmodels(Package):
         self.check_install()
 
     def build_neurodamus(self, spec, prefix):
+
+        # skip installation if pgi compiler is used
+        if spec.satisfies('%pgi'):
+            print "INFO : Skipping neurodamus build with PGI!"
+            return
+
         src = '%s/neurodamus/lib' % self.stage.source_path
         dest = '%s/neurodamus/lib' % prefix
         install_tree(src, dest, symlinks=False)

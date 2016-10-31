@@ -28,6 +28,7 @@ class Neurodamus(Package):
     version('master',  git=url)
     version('develop', git=url, branch='coreneuronsetup')
     version('hdf',     git=url, branch='sandbox/kumbhar/corebluron_h5')
+    version('gpu',     git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
 
@@ -35,7 +36,7 @@ class Neurodamus(Package):
     depends_on("neuron", when='+compile')
     depends_on("neuron@hdf", when='@hdf+compile')
     depends_on('reportinglib', when='+compile')
-
+    depends_on("mpi", when='+compile')
 
     def install(self, spec, prefix):
 
