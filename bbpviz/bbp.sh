@@ -30,11 +30,17 @@ extra_opt="--log-format=junit --dirty"
 
 
 #### COMPILER TOOLCHAINS ####
-compiler_with_mpi=(
-    '%pgi ^mpich'
-    '%gcc ^mvapich2'
-    '%intel ^intelmpi'
+compilers=(
+    "pgi"
+    "gcc"
+    "intel"
 )
+
+declare -A mpi
+
+mpi["pgi"]="mpich"
+mpi["gcc"]="mvapich2"
+mpi["intel"]="intelmpi"
 
 #in case there are inconsistencies
 spack reindex
@@ -42,47 +48,36 @@ spack reindex
 # uninstall all packages
 uninstall_package
 
-#remove stages / downloads
-spack purge -s -d
-
 #stop on error
 set -e
 
-#packages without MPI dependency
-spack install $extra_opt mod2c@develop %intel
-spack install $extra_opt mod2c@github %intel
-
-spack install $extra_opt mod2c@develop %gcc
-spack install $extra_opt mod2c@github %gcc
-
-spack install $extra_opt mod2c@develop %pgi
-spack install $extra_opt mod2c@github %pgi
-
-for compiler_mpi in "${compiler_with_mpi[@]}"
+for compiler in "${compilers[@]}"
 do
-
     # remove previous stages/downloads from different compilers
     spack purge -s -d
 
-    # we dont have hdf5 compiled with PGI
-    if [[ $compiler_mpi != *"pgi"* ]]; then
-        spack install $extra_opt nrnh5@develop $compiler_mpi
-        spack install $extra_opt neuron@hdf +mpi $compiler_mpi
-    fi
-
-    spack install $extra_opt neuron@develop +mpi $compiler_mpi
-    spack install $extra_opt reportinglib $compiler_mpi
+    spack install $extra_opt mod2c@develop %$compiler
+    spack install $extra_opt mod2c@github  %$compiler
 
     # we dont have hdf5 compiled with PGI
-    if [[ $compiler_mpi != *"pgi"* ]]; then
-        spack install $extra_opt neurodamus@master +compile $compiler_mpi
-        spack install $extra_opt neurodamus@develop +compile $compiler_mpi
-        spack install $extra_opt neurodamus@hdf +compile $compiler_mpi
-        spack install $extra_opt coreneuron@hdf +mpi +report $compiler_mpi
+    if [[ $compiler != *"pgi"* ]]; then
+        spack install $extra_opt nrnh5@develop %$compiler ^${mpi[$compiler]}
+        spack install $extra_opt neuron@hdf +mpi %$compiler ^${mpi[$compiler]}
     fi
 
-    spack install $extra_opt coreneuron@develop +mpi +report $compiler_mpi
-    spack install $extra_opt coreneuron@github +mpi +report $compiler_mpi
-    spack install $extra_opt neuronperfmodels $compiler_mpi
-    spack install $extra_opt coreneuron@perfmodels +mpi +report $compiler_mpi
+    spack install $extra_opt neuron@develop +mpi %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt reportinglib %$compiler ^${mpi[$compiler]}
+
+    # we dont have hdf5 compiled with PGI
+    if [[ $compiler != *"pgi"* ]]; then
+        spack install $extra_opt neurodamus@master +compile %$compiler ^${mpi[$compiler]}
+        spack install $extra_opt neurodamus@develop +compile %$compiler ^${mpi[$compiler]}
+        spack install $extra_opt neurodamus@hdf +compile %$compiler ^${mpi[$compiler]}
+        spack install $extra_opt coreneuron@hdf +mpi +report %$compiler ^${mpi[$compiler]}
+    fi
+
+    spack install $extra_opt coreneuron@develop +mpi +report %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt coreneuron@github +mpi +report %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt neuronperfmodels@neuron %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt coreneuron@perfmodels +mpi +report %$compiler ^${mpi[$compiler]}
 done
