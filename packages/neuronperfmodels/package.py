@@ -32,6 +32,7 @@ class Neuronperfmodels(Package):
     depends_on('reportinglib',  when='@neuron')
     depends_on('neuron', when='@neuron')
     depends_on('hdf5', when='@neuron')
+    depends_on('mpi', when='@neuron')
     depends_on('cmake', when='@neuron', type='build')
 
     def patch(self):

@@ -51,7 +51,7 @@ class Coreneuron(Package):
     # optional dependencies
     depends_on('neurodamus@develop~compile', when='+neurodamusmod~gpu')
     depends_on('neurodamus@gpu~compile', when='+gpu')
-    depends_on('neuronperfmodels@modfiles', when='@perfmodels')
+    depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
     depends_on('reportinglib', when='+report')
     depends_on('boost', when='+tests')
 
