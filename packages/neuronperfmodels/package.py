@@ -26,17 +26,21 @@ class Neuronperfmodels(Package):
     homepage = "ssh://bbpcode.epfl.ch/user/kumbhar/nrnperfmodels"
     url      = "ssh://bbpcode.epfl.ch/user/kumbhar/nrnperfmodels"
 
-    version('1.0', git=url, submodules=True, preferred=True)
-    version('modfiles', git=url, submodules=True)
+    version('neuron', git=url, submodules=True, preferred=True)
+    version('coreneuron', git=url, submodules=True)
 
-    depends_on('reportinglib',  when="@1.0:")
-    depends_on("neuron", when="@1.0:")
-    depends_on("hdf5", when="@1.0:")
-    depends_on("mpi")
+    depends_on('reportinglib',  when='@neuron')
+    depends_on('neuron', when='@neuron')
+    depends_on('hdf5', when='@neuron')
+    depends_on('cmake', when='@neuron', type='build')
+
+    def patch(self):
+        # incorrect stimulus in BlueConfig for bbp testdata
+        filter_file(r'StimulusInject pInj', r'#StimulusInject pInj',
+                    'TestData/circuitBuilding_1000neurons/BlueConfig.in')
 
     def arch_specific_flags(self):
         flags = ''
-
         # on os-x there is no mallinfo
         if(sys.platform == 'darwin'):
             flags += ' -DDISABLE_MALLINFO'
@@ -65,7 +69,6 @@ class Neuronperfmodels(Package):
         self.check_install()
 
     def build_neurodamus(self, spec, prefix):
-
         # skip installation if pgi compiler is used
         if spec.satisfies('%pgi'):
             print "INFO : Skipping neurodamus build with PGI!"
@@ -136,26 +139,42 @@ class Neuronperfmodels(Package):
             cflags = '%s %s' % (incflags, self.arch_specific_flags())
             self.create_special(cflags, ldflags, modpath)
 
+    def build_bbptestdata(self, spec, prefix):
+        src = '%s/TestData' % self.stage.source_path
+        dest = '%s/bbptestdata' % prefix
+        install_tree(src, dest, symlinks=False)
+        build_dir = '%s/build' % dest
+        with working_dir(build_dir, create=True):
+            # as we are moving repository, .git file points to invalid
+            # directory somehow. fix this.
+            os.remove('../.git')
+            cmake('..')
+            blueconfig = 'circuitBuilding_1000neurons/BlueConfig'
+            shutil.copy(blueconfig, '../')
+
     def install(self, spec, prefix):
         with working_dir(prefix):
             modpath = 'modfiles'
             self.copy_compatible_mod_files(spec, modpath)
 
-            if self.spec.satisfies('@1.0:'):
+            if self.spec.satisfies('@neuron'):
                 self.build_single_exec(spec, prefix, modpath)
                 self.build_neurodamus(spec, prefix)
                 self.build_nrntraub(spec, prefix)
                 self.build_dentate(spec, prefix)
                 self.build_ringtest(spec, prefix)
                 self.build_tqperf(spec, prefix)
+                self.build_bbptestdata(spec, prefix)
 
     def setup_environment(self, spack_env, run_env):
         prefix = self.prefix
         modfiles = '%s/modfiles' % prefix
         run_env.set('NRNPERF_MODFILES', modfiles)
+        run_env.set('NRNPERF_HOME', prefix)
 
-        if self.spec.satisfies('@1.0:'):
+        if self.spec.satisfies('@neuron'):
             archdir = os.environ['NEURON_ARCH_DIR']
+            blueconfig = '%s/bbptestdata/BlueConfig' % prefix
             neurodamus_exe = '%s/neurodamus/lib/%s/special' % (prefix, archdir)
             nrntraub_exe = '%s/nrntraub/%s/special' % (prefix, archdir)
             dentate_exe = '%s/reduced_dentate/%s/special' % (prefix, archdir)
@@ -169,6 +188,7 @@ class Neuronperfmodels(Package):
             run_env.set('RINGTEST_EXE', ringtest_exe)
             run_env.set('TQPERF_EXE', tqperf_exe)
             run_env.set('NRNPERF_EXE', nrnperf_exe)
+            run_env.set('BLUECONFIG', blueconfig)
 
     def setup_dependent_package(self, module, dspec):
         dspec.package.nrnperf_modfiles = '%s/modfiles' % self.prefix
