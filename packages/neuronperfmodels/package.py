@@ -149,7 +149,7 @@ class Neuronperfmodels(Package):
         with working_dir(build_dir, create=True):
             # as we are moving repository, .git file points to invalid
             # directory somehow. fix this.
-            os.remove('../.git')
+            shutil.rmtree('../.git')
 
             # Eyescale CMake doesn't support PGI compiler
             # As we dont compile anything here, just use system gcc/g++

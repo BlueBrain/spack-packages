@@ -180,8 +180,8 @@ class Neuron(Package):
         options = ['--prefix=%s' % prefix,
                    '--without-iv',
                    '--disable-rx3d',
-                   'CC=%s' % self.compiler.cc,
-                   'CXX=%s' % self.compiler.cxx]
+                   'CC=%s' % spack_cc,
+                   'CXX=%s' % spack_cxx]
 
         options.extend(self.get_configure_options(spec))
         build = Executable('./build.sh')
