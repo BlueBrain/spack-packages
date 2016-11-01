@@ -23,15 +23,9 @@ class Neuron(Package):
     """NEURON simulation environment"""
 
     homepage = "https://www.neuron.yale.edu/"
-    url      = "http://www.neuron.yale.edu/ftp/neuron/versions/v7.4/nrn-7.4.tar.gz"
-    list_url = "http://www.neuron.yale.edu/ftp/neuron/versions/"
-    list_depth = 2
 
-    # version('develop', git='https://github.com/nrnhines/nrn.git', preferred=True)
-    version('develop', git='https://github.com/nrnhines/nrn.git',
-            preferred=True)
-    version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron',
-            branch='bbpcode_trunk')
+    version('develop', git='https://github.com/nrnhines/nrn.git', preferred=True)
+    version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
 
     variant('mpi', default=True, description='Enable MPI parallelism')
     variant('python', default=True, description='Enable python')
@@ -44,7 +38,6 @@ class Neuron(Package):
     depends_on('mpi', when='+mpi')
     depends_on("nrnh5", when='@hdf')
     depends_on('python@2.6:', when='+python')
-    depends_on('neuron-nmodl', when='+cross-compile', type='build')
 
     # on osx platform, pkg-config can't be built without clang
     depends_on('pkg-config', type='build', when=sys.platform != 'darwin')
@@ -85,19 +78,7 @@ class Neuron(Package):
             arch = 'powerpc64'
         if 'cray' in self.spec.architecture:
             arch = 'x86_64'
-
         return arch
-
-    def pre_make(self, spec):
-        if spec.satisfies('+cross-compile'):
-            nocmodl_prefix = spec['neuron-nmodl'].prefix
-            sub_dir = self.get_neuron_arch_dir()
-            src_nocmodl = '%s/%s/bin/nocmodl' % (nocmodl_prefix, sub_dir)
-            dest_nrn_dir = '%s/src/nmodl/' % os.getcwd()
-            dest_prefix_dir = '%s/%s/bin/' % (spec.prefix, sub_dir)
-            install(src_nocmodl, dest_nrn_dir)
-            mkdirp(dest_prefix_dir)
-            install(src_nocmodl, dest_prefix_dir)
 
     # options for hdf5 branch
     def get_hdf5_options(self, spec):
@@ -109,7 +90,6 @@ class Neuron(Package):
             options.extend(['CFLAGS=%s' % compiler_flags])
             options.extend(['CXXFLAGS=%s' % compiler_flags])
             options.extend(['LIBS=%s' % link_library])
-
         return options
 
     def get_python_options(self, spec):
@@ -125,13 +105,10 @@ class Neuron(Package):
             if spec.satisfies('+cross-compile'):
                 py_lib = spec['python'].prefix.lib64
 
-                options.extend(['PYINCDIR=%s/include/%s' %
-                                (py_prefix, py_version_string),
-                                'PYLIB=-L%s -l%s' %
-                                (py_lib, py_version_string),
+                options.extend(['PYINCDIR=%s/include/%s' % (py_prefix, py_version_string),
+                                'PYLIB=-L%s -l%s' % (py_lib, py_version_string),
                                 'PYLIBDIR=%s' % py_lib,
-                                'PYLIBLINK=-L%s -l%s' %
-                                (py_lib, py_version_string)])
+                                'PYLIBLINK=-L%s -l%s' % (py_lib, py_version_string)])
         else:
             options.extend(['--without-nrnpython'])
         return options
@@ -175,6 +152,25 @@ class Neuron(Package):
         options.extend(self.get_compiler_options(spec))
         return options
 
+    def build_nmodl(self, spec, prefix):
+
+        # on cray and bg-q, gcc and g++ are for front-end
+        # so it's safe to use those for nocmodl compilation
+        gcc = which("gcc")
+        gplusplus = which("g++")
+
+        options = ['--prefix=%s' % prefix,
+                   '--with-nmodl-only',
+                   '--without-x',
+                   'CC=%s' % gcc,
+                   'CXX=%s' % gplusplus]
+
+        source = self.stage.source_path
+        configure = Executable(join_path(source, 'configure'))
+        configure(*options)
+        make()
+        make('install')
+
     def install(self, spec, prefix):
 
         options = ['--prefix=%s' % prefix,
@@ -187,14 +183,16 @@ class Neuron(Package):
         build = Executable('./build.sh')
         build()
 
-        self.pre_make(spec)
-
         build_dir = "spack-build-%s" % spec.version
 
         with working_dir(build_dir, create=True):
+
+            if spec.satisfies('+cross-compile'):
+                self.build_nmodl(spec, prefix)
+
             source_directory = self.stage.source_path
-            config = Executable(join_path(source_directory, 'configure'))
-            config(*options)
+            configure = Executable(join_path(source_directory, 'configure'))
+            configure(*options)
             make()
             make('install')
 
