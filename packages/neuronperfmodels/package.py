@@ -145,11 +145,20 @@ class Neuronperfmodels(Package):
         dest = '%s/bbptestdata' % prefix
         install_tree(src, dest, symlinks=False)
         build_dir = '%s/build' % dest
+
         with working_dir(build_dir, create=True):
             # as we are moving repository, .git file points to invalid
             # directory somehow. fix this.
             os.remove('../.git')
-            cmake('..')
+
+            # Eyescale CMake doesn't support PGI compiler
+            # As we dont compile anything here, just use system gcc/g++
+            gcc = which("gcc")
+            gplusplus = which("g++")
+            options = ['-DCMAKE_C_COMPILER=%s' % gcc,
+                       '-DCMAKE_CXX_COMPILER=%s' % gplusplus]
+
+            cmake('..', *options)
             blueconfig = 'circuitBuilding_1000neurons/BlueConfig'
             shutil.copy(blueconfig, '../')
 
