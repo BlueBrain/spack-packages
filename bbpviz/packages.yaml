@@ -33,11 +33,6 @@ packages:
             libtool@system: /usr
         buildable: False
         version: [system]
-    tcl:
-        paths:
-            tcl@8.5: /usr
-        version: [8.5]
-        buildable: False
     python:
         paths:
             python@2.6.6: /usr
@@ -55,18 +50,18 @@ packages:
         version: [3.2]
     hdf5:
         paths:
-            hdf5@1.10.0%gcc@4.4.7: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-gcc
+            hdf5@1.10.0%gcc@4.9.3: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-gcc
             hdf5@1.10.0%intel@17.0.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-icc
         variants: ~fortran ~shared ~cxx
         buildable: False
         version: [1.10.0]
     zlib:
         paths:
-            zlib@1.2.8%gcc@4.4.7: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-gcc
+            zlib@1.2.8%gcc@4.9.3: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-gcc
             zlib@1.2.8%intel@17.0.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-icc
         buildable: False
         version: [1.2.8]
     all:
-        compiler: [gcc/4.4.7, intel@17.0.0]
+        compiler: [gcc/4.9.3, intel@17.0.0]
         providers:
             mpi: [mvapich2, intelmpi, mpich]

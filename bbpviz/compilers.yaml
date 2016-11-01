@@ -34,8 +34,8 @@ compilers:
     modules: []
     operating_system: redhat6
     paths:
-      cc: /usr/bin/gcc
-      cxx: /usr/bin/g++
-      f77: /usr/bin/gfortran
-      fc: /usr/bin/gfortran
-    spec: gcc@4.4.7
+      cc: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/g++
+      f77: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/gfortran
+    spec: gcc@4.9.3
