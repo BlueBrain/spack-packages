@@ -35,11 +35,6 @@ class Neuronperfmodels(Package):
     depends_on('mpi', when='@neuron')
     depends_on('cmake', when='@neuron', type='build')
 
-    def patch(self):
-        # incorrect stimulus in BlueConfig for bbp testdata
-        filter_file(r'StimulusInject pInj', r'#StimulusInject pInj',
-                    'TestData/circuitBuilding_1000neurons/BlueConfig.in')
-
     def arch_specific_flags(self):
         flags = ''
         # on os-x there is no mallinfo
@@ -140,25 +135,14 @@ class Neuronperfmodels(Package):
             cflags = '%s %s' % (incflags, self.arch_specific_flags())
             self.create_special(cflags, ldflags, modpath)
 
-    def build_bbptestdata(self, spec, prefix):
-        src = '%s/TestData' % self.stage.source_path
-        dest = '%s/bbptestdata' % prefix
+    def build_bbp_simtestdata(self, spec, prefix):
+        src = '%s/simtestdata' % self.stage.source_path
+        dest = '%s/simtestdata' % prefix
         install_tree(src, dest, symlinks=False)
         build_dir = '%s/build' % dest
 
         with working_dir(build_dir, create=True):
-            # as we are moving repository, .git file points to invalid
-            # directory somehow. fix this.
-            shutil.rmtree('../.git')
-
-            # Eyescale CMake doesn't support PGI compiler
-            # As we dont compile anything here, just use system gcc/g++
-            gcc = which("gcc")
-            gplusplus = which("g++")
-            options = ['-DCMAKE_C_COMPILER=%s' % gcc,
-                       '-DCMAKE_CXX_COMPILER=%s' % gplusplus]
-
-            cmake('..', *options)
+            cmake('..')
             blueconfig = 'circuitBuilding_1000neurons/BlueConfig'
             shutil.copy(blueconfig, '../')
 
@@ -174,7 +158,7 @@ class Neuronperfmodels(Package):
                 self.build_dentate(spec, prefix)
                 self.build_ringtest(spec, prefix)
                 self.build_tqperf(spec, prefix)
-                self.build_bbptestdata(spec, prefix)
+                self.build_bbp_simtestdata(spec, prefix)
 
     def setup_environment(self, spack_env, run_env):
         prefix = self.prefix
@@ -184,7 +168,7 @@ class Neuronperfmodels(Package):
 
         if self.spec.satisfies('@neuron'):
             archdir = os.environ['NEURON_ARCH_DIR']
-            blueconfig = '%s/bbptestdata/BlueConfig' % prefix
+            blueconfig = '%s/simtestdata/BlueConfig' % prefix
             neurodamus_exe = '%s/neurodamus/lib/%s/special' % (prefix, archdir)
             nrntraub_exe = '%s/nrntraub/%s/special' % (prefix, archdir)
             dentate_exe = '%s/reduced_dentate/%s/special' % (prefix, archdir)

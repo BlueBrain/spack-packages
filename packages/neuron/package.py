@@ -28,7 +28,7 @@ class Neuron(Package):
     list_depth = 2
 
     # version('develop', git='https://github.com/nrnhines/nrn.git', preferred=True)
-    version('develop', git='https://github.com/nrnhines/nrn-hg2git.git',
+    version('develop', git='https://github.com/nrnhines/nrn.git',
             preferred=True)
     version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron',
             branch='bbpcode_trunk')
