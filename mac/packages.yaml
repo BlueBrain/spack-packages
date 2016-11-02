@@ -66,6 +66,7 @@ packages:
         paths:
             hdf5@1.8.17: /usr/local
         buildable: False
+        variants: ~fortran
         version: [1.8.17]
 
     zlib:
@@ -85,9 +86,6 @@ packages:
 
     tau:
         variants: ~openmp
-
-    hdf5:
-        variants: ~fortran
 
     all:
         compiler: [gcc@4.9.3, clang@3.9.0]
