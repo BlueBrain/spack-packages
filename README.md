@@ -20,10 +20,11 @@ cd $SOURCE_HOME_DIR
 git clone https://github.com/pramodk/spack.git
 ```
 
-> Developer Only
-> > cd spack                   
-> > git remote add llnl https://github.com/llnl/spack.git  
-> > git remote add bitbucket git@bitbucket.org:pkumbhar/spack.git
+Developer Only
+
+> cd spack
+> git remote add llnl https://github.com/llnl/spack.git
+> git remote add bitbucket git@bitbucket.org:pkumbhar/spack.git
 
 
 NEURON and Blue Brain Project specific packages are maintained in private bitbucket repository (for time being). In order to build those packages with Spack, add bitbucket r as Spack repository:
@@ -70,10 +71,32 @@ Apart from Apple Clang, we may want to use `GNU` and `LLVM` compilers:
 ```bash
 brew install gcc49 llvm
 ```
-We commonly need MPI library, we can install using `Homebrewa`. But the library installed using `Homebrew` can not be used with other compilers. Hence we suggest to install it using spack:
+
+Make sure to create symlinks for gcc, g++ and fortran. This is because default gcc and g++ are actually clang compilers on OSX.
+
+```bash
+cd /usr/local/bin/
+ln -s ../Cellar/gcc49/4.9.3/bin/g++-4.9 g++
+ln -s ../Cellar/gcc49/4.9.3/bin/gcc-4.9 gcc
+ln -s ../Cellar/gcc49/4.9.3/bin/gfortran-4.9 fortran
+
+# for llvm
+ln -s ../Cellar/llvm/3.9.0/bin/clang clang
+ln -s ../Cellar/llvm/3.9.0/bin/clang++ clang++
+```
+
+
+For Zlib
+
+```bash
+brew tap homebrew/dupes
+brew install zlib
+```
+
+We commonly need MPI library, we can install using `Homebrewa`. The `openmpi` library installed using `Homebrew` can be used with other compilers:
 
 ```
-brew install mpich
+brew install openmpi
 ```
 
 Spack uses `environment-module` i.e. `Modules` package to load / unload modules. You can install it using Spack or from `Homebrew` :
@@ -87,6 +110,12 @@ Now we have all required packages installed from `Homebrew`. Update `.bashrc_pro
 ```bash
 MODULES_HOME=`brew --prefix modules`
 source ${MODULES_HOME}/Modules/init/bash
+```
+
+If you are using parallel HDF5, install it using:
+
+```bash
+ brew install hdf5 --with-mpi
 ```
 
 Lets start with Spack now!
@@ -103,41 +132,41 @@ spack find compilers
 This will find common compilers available in `$PATH` and print out the list:
 
 ``` bash
- spack compiler find
- 
+spack compiler find
+
 ==> Added 3 new compilers to /Users/kumbhar/.spack/darwin/compilers.yaml
-    gcc@4.9.3 gcc@4.2.1  clang@7.3.0-apple
+   gcc@4.9.3 gcc@4.2.1  clang@7.3.0-apple
 ```
- 
- Note that new file `.spack/darwin/compilers.yaml` is created in `$HOME` which store all compiler configuration. This file look like :
- 
- ``` bash
- compilers:
+
+Note that new file `.spack/darwin/compilers.yaml` is created in `$HOME` which store all compiler configuration. This file look like :
+
+``` bash
+compilers:
 - compiler:
-    modules: []
-    operating_system: elcapitan
-    paths:
-      cc: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
-      cxx: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
-      f77: null
-      fc: null
-    spec: clang@7.3.0-apple
+   modules: []
+   operating_system: elcapitan
+   paths:
+     cc: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+     cxx: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
+     f77: null
+     fc: null
+   spec: clang@7.3.0-apple
 - compiler:
-    modules: []
-    operating_system: elcapitan
-    paths:
-      cc: /usr/local/bin/gcc-4.9
-      cxx: /usr/local/bin/g++-4.9
-      f77: /usr/local/bin/gfortran-4.9
-      fc: /usr/local/bin/gfortran-4.9
-    spec: gcc@4.9.3
- ......
- ```
- 
- The `compilers.yaml` file has configuration for every compiler. Note that fortran compilers are *not* provided by `Clang` compiler and hence building any package requiring fortran compiler will fail with `Clang` (for example, `hdf5` package).
- 
- You can litst the compiler using `spack compilers` :
- 
+   modules: []
+   operating_system: elcapitan
+   paths:
+     cc: /usr/local/bin/gcc-4.9
+     cxx: /usr/local/bin/g++-4.9
+     f77: /usr/local/bin/gfortran-4.9
+     fc: /usr/local/bin/gfortran-4.9
+   spec: gcc@4.9.3
+......
+```
+
+The `compilers.yaml` file has configuration for every compiler. Note that fortran compilers are *not* provided by `Clang` compiler and hence building any package requiring fortran compiler will fail with `Clang` (for example, `hdf5` package).
+
+You can litst the compiler using `spack compilers` :
+
 ``` bash
 spack compilers
 
@@ -147,36 +176,36 @@ gcc@4.9.3 gcc@4.2.1
 -- clang --------------------------------------------------------
 clang@7.3.0-apple
 ```
- 
- And if you install new compiler, then force to re-search it using:
- 
- ```bash
- spack compiler find
- 
+
+And if you install new compiler, then force to re-search it using:
+
+```bash
+spack compiler find
+
 ==> Found no new compilers
- ```
- 
- Many time compilers are installed in non-standard directories which are not in $PATH. You can provide path searc compilers as:
+```
+
+Many time compilers are installed in non-standard directories which are not in $PATH. You can provide path searc compilers as:
 
 ```bash
 spack compiler find /usr/local/Cellar/llvm/3.9.0/
 
 ==> Added 1 new compiler to /Users/kumbhar/.spack/darwin/compilers.yaml
-    clang@3.9.0
+   clang@3.9.0
 ```
 
- 
+
 #### Package Configuration ####
- 
+
 Second important step is to tell spack about `existing` packages. Spack can build most of the environment for you but we want to use packages like `MPI`, `CMake`, `autotools` etc. provided by system. This is more important on HPC facilities where package like `MPI` is provided by speromputing centre and we don't want to install it ourself from source. This is where `packages.yaml` file in `$HOME/.spack/darwin/` comes into action. The `packages.yaml` tells spack which existing packages to use, their versions, compiler preferences etc. For example, if you try to build package which need `CMake`, Spack will try to build `CMake` and all its dependencies from source. But we have previously installed `CMake` with `brew` and we can tell spack to use it using below `packages.yaml` :
 
 ```bash
 packages:
-    cmake:
-        paths:
-            cmake@system: /usr/local
-        buildable: False
-        version: [system]
+   cmake:
+       paths:
+           cmake@system: /usr/local
+       buildable: False
+       version: [system]
 ```
 
 In the above configuration we told Spack to use `CMake` from `/usr/local` (installed by `Homebrew`). We specified version of the package as `system` to indicate that this is provided by system. Finally `buildable: False` tells Spack to not build this package from source. So Spack will never try to build this package explicitly and if constraints are not satisfied, it give error like :
@@ -188,23 +217,23 @@ In the above configuration we told Spack to use `CMake` from `/usr/local` (insta
 When we specify dependency like `depends_on('cmake', type='build')`, Spack will match this with `system` version of the package. But many packages specify version constraints in the dependency like `depends_on('cmake@2.8.12:', type='build')`. This indicate that `CMake` version should be  `>=2.8.12`. To satisfiy this constraint we have to add extra version information in `packages.yaml` as:
 
 ```bash
-    cmake:
-        paths:
-            cmake@system: /usr/local
-            cmake@3.5.2: /usr/local
-        buildable: False
-        version: [system, 3.5.2]
+   cmake:
+       paths:
+           cmake@system: /usr/local
+           cmake@3.5.2: /usr/local
+       buildable: False
+       version: [system, 3.5.2]
 ```
 Note that you dont have to keep `system` version in abive case because we have explicitly added version.
- 
+
 
 We can provide preferences for all packages in `packages.yaml`. For example, in the below configuration we specified compiler preferences for building any package. Also, we specify `mpich` as `MPI` provider.
- 
+
 ```bash
-    all:
-        compiler: [gcc@4.9.3, clang@7.3.0-apple]
-        providers:
-            mpi: [mpich]
+   all:
+       compiler: [gcc@4.9.3, clang@7.3.0-apple]
+       providers:
+           mpi: [mpich]
 ```
 
 Another important aspect is `variants`. The `packages.yaml` allows us to specify `variant` preferences. This is important aspect while building packages on different platforms or by different members of the team. For example, consider the example of `HDF5` package. If you look at `HDF5` package using `spack info`, it shows different variants including `fortran` :
@@ -215,36 +244,36 @@ Package:    hdf5
 Homepage:   http://www.hdfgroup.org/HDF5/
 ....
 Variants:
-    Name          Default   Description
+   Name          Default   Description
 
-    cxx           on        Enable C++ support
-    debug         off       Builds a debug version of the library
-    fortran       on        Enable Fortran support
+   cxx           on        Enable C++ support
+   debug         off       Builds a debug version of the library
+   fortran       on        Enable Fortran support
 ....
 ```
 On OS X we dont have fortran compilers with `llvm` toolchain. Hence we can disable fortran variant in `packages.yaml` as:
 
 ```bash
-    hdf5:
-        variants: ~fortran
+   hdf5:
+       variants: ~fortran
 ```
 
 With the above configuration we tell spack to not build fortan bindings of `HDF5` package. Now `HDF5` will be built by `Clang` compiler without any errors. Similarly we can specify version preferences. For example, latest `Boost` version takes long time to build. We need `Boost` for testing purpose and old version is sufficient for us:
 
 ```bash
-    boost:
-        version: [1.51.0]
+   boost:
+       version: [1.51.0]
 ```
 
 `NEURON` has `pkg-config` dependency which can not be build with `GCC` on OS X. I expected `pkg-config@system` to be sufficient but somehow Spack complains about `invalid spec`. Hence I have to add extra specification to indicate that the `pkg-config` is available for `clang` as well as `GNU` using:
 
 ```bash
-    pkg-config:
-        paths:
-            pkg-config@system%clang@7.3.0-apple: /usr/local
-            pkg-config@system%gcc: /usr/local
-        buildable: False
-        version: [system]
+   pkg-config:
+       paths:
+           pkg-config@system%clang@7.3.0-apple: /usr/local
+           pkg-config@system%gcc: /usr/local
+       buildable: False
+       version: [system]
 ```
 
 ##### False Paths for System Packages #####
@@ -254,13 +283,13 @@ Sometimes, the externally-installed package one wishes to use with Spack comes w
 In order to avoid this problem, it is advisable to specify a fake path in `packages.yaml`, thereby preventing Spack from adding the real path to compiler command lines. This will work becuase compilers normally search standard system paths, even if they are not on the command line. For example:
 
 ```bash
-	# Recommended for security reasons
-    # Do not install OpenSSL as non-root user.
-	openssl:
-        paths:
-            openssl@system: /fake/path
-        buildable: False
-        version: [system]
+# Recommended for security reasons
+   # Do not install OpenSSL as non-root user.
+openssl:
+       paths:
+           openssl@system: /fake/path
+       buildable: False
+       version: [system]
 ```
 Note that the `/usr/local` is also where `Homebrew` install binary packages. You have to be carefull if you have installed packages of different versions which might conflict. In this case you can use specific `Homebrew` paths like :
 
@@ -274,74 +303,74 @@ With all system packages, `$HOME/.spack/mac/packages.yaml` looks like below:
 ```bash
 packages:
 
-    cmake:
-        paths:
-            cmake@system: /usr/local
-            cmake@3.5.2: /usr/local
-        buildable: False
-        version: [system, 3.5.2]
+   cmake:
+       paths:
+           cmake@system: /usr/local
+           cmake@3.5.2: /usr/local
+       buildable: False
+       version: [system, 3.5.2]
 
-    autoconf:
-        paths:
-            autoconf@system: /usr/local
-        buildable: False
-        version: [system]
+   autoconf:
+       paths:
+           autoconf@system: /usr/local
+       buildable: False
+       version: [system]
 
-    automake:
-        paths:
-            automake@system: /usr/local
-        buildable: False
-        version: [system]
+   automake:
+       paths:
+           automake@system: /usr/local
+       buildable: False
+       version: [system]
 
-    libtool:
-        paths:
-            libtool@system: /usr/local
-        buildable: False
-        version: [system]
+   libtool:
+       paths:
+           libtool@system: /usr/local
+       buildable: False
+       version: [system]
 
-    openssl:
-        paths:
-            openssl@system: /fake/path
-        buildable: False
-        version: [system]
+   openssl:
+       paths:
+           openssl@system: /fake/path
+       buildable: False
+       version: [system]
 
-    flex:
-        paths:
-            flex@system: /usr/local
-        buildable: False
-        version: [system]
+   flex:
+       paths:
+           flex@system: /usr/local
+       buildable: False
+       version: [system]
 
-    bison:
-        paths:
-            bison@system: /usr/local
-        buildable: False
-        version: [system]
+   bison:
+       paths:
+           bison@system: /usr/local
+       buildable: False
+       version: [system]
 
-    pkg-config:
-        paths:
-            pkg-config@system%clang@7.3.0-apple: /usr/local
-            pkg-config@system%gcc: /usr/local
-        buildable: False
-        version: [system]
+   pkg-config:
+       paths:
+           pkg-config@system%clang@7.3.0-apple: /usr/local
+           pkg-config@system%gcc: /usr/local
+       buildable: False
+       version: [system]
 
-    environment-modules:
-        paths:
-            environment-modules@system: /usr/local/opt/modules
-        buildable: False
-        version: [system]
+   environment-modules:
+       paths:
+           environment-modules@system: /usr/local/opt/modules
+       buildable: False
+       version: [system]
 
-    hdf5:
-        variants: ~fortran
+   hdf5:
+       variants: ~fortran
 
-    boost:
-        version: [1.51.0]
+   boost:
+       version: [1.51.0]
 
-    all:
-        compiler: [gcc@4.9.3, clang@7.3.0-apple]
-        providers:
-            mpi: [mpich]
+   all:
+       compiler: [gcc@4.9.3, clang@7.3.0-apple]
+       providers:
+           mpi: [mpich]
 ```
- 
+
 With above configuration we tell Spack to find various packages under `/usr/local` installed by `Homebrew`, specified compiler preferences and `mpich` as `MPI` library preference. Note that we have specified version `3.2` for `mpich` because some packages can request support specific `MPI` standard (1, 2, 3) support. 
 
 
@@ -392,15 +421,15 @@ We can see the dependencies of `mod2c` package with `spack spec`:
 $ spack spec mod2c
 Input spec
 ------------------------------
-  mod2c
+ mod2c
 Normalized
 ------------------------------
-  mod2c
-      ^cmake@2.8.12:
+ mod2c
+     ^cmake@2.8.12:
 Concretized
 ------------------------------
-  mod2c@develop%gcc@4.9.3 arch=darwin-elcapitan-x86_64
-      ^cmake@3.5.2%gcc@4.9.3~doc+ncurses+openssl~ownlibs~qt arch=darwin-elcapitan-x86_64
+ mod2c@develop%gcc@4.9.3 arch=darwin-elcapitan-x86_64
+     ^cmake@3.5.2%gcc@4.9.3~doc+ncurses+openssl~ownlibs~qt arch=darwin-elcapitan-x86_64
 
 ```
 
@@ -412,7 +441,7 @@ spack install --fake mod2c
 ==> cmake is externally installed in /usr/local
 ==> Building mod2c
 ==> Successfully installed mod2c
-  Fetch: .  Build: 1.15s.  Total: 1.15s.
+ Fetch: .  Build: 1.15s.  Total: 1.15s.
 [+] /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.9.3/mod2c-develop-3m7yiug24mfy677krgwgstsue6hmnrr4
 ```
 
@@ -428,22 +457,22 @@ $ spack install mod2c
 curl: (37) Couldn't open file /Users/kumbhar/workarena/software/sources/spack/var/
 ........
 ==> Trying to clone git repository:
-  ssh://bbpcode.epfl.ch/sim/mod2c
+ ssh://bbpcode.epfl.ch/sim/mod2c
 Cloning into 'mod2c'...
 remote: Counting objects: 124, done
 ....
 ==> No patches needed for mod2c
 ==> Building mod2c
 ==> Successfully installed mod2c
-  Fetch: 4.07s.  Build: 14.35s.  Total: 18.43s.
+ Fetch: 4.07s.  Build: 14.35s.  Total: 18.43s.
 [+] /Users/kumbhar/workarena/software/sources/spack/opt/spack/darwin-elcapitan-x86_64/gcc-4.9.3/mod2c-develop-3m7yiug24mfy677krgwgstsue6hmnrr4
 ```
 
 You can use different compiler or version of the package during installation:
 
 ```bash
-$ spack install mod2c %clang				#use clang
-$ spack install mod2c@github %clang		    #install github version using clang		
+$ spack install mod2c %clang    #use clang
+$ spack install mod2c@github %clang    #install github version using clang
 ```
 
 You can find installed packages usinf `spack find` as:
@@ -465,63 +494,63 @@ You can now install required packages one by one or write some script to install
 
 set -x
 
- #### LIST OF PACKAGES ####
+#### LIST OF PACKAGES ####
 dev_packages=(
-    'mod2c@develop'
-    'mod2c@github'
-    'nrnh5'
-    'neuron@develop'
-    'neuron@hdf'
-    'reportinglib'
-    'neurodamus@master'
-    'neurodamus@develop'
-    'neurodamus@hdf'
-    'coreneuron@develop'
-    'coreneuron@github'
-    'coreneuron@hdf'
+   'mod2c@develop'
+   'mod2c@github'
+   'nrnh5'
+   'neuron@develop'
+   'neuron@hdf'
+   'reportinglib'
+   'neurodamus@master'
+   'neurodamus@develop'
+   'neurodamus@hdf'
+   'coreneuron@develop'
+   'coreneuron@github'
+   'coreneuron@hdf'
 )
 
 compilers=(
-    '%gcc'
-    '%clang'
+   '%gcc'
+   '%clang'
 )
 
 #### WE WILL INSTALL PYTHON AND HDF5 ONCE
 dependency_install() {
-	for compiler in "${compilers[@]}"
-    do
-		  spack install python $compiler
-		  spack install hdf5 $compiler
-	done
+for compiler in "${compilers[@]}"
+   do
+spack install python $compiler
+spack install hdf5 $compiler
+done
 }
 
- ##### UNINSTALL PACKAGE #####
+##### UNINSTALL PACKAGE #####
 uninstall_package() {
-	for package in "${dev_packages[@]}"
-    do
-		  spack uninstall -a -f -d -y $package
-	done
+for package in "${dev_packages[@]}"
+   do
+spack uninstall -a -f -d -y $package
+done
 }
 
- # if any inconsistent packages
+# if any inconsistent packages
 spack reindex
 
- # uninstall packages
+# uninstall packages
 uninstall_package
 
- # install dependency packages like python and hdf5
+# install dependency packages like python and hdf5
 dependency_install
 
- # stop if iany package installation fails
+# stop if iany package installation fails
 set -e
 
- # for every compiler, build each package
+# for every compiler, build each package
 for compiler in "${compilers[@]}"
 do
-	for package in "${dev_packages[@]}"
-    do
-       spack install $package $compile
-    done
+for package in "${dev_packages[@]}"
+   do
+      spack install $package $compile
+   done
 done
 ```
 
@@ -539,10 +568,10 @@ cd coreneuron
 * Use `setup` command to create build directory:
 
 ```bash
- spack setup coreneuron@develop %gcc
- 
- #on lugano vizcluster we have to explicitly specify mpi variant and dependency
-  spack setup coreneuron@develop +mpi %gcc ^mvapich
+spack setup coreneuron@develop %gcc
+
+#on lugano vizcluster we have to explicitly specify mpi variant and dependency
+ spack setup coreneuron@develop +mpi %gcc ^mvapich
 ```
 
 This will create `spack-build-develop` directory and will execute `cmake`, `make` and `make install` commands. Note that if package is previously installed then `make install` will fail to copy the files to install prefix (you can ignore this). Now you can get development enviroment using `env` command:
@@ -572,66 +601,66 @@ The `$HOME/.spack/linux/packages.yaml` file for vizcluster looks like below:
 
 ```bash
 packages:
-    intelmpi:
-        paths:
-            intelmpi@6.0%intel@17.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64/
-        buildable: False
-    mkl:
-        paths:
-            mkl@1.0%intel@15.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/mkl
-        buildable: False
-    cmake:
-        paths:
-            cmake@3.6.1 arch=linux-redhat6-x86_64: cmake-3.6.1-gcc-4.4.7-xhpqagp
-        buildable: False
-    mvapich2:
-        paths:
-            mvapich2@2.0.1 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/tools/mvapich2/mvapich2-2.0.1-nocuda-slurm-14.03.4.2/install
-        buildable: False
-    autoconf:
-        paths:
-            autoconf@system: /usr
-        buildable: False
-        version: [system]
-    automake:
-        paths:
-            automake@system: /usr
-        buildable: False
-        version: [system]
-    pkg-config:
-        paths:
-            pkg-config@0.29.1: /usr
-        buildable: False
-        version: [0.29.1]
-    libtool:
-        paths:
-            libtool@system: /usr
-        buildable: False
-        version: [system]
-    tcl:
-        paths:
-            tcl@8.5: /usr
-        version: [8.5]
-        buildable: False
-    python:
-        paths:
-            python@system: /usr
-        version: [system]
-        buildable: False
-    cuda:
-        modules:
-            cuda@6.0: cuda/6.0
-        version: [6.0]
-        buildable: False
+   intelmpi:
+       paths:
+           intelmpi@6.0%intel@17.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64/
+       buildable: False
+   mkl:
+       paths:
+           mkl@1.0%intel@15.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/mkl
+       buildable: False
+   cmake:
+       paths:
+           cmake@3.6.1 arch=linux-redhat6-x86_64: cmake-3.6.1-gcc-4.4.7-xhpqagp
+       buildable: False
+   mvapich2:
+       paths:
+           mvapich2@2.0.1 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/tools/mvapich2/mvapich2-2.0.1-nocuda-slurm-14.03.4.2/install
+       buildable: False
+   autoconf:
+       paths:
+           autoconf@system: /usr
+       buildable: False
+       version: [system]
+   automake:
+       paths:
+           automake@system: /usr
+       buildable: False
+       version: [system]
+   pkg-config:
+       paths:
+           pkg-config@0.29.1: /usr
+       buildable: False
+       version: [0.29.1]
+   libtool:
+       paths:
+           libtool@system: /usr
+       buildable: False
+       version: [system]
+   tcl:
+       paths:
+           tcl@8.5: /usr
+       version: [8.5]
+       buildable: False
+   python:
+       paths:
+           python@system: /usr
+       version: [system]
+       buildable: False
+   cuda:
+       modules:
+           cuda@6.0: cuda/6.0
+       version: [6.0]
+       buildable: False
 
-    hdf5:
-        variants: ~fortran
-    all:
-        compiler: [gcc@4.9.0, intel@17.0.0, intel@15.0.0]
-        providers:
-            mpi: [mvapich2, intelmpi]
-            blas: [mkl]
-            lapack: [mkl]
+   hdf5:
+       variants: ~fortran
+   all:
+       compiler: [gcc@4.9.0, intel@17.0.0, intel@15.0.0]
+       providers:
+           mpi: [mvapich2, intelmpi]
+           blas: [mkl]
+           lapack: [mkl]
 ```
 
 And build script for `Intel`, `PGI` and `GNU` compiler looks like : 
@@ -644,25 +673,25 @@ export LD_LIBRARY_PATH=/gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_librar
 
 ##### UNINSTALL PACKAGE #####
 uninstall_package() {
-    spack uninstall -y -f -d -a neuron
-    spack uninstall -y -f -d -a coreneuron
-    spack uninstall -y -f -d -a mod2c
-    spack uninstall -y -f -d -a nrnh5
-    spack uninstall -y -f -d -a reportinglib
-    spack uninstall -y -f -d -a neurodamus
-    spack uninstall -y -f -d -a neuron-nmodl
+   spack uninstall -y -f -d -a neuron
+   spack uninstall -y -f -d -a coreneuron
+   spack uninstall -y -f -d -a mod2c
+   spack uninstall -y -f -d -a nrnh5
+   spack uninstall -y -f -d -a reportinglib
+   spack uninstall -y -f -d -a neurodamus
+   spack uninstall -y -f -d -a neuron-nmodl
 }
 
 #### WE WILL INSTALL PYTHON AND HDF5 ONCE
 dependency_install() {
-    spack install --dirty hdf5 +mpi %gcc ^mvapich2
-    spack install --dirty hdf5 +mpi %intel ^intelmpi
+   spack install --dirty hdf5 +mpi %gcc ^mvapich2
+   spack install --dirty hdf5 +mpi %intel ^intelmpi
 }
 
 #### COMPILER TOOLCHAINS ####
 compiler_with_mpi=(
-    '%intel ^intelmpi'
-    '%gcc ^mvapich2'
+   '%intel ^intelmpi'
+   '%gcc ^mvapich2'
 )
 
 #in case there are inconsistencies
@@ -690,20 +719,20 @@ spack install --dirty mod2c@github %gcc
 
 for compiler_mpi in "${compiler_with_mpi[@]}"
 do
-    spack install --dirty nrnh5@develop $compiler_mpi
+   spack install --dirty nrnh5@develop $compiler_mpi
 
-    spack install --dirty neuron@develop +mpi $compiler_mpi
-    spack install --dirty neuron@hdf +mpi $compiler_mpi
+   spack install --dirty neuron@develop +mpi $compiler_mpi
+   spack install --dirty neuron@hdf +mpi $compiler_mpi
 
-    spack install --dirty reportinglib $compiler_mpi
+   spack install --dirty reportinglib $compiler_mpi
 
-    spack install --dirty neurodamus@master +compile $compiler_mpi
-    spack install --dirty neurodamus@develop +compile $compiler_mpi
-    spack install --dirty neurodamus@hdf +compile $compiler_mpi
+   spack install --dirty neurodamus@master +compile $compiler_mpi
+   spack install --dirty neurodamus@develop +compile $compiler_mpi
+   spack install --dirty neurodamus@hdf +compile $compiler_mpi
 
-    spack install --dirty coreneuron@develop +report $compiler_mpi
-    spack install --dirty coreneuron@github +report $compiler_mpi
-    spack install --dirty coreneuron@hdf +report $compiler_mpi
+   spack install --dirty coreneuron@develop +report $compiler_mpi
+   spack install --dirty coreneuron@github +report $compiler_mpi
+   spack install --dirty coreneuron@hdf +report $compiler_mpi
 done
 
 spack install --dirty mod2c@develop %pgi
@@ -721,81 +750,81 @@ spack install --dirty mod2c@github %pgi
 $cat .spack/compilers.yaml
 compilers:
 - compiler:
-    modules: []
-    operating_system: redhat6
-    paths:
-      cc: /usr/lib64/ccache/gcc
-      cxx: /usr/lib64/ccache/g++
-      f77: /usr/bin/gfortran
-      fc: /usr/bin/gfortran
-    spec: gcc@4.4.7
+   modules: []
+   operating_system: redhat6
+   paths:
+     cc: /usr/lib64/ccache/gcc
+     cxx: /usr/lib64/ccache/g++
+     f77: /usr/bin/gfortran
+     fc: /usr/bin/gfortran
+   spec: gcc@4.4.7
 - compiler:
-    modules: []
-    operating_system: redhat6
-    paths:
-      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc_r
-      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc++
-      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
-      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
-    spec: xl@12.1
+   modules: []
+   operating_system: redhat6
+   paths:
+     cc: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc_r
+     cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc++
+     f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
+     fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
+   spec: xl@12.1
 - compiler:
-    modules: []
-    operating_system: CNK
-    paths:
-      cc: /usr/bin/bgxlc_r
-      cxx: /usr/bin/bgxlc++
-      f77: /usr/bin/bgxlf_r
-      fc: /usr/bin/bgxlf2008
-    spec: xl@12.1
+   modules: []
+   operating_system: CNK
+   paths:
+     cc: /usr/bin/bgxlc_r
+     cxx: /usr/bin/bgxlc++
+     f77: /usr/bin/bgxlf_r
+     fc: /usr/bin/bgxlf2008
+   spec: xl@12.1
 - compiler:
-    modules: []
-    operating_system: CNK
-    paths:
-      cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
-      cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
-      f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
-      fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
-    spec: gcc@4.4.7
+   modules: []
+   operating_system: CNK
+   paths:
+     cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
+     cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
+     f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+     fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+   spec: gcc@4.4.7
 ```
 
 ```bash
 $cat .spack/packages.yaml
 packages:
-    mpich:
-        paths:
-            mpich@3.2%xl@12.1 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
-            mpich@3.2%gcc@4.4.7 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
-        buildable: False
-    autoconf:
-        paths:
-            autoconf@system: /usr
-        buildable: False
-        version: [system]
-    automake:
-        paths:
-            automake@system: /usr
-        buildable: False
-        version: [system]
-    pkg-config:
-        paths:
-            pkg-config@system: /usr
-        buildable: False
-        version: [system]
-    cmake:
-        paths:
-            cmake@2.8.12: /gpfs/bbp.cscs.ch/apps/bgq/tools/cmake/cmake-2.8.12/install
-        buildable: False
-        version: [2.8.12]
-    libtool:
-        paths:
-            libtool@system: /usr
-        buildable: False
-        version: [system]
+   mpich:
+       paths:
+           mpich@3.2%xl@12.1 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
+           mpich@3.2%gcc@4.4.7 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
+       buildable: False
+   autoconf:
+       paths:
+           autoconf@system: /usr
+       buildable: False
+       version: [system]
+   automake:
+       paths:
+           automake@system: /usr
+       buildable: False
+       version: [system]
+   pkg-config:
+       paths:
+           pkg-config@system: /usr
+       buildable: False
+       version: [system]
+   cmake:
+       paths:
+           cmake@2.8.12: /gpfs/bbp.cscs.ch/apps/bgq/tools/cmake/cmake-2.8.12/install
+       buildable: False
+       version: [2.8.12]
+   libtool:
+       paths:
+           libtool@system: /usr
+       buildable: False
+       version: [system]
 
-    all:
-        compiler: [xl,gcc]
-        providers:
-            mpi: [mpich]
+   all:
+       compiler: [xl,gcc]
+       providers:
+           mpi: [mpich]
 ```
 
 ### Installation
@@ -827,10 +856,10 @@ spack spec neurodamus%xl os=CNK ^bgqmpi ^neuron@develop%xl@12.1~hdf5+mpi+python+
 .........
 Concretized
 ------------------------------
-  neurodamus@develop%xl@12.1 arch=bgq-CNK-ppc64
-        ^bgqmpi@3.2%xl@12.1 arch=bgq-CNK-ppc64
-              ^hdf5@1.8.15%xl@12.1+cxx~debug+fortran+mpi+shared~szip~threadsafe arch=bgq-CNK-ppc64
-                    ^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64
+ neurodamus@develop%xl@12.1 arch=bgq-CNK-ppc64
+       ^bgqmpi@3.2%xl@12.1 arch=bgq-CNK-ppc64
+             ^hdf5@1.8.15%xl@12.1+cxx~debug+fortran+mpi+shared~szip~threadsafe arch=bgq-CNK-ppc64
+                   ^neuron@develop%xl@12.1~hdf5+mpi+python+with-nmodlonly arch=bgq-CNK-ppc64
 ```
 Use above concretized for coreneuron. but again neurodamus depend on:
 ```bash
