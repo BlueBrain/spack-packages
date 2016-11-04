@@ -109,6 +109,11 @@ class Coreneuron(Package):
                 # OpenMP, OpenACC and Reporting. Disable ReportingLib
                 options.extend(['-DENABLE_REPORTINGLIB:BOOL=OFF'])
 
+            # tqperf test in perfmodels use net_move functionality which
+            # requires use of splay tree instead of default priority queue.
+            if spec.satisfies('@perfmodels'):
+                options.extend(['-DENABLE_SPLAYTREE_QUEUING=ON'])
+
             mech_set = False
             modlib_dir = ''
 
