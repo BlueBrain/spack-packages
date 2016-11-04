@@ -123,7 +123,11 @@ class Neuronperfmodels(Package):
             for filename in filenames:
                 if filename.endswith(('.mod', '.inc')):
                     filepath = os.path.join(root, filename)
+                    # mod2c_core can't compile ri.mod
                     if 'nrntraub/mod/ri.mod' in filepath:
+                        continue
+                    # neuron already have exp2syn.mod but not coreneuron
+                    if 'neuron_mod/exp2syn.mod' in filepath and spec.satisfies('@neuron'):
                         continue
                     if '/neurodamus/lib' in filepath and os.path.basename(filepath) not in neurodamus_modfiles:
                         continue
