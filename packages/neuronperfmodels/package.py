@@ -179,6 +179,12 @@ class Neuronperfmodels(Package):
             ringtest_exe = '%s/%s/bin/nrniv' % (self.spec['neuron'].prefix, archdir)
             tqperf_exe = '%s/tqperf/%s/special' % (prefix, archdir)
             nrnperf_exe = '%s/%s/special' % (prefix, archdir)
+            pythonpath = "%s/tqperf" % prefix
+
+            hoc_lib_path = '%s/nrntraub:%s/nrntraub/hoc' % (prefix, prefix)
+            hoc_lib_path += ':%s/ringtest' % prefix
+            hoc_lib_path += ':%s/reduced_dentate:%s/reduced_dentate/templates' % (prefix, prefix)
+            hoc_lib_path += ':%s/tqperf' % prefix
 
             run_env.set('NEURODAMUS_EXE', neurodamus_exe)
             run_env.set('TRAUB_EXE', nrntraub_exe)
@@ -187,6 +193,8 @@ class Neuronperfmodels(Package):
             run_env.set('TQPERF_EXE', tqperf_exe)
             run_env.set('NRNPERF_EXE', nrnperf_exe)
             run_env.set('BLUECONFIG', blueconfig)
+            run_env.prepend_path('PYTHONPATH', pythonpath)
+            run_env.set('HOC_LIBRARY_PATH', hoc_lib_path)
 
     def setup_dependent_package(self, module, dspec):
         dspec.package.nrnperf_modfiles = '%s/modfiles' % self.prefix
