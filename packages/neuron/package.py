@@ -15,7 +15,6 @@
 from spack import *
 import os
 import sys
-import shutil
 
 
 class Neuron(Package):
@@ -24,7 +23,7 @@ class Neuron(Package):
 
     homepage = "https://www.neuron.yale.edu/"
 
-    version('develop', git='https://github.com/nrnhines/nrn.git', preferred=True)
+    version('develop', git='https://github.com/pramodk/nrn.git', preferred=True)
     version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
 
     variant('mpi', default=True, description='Enable MPI parallelism')
