@@ -31,11 +31,14 @@ class Neurodamus(Package):
     version('gpu',     git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
+    variant('profile', default=False, description="Enable profiling using Tau")
 
     depends_on("hdf5", when='+compile')
     depends_on("neuron", when='+compile')
+    depends_on("neuron+profile", when='+compile+profile')
     depends_on("neuron@hdf", when='@hdf+compile')
     depends_on('reportinglib', when='+compile')
+    depends_on('reportinglib+profile', when='+compile+profile')
     depends_on("mpi", when='+compile')
 
     def install(self, spec, prefix):

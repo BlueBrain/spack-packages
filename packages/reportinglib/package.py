@@ -13,6 +13,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
+import os
 
 
 class Reportinglib(Package):
@@ -24,8 +25,15 @@ class Reportinglib(Package):
 
     version('develop', git='ssh://bbpcode.epfl.ch/sim/reportinglib/bbp')
 
+    variant('profile', default=False, description="Enable profiling using Tau")
+
     depends_on('cmake@2.8.12:', type='build')
     depends_on('mpi')
+    depends_on('tau', when='+profile')
+
+    def profiling_wrapper_on(self):
+        if self.spec.satisfies('+profile'):
+            os.environ["USE_PROFILER_WRAPPER"] = "1"
 
     def install(self, spec, prefix):
 
@@ -34,12 +42,22 @@ class Reportinglib(Package):
         with working_dir(build_dir, create=True):
 
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix]
-            #'-DCOMPILE_LIBRARY_TYPE=STATIC']
+            # '-DCOMPILE_LIBRARY_TYPE=STATIC']
+
+            c_compiler = spec['mpi'].mpicc
+            cxx_compiler = spec['mpi'].mpicxx
+
+            if spec.satisfies('+profile'):
+                c_compiler = 'tau_cc'
+                cxx_compiler = 'tau_cxx'
+                # on darwin, boost is not always linked from gcc
+                options.extend(['-DUNIT_TESTS=OFF'])
 
             # especially for bg-q
-            options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                            '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
+            options.extend(['-DCMAKE_C_COMPILER=%s' % c_compiler,
+                            '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler])
 
             cmake('..', *options)
+            self.profiling_wrapper_on()
             make()
             make('install')

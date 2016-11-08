@@ -30,17 +30,23 @@ class Neuron(Package):
     variant('python', default=True, description='Enable python')
     variant('static', default=True, description='Build static libraries')
     variant('cross-compile', default=False, description='Build for cross-compile environment')
+    variant('profile',       default=False, description="Enable Tau profiling")
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
-    depends_on('mpi', when='+mpi')
     depends_on("nrnh5", when='@hdf')
     depends_on('python@2.6:', when='+python')
+    depends_on('tau', when='+profile')
+    depends_on('mpi', when='+mpi')
 
     # on osx platform, pkg-config can't be built without clang
     depends_on('pkg-config', type='build', when=sys.platform != 'darwin')
     depends_on('pkg-config%clang', type='build', when=sys.platform == 'darwin')
+
+    def profiling_wrapper_on(self):
+        if self.spec.satisfies('+profile'):
+            os.environ["USE_PROFILER_WRAPPER"] = "1"
 
     def patch(self):
         # for coreneuron, remove GLOBAL and TABLE
@@ -172,17 +178,33 @@ class Neuron(Package):
 
     def install(self, spec, prefix):
 
+        c_compiler = spack_cc
+        cxx_compiler = spack_cxx
+
+        if spec.satisfies('+mpi'):
+            mpi_c_compiler = spec['mpi'].mpicc
+            mpi_cxx_compiler = spec['mpi'].mpicxx
+
+        if spec.satisfies('+profile'):
+            c_compiler = 'tau_cc'
+            cxx_compiler = 'tau_cxx'
+            mpi_c_compiler = 'tau_cc'
+            mpi_cxx_compiler = 'tau_cxx'
+
         options = ['--prefix=%s' % prefix,
                    '--without-iv',
                    '--disable-rx3d',
-                   'CC=%s' % spack_cc,
-                   'CXX=%s' % spack_cxx]
+                   'CC=%s' % c_compiler,
+                   'CXX=%s' % cxx_compiler]
 
         options.extend(self.get_configure_options(spec))
         build = Executable('./build.sh')
         build()
 
         build_dir = "spack-build-%s" % spec.version
+
+        options.extend(['MPICC=%s' % mpi_c_compiler,
+                        'MPICXX=%s' % mpi_cxx_compiler])
 
         with working_dir(build_dir, create=True):
 
@@ -192,6 +214,7 @@ class Neuron(Package):
             source_directory = self.stage.source_path
             configure = Executable(join_path(source_directory, 'configure'))
             configure(*options)
+            self.profiling_wrapper_on()
             make()
             make('install')
 

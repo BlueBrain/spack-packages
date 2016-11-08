@@ -33,10 +33,12 @@ class Coreneuron(Package):
     version('perfmodels', git=url)
 
     variant('mpi',           default=True,  description="Enable MPI support")
+    variant('openmp',        default=True,  description="Enable OpenMP support")
     variant('neurodamusmod', default=True,  description="Build only MOD files from Neurodamus")
     variant('report',        default=True,  description="Enable reports using ReportingLib")
     variant('tests',         default=False, description="Enable building tests")
     variant('gpu',           default=False, description="Enable GPU build")
+    variant('profile',       default=False, description="Enable profiling using Tau")
 
     # mandatory dependencies
     depends_on('mod2c', type='build')
@@ -53,17 +55,18 @@ class Coreneuron(Package):
     depends_on('neurodamus@gpu~compile', when='+gpu')
     depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
     depends_on('reportinglib', when='+report')
+    depends_on('reportinglib+profile', when='+report+profile')
     depends_on('boost', when='+tests')
+    depends_on('tau', when='+profile')
 
-    def get_arch_compile_options(self, spec):
-        options = []
+    def profiling_wrapper_on(self):
+        if self.spec.satisfies('+profile'):
+            os.environ["USE_PROFILER_WRAPPER"] = "1"
 
-        # for bg-q, our cmake is not setup properly
-        if 'bgq' in self.spec.architecture:
-            if spec.satisfies('+mpi'):
-                options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
-                                '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx])
-        return options
+    # we don't need to use this
+    # def profiling_wrapper_off(self):
+    #    if self.spec.satisfies('+profile'):
+    #        del os.environ["USE_PROFILER_WRAPPER"]
 
     def install(self, spec, prefix):
 
@@ -71,11 +74,24 @@ class Coreneuron(Package):
 
         with working_dir(build_dir, create=True):
 
+            c_compiler = self.compiler.cc
+            cxx_compiler = self.compiler.cxx
+
+            if spec.satisfies('+profile'):
+                c_compiler = 'tau_cc'
+                cxx_compiler = 'tau_cxx'
+            # for bg-q, our cmake is not setup properly
+            elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
+                    c_compiler = spec['mpi'].mpicc
+                    cxx_compiler = spec['mpi'].mpicxx
+
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
                        '-DCOMPILE_LIBRARY_TYPE=STATIC',
                        '-DCMAKE_C_FLAGS=%s' % '-O3',
                        '-DCMAKE_CXX_FLAGS=%s' % '-O3',
-                       '-DCMAKE_BUILD_TYPE=CUSTOM'
+                       '-DCMAKE_BUILD_TYPE=CUSTOM',
+                       '-DCMAKE_C_COMPILER=%s' % c_compiler,
+                       '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler
                        ]
 
             if spec.satisfies('+tests'):
@@ -97,6 +113,9 @@ class Coreneuron(Package):
 
             if spec.satisfies('~mpi'):
                 options.extend(['-DENABLE_MPI:BOOL=OFF'])
+
+            if spec.satisfies('~openmp'):
+                options.extend(['-DCORENEURON_OPENMP:BOOL=OFF'])
 
             if spec.satisfies('+gpu'):
                 gcc = which("gcc")
@@ -137,9 +156,8 @@ class Coreneuron(Package):
             if mech_set:
                 options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
 
-            options.extend(self.get_arch_compile_options(spec))
-
             cmake('..', *options)
+            self.profiling_wrapper_on()
             make()
             make('install')
 
