@@ -26,6 +26,7 @@ class Reportinglib(Package):
     version('develop', git='ssh://bbpcode.epfl.ch/sim/reportinglib/bbp')
 
     variant('profile', default=False, description="Enable profiling using Tau")
+    variant('static', default=False, description="Build static library")
 
     depends_on('cmake@2.8.12:', type='build')
     depends_on('mpi')
@@ -42,7 +43,6 @@ class Reportinglib(Package):
         with working_dir(build_dir, create=True):
 
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix]
-            # '-DCOMPILE_LIBRARY_TYPE=STATIC']
 
             c_compiler = spec['mpi'].mpicc
             cxx_compiler = spec['mpi'].mpicxx
@@ -52,6 +52,10 @@ class Reportinglib(Package):
                 cxx_compiler = 'tau_cxx'
                 # on darwin, boost is not always linked from gcc
                 options.extend(['-DUNIT_TESTS=OFF'])
+
+            # while building with tau, coreneuron needed static version
+            if spec.satisfies('+static'):
+                options.extend(['-DCOMPILE_LIBRARY_TYPE=STATIC'])
 
             # especially for bg-q
             options.extend(['-DCMAKE_C_COMPILER=%s' % c_compiler,
