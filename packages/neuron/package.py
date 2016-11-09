@@ -201,7 +201,12 @@ class Neuron(Package):
         build = Executable('./build.sh')
         build()
 
-        build_dir = "spack-build-%s" % spec.version
+        # tau pdt parser can't find ivstrm.h due to incorrect include paths
+        if spec.satisfies('+profile'):
+            build_dir = '.'
+            options.extend(['--disable-dependency-tracking'])
+        else:
+            build_dir = "spack-build-%s" % spec.version
 
         options.extend(['MPICC=%s' % mpi_c_compiler,
                         'MPICXX=%s' % mpi_cxx_compiler])

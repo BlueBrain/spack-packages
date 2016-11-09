@@ -29,11 +29,20 @@ class Neuronperfmodels(Package):
     version('neuron', git=url, submodules=True, preferred=True)
     version('coreneuron', git=url, submodules=True)
 
+    variant('profile', default=False, description="Enable profiling using Tau")
+
     depends_on('reportinglib',  when='@neuron')
+    depends_on('reportinglib+profile',  when='@neuron+profile')
     depends_on('neuron', when='@neuron')
+    depends_on('neuron+profile', when='@neuron+profile')
     depends_on('hdf5', when='@neuron')
     depends_on('mpi', when='@neuron')
     depends_on('cmake', when='@neuron', type='build')
+    depends_on('tau', when='+profile')
+
+    def profiling_wrapper_on(self):
+        if self.spec.satisfies('+profile'):
+            os.environ["USE_PROFILER_WRAPPER"] = "1"
 
     def arch_specific_flags(self):
         flags = ''
@@ -156,6 +165,7 @@ class Neuronperfmodels(Package):
             self.copy_compatible_mod_files(spec, modpath)
 
             if self.spec.satisfies('@neuron'):
+                self.profiling_wrapper_on()
                 self.build_single_exec(spec, prefix, modpath)
                 self.build_neurodamus(spec, prefix)
                 self.build_nrntraub(spec, prefix)
