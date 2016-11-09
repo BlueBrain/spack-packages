@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name="neuron-coreneuron-stack"
-#SBATCH --time=4:00:00
+#SBATCH --time=8:00:00
 #SBATCH --partition=interactive
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=16
@@ -22,6 +22,9 @@ uninstall_package() {
 ##### EXTRA OPTIONS FOR INSTALL #####
 extra_opt="--log-format=junit --dirty"
 
+# tau profiling
+export TAU_OPTIONS='-optPDTInst -optNoCompInst -optRevert -optVerbose -optTauSelectFile=~/spackconfig/nrnperfmodels.tau'
+
 #### WE WILL INSTALL PYTHON AND HDF5 ONCE
 #dependency_install() {
 #    spack install $extra_opt hdf5 +mpi %gcc ^mvapich2
@@ -42,19 +45,30 @@ mpi["pgi"]="mpich"
 mpi["gcc"]="mvapich2"
 mpi["intel"]="intelmpi"
 
-#in case there are inconsistencies
+# note when we compile coreneuron+gpu,  gcc 4.9 and up are not supported!
+# and hence you must purge environment
+module purge all
+
+# in case there are inconsistencies
 spack reindex
 
 # uninstall all packages
 uninstall_package
 
-#stop on error
+# stop on error
 set -e
 
 for compiler in "${compilers[@]}"
 do
     # remove previous stages/downloads from different compilers
     spack purge -s -d
+
+    # we dont have hdf5 compiled with PGI
+    if [[ $compiler == *"pgi"* ]]; then
+        spack install $extra_opt coreneuron@perfmodels +mpi +report +gpu %$compiler ^${mpi[$compiler]}
+        # for profiling purpose
+        spack install $extra_opt coreneuron@perfmodels +profile +mpi +report +gpu %$compiler ^${mpi[$compiler]}
+    fi
 
     spack install $extra_opt mod2c@develop %$compiler
     spack install $extra_opt mod2c@github  %$compiler
@@ -80,4 +94,9 @@ do
     spack install $extra_opt coreneuron@github +mpi +report %$compiler ^${mpi[$compiler]}
     spack install $extra_opt neuronperfmodels@neuron %$compiler ^${mpi[$compiler]}
     spack install $extra_opt coreneuron@perfmodels +mpi +report %$compiler ^${mpi[$compiler]}
+
+    # for profiling purpose
+    spack install $extra_opt neuronperfmodels@neuron +profile %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt coreneuron@perfmodels +profile +mpi +report %$compiler ^${mpi[$compiler]}
+
 done

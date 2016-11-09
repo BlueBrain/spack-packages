@@ -2,7 +2,7 @@ compilers:
 - compiler:
     modules:
     - intel/icomposer-2015.0.090
-    operating_system: redhat6
+    operating_system: rhel6
     paths:
       cc: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icc
       cxx: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icpc
@@ -11,8 +11,8 @@ compilers:
     spec: intel@15.0.0
 - compiler:
     modules:
-    - intel/compilers_and_libraries_2017.0.098
-    operating_system: redhat6
+    - intel/icomposer-2017.0.098
+    operating_system: rhel6
     paths:
       cc: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/icc
       cxx: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/icpc
@@ -22,7 +22,7 @@ compilers:
 - compiler:
     modules:
     - pgi/pgi64/16.5
-    operating_system: redhat6
+    operating_system: rhel6
     paths:
       cc: /gpfs/bbp.cscs.ch/apps/viz/tools/pgi/16.5/linux86-64/16.5/bin/pgcc
       cxx: /gpfs/bbp.cscs.ch/apps/viz/tools/pgi/16.5/linux86-64/16.5/bin/pgc++
@@ -31,11 +31,26 @@ compilers:
     spec: pgi@16.5-0
 - compiler:
     flags: {}
-    modules: []
-    operating_system: redhat6
+    modules:
+    - gcc/4.9.0
+    operating_system: rhel6
     paths:
-      cc: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/gcc
-      cxx: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/g++
-      f77: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/gfortran
-      fc: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/gcc-4.9.3/bin/gfortran
-    spec: gcc@4.9.3
+      cc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/g++
+      f77: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
+    spec: gcc@4.9.0
+    #flags:
+    #  cflags: -O3 -fPIC
+    #  cxxflags: -O3 -fPIC
+    #  cppflags: -O3 -fPIC
+- compiler:
+    flags: {}
+    modules: []
+    operating_system: rhel6
+    paths:
+      cc: /usr/lib64/ccache/gcc
+      cxx: /usr/lib64/ccache/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.4.7
