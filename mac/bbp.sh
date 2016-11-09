@@ -3,7 +3,7 @@
 set -x
 
 #### LIST OF PACKAGES ####
-dev_packages=(
+_dev_packages=(
     'mod2c@develop'
     'mod2c@github'
 
@@ -24,10 +24,16 @@ dev_packages=(
     'neuronperfmodels'
     'coreneuron@perfmodels'
 )
-    #'%gcc'
+
+
+dev_packages=(
+    'neuronperfmodels +profile'
+    'coreneuron@perfmodels +profile +report ^reportinglib+static'
+)
 
 compilers=(
     '%clang'
+    '%gcc'
 )
 
 ##### UNINSTALL PACKAGE #####
@@ -46,6 +52,9 @@ spack reindex
 
 # stop if iany package installation fails
 set -e
+
+
+export TAU_OPTIONS='-optPDTInst -optNoCompInst -optRevert -optVerbose -optTauSelectFile=~/spackconfig/nrnperfmodels.tau'
 
 # for every compiler, build each package
 for compiler in "${compilers[@]}"
