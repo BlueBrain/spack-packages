@@ -87,8 +87,8 @@ class Coreneuron(Package):
 
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
                        '-DCOMPILE_LIBRARY_TYPE=STATIC',
-                       '-DCMAKE_C_FLAGS=%s' % '-O3',
-                       '-DCMAKE_CXX_FLAGS=%s' % '-O3',
+                       '-DCMAKE_C_FLAGS=%s' % '-O2',
+                       '-DCMAKE_CXX_FLAGS=%s' % '-O2',
                        '-DCMAKE_BUILD_TYPE=CUSTOM',
                        '-DCMAKE_C_COMPILER=%s' % c_compiler,
                        '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler
