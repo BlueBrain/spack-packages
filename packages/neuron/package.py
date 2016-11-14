@@ -185,6 +185,11 @@ class Neuron(Package):
             mpi_c_compiler = spec['mpi'].mpicc
             mpi_cxx_compiler = spec['mpi'].mpicxx
 
+        # for bg-q we can't set xlc as CC and CXX
+        if 'bgq' in self.spec.architecture:
+            c_compiler = spec['mpi'].mpicc
+            cxx_compiler = spec['mpi'].mpicxx
+
         if spec.satisfies('+profile'):
             c_compiler = 'tau_cc'
             cxx_compiler = 'tau_cxx'
