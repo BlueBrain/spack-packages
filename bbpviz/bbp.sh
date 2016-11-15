@@ -61,7 +61,7 @@ set -e
 for compiler in "${compilers[@]}"
 do
     # remove previous stages/downloads from different compilers
-    spack purge -s -d
+    spack purge -s
 
     # we dont have hdf5 compiled with PGI
     if [[ $compiler == *"pgi"* ]]; then
@@ -73,25 +73,20 @@ do
     spack install $extra_opt mod2c@develop %$compiler
     spack install $extra_opt mod2c@github  %$compiler
 
-    # we dont have hdf5 compiled with PGI
-    if [[ $compiler != *"pgi"* ]]; then
-        spack install $extra_opt nrnh5@develop %$compiler ^${mpi[$compiler]}
-        spack install $extra_opt neuron@hdf +mpi %$compiler ^${mpi[$compiler]}
-    fi
+    spack install $extra_opt nrnh5@develop %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt neuron@hdf +mpi %$compiler ^${mpi[$compiler]}
 
     spack install $extra_opt neuron@develop +mpi %$compiler ^${mpi[$compiler]}
     spack install $extra_opt reportinglib %$compiler ^${mpi[$compiler]}
 
-    # we dont have hdf5 compiled with PGI
-    if [[ $compiler != *"pgi"* ]]; then
-        spack install $extra_opt neurodamus@master +compile %$compiler ^${mpi[$compiler]}
-        spack install $extra_opt neurodamus@develop +compile %$compiler ^${mpi[$compiler]}
-        spack install $extra_opt neurodamus@hdf +compile %$compiler ^${mpi[$compiler]}
-        spack install $extra_opt coreneuron@hdf +mpi +report %$compiler ^${mpi[$compiler]}
-    fi
+    spack install $extra_opt neurodamus@master +compile %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt neurodamus@develop +compile %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt neurodamus@hdf +compile %$compiler ^${mpi[$compiler]}
+    spack install $extra_opt coreneuron@hdf +mpi +report %$compiler ^${mpi[$compiler]}
 
     spack install $extra_opt coreneuron@develop +mpi +report %$compiler ^${mpi[$compiler]}
     spack install $extra_opt coreneuron@github +mpi +report %$compiler ^${mpi[$compiler]}
+
     spack install $extra_opt neuronperfmodels@neuron %$compiler ^${mpi[$compiler]}
     spack install $extra_opt coreneuron@perfmodels +mpi +report %$compiler ^${mpi[$compiler]}
 

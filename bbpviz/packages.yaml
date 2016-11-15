@@ -11,8 +11,7 @@ packages:
         buildable: False
     mvapich2:
         modules:
-            mvapich2@2.0.1: mvapich2/2.0.1-nocuda
-        version: [2.0.1]
+            mvapich2@2.0.1%gcc@4.9.0: mvapich2/2.0.1-nocuda
         buildable: False
     autoconf:
         paths:
@@ -53,6 +52,7 @@ packages:
         paths:
             hdf5@1.10.0%gcc@4.9.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-gcc
             hdf5@1.10.0%intel@17.0.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-icc
+            hdf5@1.10.0%pgi@16.5-0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-pgi
         variants: ~fortran ~shared ~cxx
         buildable: False
         version: [1.10.0]
@@ -60,6 +60,7 @@ packages:
         paths:
             zlib@1.2.8%gcc@4.9.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-gcc
             zlib@1.2.8%intel@17.0.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-icc
+            zlib@1.2.8%pgi@16.5-0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-pgi
         buildable: False
         version: [1.2.8]
 
