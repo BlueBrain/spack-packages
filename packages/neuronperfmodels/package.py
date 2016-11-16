@@ -192,7 +192,7 @@ class Neuronperfmodels(Package):
             rd_hoc_path = '%s/reduced_dentate:%s/reduced_dentate/templates' % (prefix, prefix)
             tq_hoc_path = '%s/tqperf' % prefix
 
-            run_env.set('NEURODAMUS_EXE', neurodamus_exe)
+            run_env.set('BBP_EXE', neurodamus_exe)
             run_env.set('TRAUB_EXE', nrntraub_exe)
             run_env.set('DENTATE_EXE', dentate_exe)
             run_env.set('RINGTEST_EXE', ringtest_exe)
@@ -202,7 +202,7 @@ class Neuronperfmodels(Package):
             run_env.set('BLUECONFIG', blueconfig)
             run_env.prepend_path('PYTHONPATH', pythonpath)
 
-            run_env.set('NEURODAMUS_HOC_PATH', neurodamus_hoc_path)
+            run_env.set('BBP_HOC_PATH', neurodamus_hoc_path)
             run_env.set('TRAUB_HOC_PATH', traub_hoc_path)
             run_env.set('DENTATE_HOC_PATH', rd_hoc_path)
             run_env.set('RINGTEST_HOC_PATH', ring_hoc_path)

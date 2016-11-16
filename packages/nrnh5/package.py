@@ -32,7 +32,7 @@ class Nrnh5(Package):
     def get_arch_build_options(self, spec):
         options = []
 
-        if 'bgq' in self.spec.architecture:
+        if 'bgq' in self.spec.architecture or self.compiler.name == 'pgi':
             options.extend(['-DCMAKE_C_COMPILER=%s' % spec['mpi'].mpicc,
                             '-DCMAKE_CXX_COMPILER=%s' % spec['mpi'].mpicxx,
                             '-DENABLE_MPI_LIB_LINK:BOOL=OFF'])
