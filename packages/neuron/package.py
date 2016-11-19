@@ -176,6 +176,10 @@ class Neuron(Package):
         make()
         make('install')
 
+        nocmodl_src_dir = '%s/src/nmodl/' % source
+        nmodl_exe = 'src/nmodl/nocmodl'
+        install(nmodl_exe, nocmodl_src_dir)
+
     def install(self, spec, prefix):
 
         c_compiler = spack_cc
@@ -208,19 +212,22 @@ class Neuron(Package):
 
         # tau pdt parser can't find ivstrm.h due to incorrect include paths
         if spec.satisfies('+profile'):
-            build_dir = '.'
+            build_dir = os.getcwd()
             options.extend(['--disable-dependency-tracking'])
         else:
-            build_dir = "spack-build-%s" % spec.version
+            build_dir = os.path.join(os.getcwd(), "spack-build-%s" % spec.version)
 
         options.extend(['MPICC=%s' % mpi_c_compiler,
                         'MPICXX=%s' % mpi_cxx_compiler])
 
-        with working_dir(build_dir, create=True):
-
-            if spec.satisfies('+cross-compile'):
+        if spec.satisfies('+cross-compile'):
+            # while building with tau saw an error requiring make distclean.
+            # hence building in separate dir. Now we have to vopy nocmodl to
+            # to source directory.
+            with working_dir('build-nmodl', create=True):
                 self.build_nmodl(spec, prefix)
 
+        with working_dir(build_dir, create=True):
             source_directory = self.stage.source_path
             configure = Executable(join_path(source_directory, 'configure'))
             configure(*options)
