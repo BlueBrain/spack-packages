@@ -44,12 +44,14 @@ packages:
             python@2.6.7 arch=bgq-CNK-powerpc: /gpfs/bbp.cscs.ch/apps/bgq/external/python/python-2.6.7/install/python2.6.7-20131119/
         version: [2.6.7]
         buildable: False
+    tau:
+        variants: ~comm ~phase
 
     #BBP Packages
     nrnh5:
         variants: +zlib
     neuron:
-        variants: +mpi +hdf5 +cross-compile
+        variants: +mpi +cross-compile
 
     all:
         compiler: [xl,gcc]
