@@ -18,16 +18,16 @@ compilers:
       fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
     spec: xl@12.1
 - compiler:
-    modules: []
+    modules: [bg-xl]
     operating_system: CNK
     paths:
-      cc: /usr/bin/bgxlc_r
-      cxx: /usr/bin/bgxlc++
-      f77: /usr/bin/bgxlf_r
-      fc: /usr/bin/bgxlf2008
+      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc_r
+      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc++_r
+      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
+      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
     spec: xl@12.1
 - compiler:
-    modules: []
+    modules: [bg-xl]
     operating_system: CNK
     paths:
       cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc

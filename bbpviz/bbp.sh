@@ -26,6 +26,7 @@ extra_opt="--log-format=junit --dirty"
 export TAU_OPTIONS='-optPDTInst -optNoCompInst -optRevert -optVerbose -optTauSelectFile=~/spackconfig/nrnperfmodels.tau'
 
 #### WE WILL INSTALL PYTHON AND HDF5 ONCE
+#### THEY ARE INSTALLED AS EXTERNAL PACKAGES
 #dependency_install() {
 #    spack install $extra_opt hdf5 +mpi %gcc ^mvapich2
 #    spack install $extra_opt hdf5 +mpi %intel ^intelmpi
@@ -55,13 +56,14 @@ spack reindex
 # uninstall all packages
 uninstall_package
 
+# remove previous stages/downloads from different compilers
+spack purge -s
+
 # stop on error
 set -e
 
 for compiler in "${compilers[@]}"
 do
-    # remove previous stages/downloads from different compilers
-    spack purge -s
 
     # we dont have hdf5 compiled with PGI
     if [[ $compiler == *"pgi"* ]]; then

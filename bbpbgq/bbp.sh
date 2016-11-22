@@ -8,14 +8,10 @@
 #SBATCH --exclusive
 
 ##### EXTRA OPTIONS FOR INSTALL #####
-extra_opt="--log-format=junit --dirty"
+extra_opt="--log-format=junit"
 
 #in case there are inconsistencies
 spack reindex
-
-#spack installs pdt, it needs xlC. Load
-#bg-xl module fot this
-module load bg-xl
 
 # tau options
 export TAU_OPTIONS='-optPDTInst -optNoCompInst -optRevert -optVerbose -optTauSelectFile=~/spackconfig/nrnperfmodels.tau'

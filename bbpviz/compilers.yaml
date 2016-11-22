@@ -54,3 +54,14 @@ compilers:
       f77: /usr/bin/gfortran
       fc: /usr/bin/gfortran
     spec: gcc@4.4.7
+- compiler:
+    flags: {}
+    modules:
+    - nix/gcc/4.9.3
+    operating_system: rhel6
+    paths:
+      cc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gcc
+      cxx: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/g++
+      f77: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
+      fc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
+    spec: gcc@4.9.3
