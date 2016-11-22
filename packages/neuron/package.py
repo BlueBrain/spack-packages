@@ -76,6 +76,12 @@ class Neuron(Package):
                             'MPICXX=%s' % self.compiler.cxx])
         return options
 
+    def get_optimization_level(self):
+        if 'bgq' in self.spec.architecture:
+            return '-O3'
+        else:
+            return '-O2'
+
     def get_neuron_arch_dir(self):
         arch = self.spec.architecture.target
 
@@ -88,8 +94,11 @@ class Neuron(Package):
     # options for hdf5 branch
     def get_hdf5_options(self, spec):
         options = []
+
+        optflag = self.get_optimization_level()
+
         if spec.satisfies('@hdf'):
-            compiler_flags = '-O2 -DCORENEURON_HDF5=1 %s' % spec['nrnh5'].include_path
+            compiler_flags = '%s -DCORENEURON_HDF5=1 %s' % (optflag, spec['nrnh5'].include_path)
             link_library = '%s' % spec['nrnh5'].link_library
 
             options.extend(['CFLAGS=%s' % compiler_flags])
@@ -127,14 +136,16 @@ class Neuron(Package):
     def get_compiler_options(self, spec):
         options = []
 
+        optflag = self.get_optimization_level()
+
         # pgi has proble with compiling neuron in static mode
         # even for static variant, build shared
         if spec.satisfies('%pgi'):
-            options.extend(['CFLAGS=-fPIC -O2',
-                            'CXXFLAGS=-fPIC -O2',
+            options.extend(['CFLAGS=-fPIC %s' % optflag,
+                            'CXXFLAGS=-fPIC %s' % optflag,
                             '--enable-shared'])
         else:
-            options.extend(['CFLAGS=-O2', 'CXXFLAGS=-O2'])
+            options.extend(['CFLAGS=%s' % optflag, 'CXXFLAGS=%s' % optflag])
 
         return options
 
@@ -176,10 +187,6 @@ class Neuron(Package):
         make()
         make('install')
 
-        nocmodl_src_dir = '%s/src/nmodl/' % source
-        nmodl_exe = 'src/nmodl/nocmodl'
-        install(nmodl_exe, nocmodl_src_dir)
-
     def install(self, spec, prefix):
 
         c_compiler = spack_cc
@@ -210,24 +217,20 @@ class Neuron(Package):
         build = Executable('./build.sh')
         build()
 
-        # tau pdt parser can't find ivstrm.h due to incorrect include paths
+        # passing -M option to Tau disables instrumentation. Avoid this
+        # with below autotools option
         if spec.satisfies('+profile'):
-            build_dir = os.getcwd()
             options.extend(['--disable-dependency-tracking'])
-        else:
-            build_dir = os.path.join(os.getcwd(), "spack-build-%s" % spec.version)
 
         options.extend(['MPICC=%s' % mpi_c_compiler,
                         'MPICXX=%s' % mpi_cxx_compiler])
 
-        if spec.satisfies('+cross-compile'):
-            # while building with tau saw an error requiring make distclean.
-            # hence building in separate dir. Now we have to vopy nocmodl to
-            # to source directory.
-            with working_dir('build-nmodl', create=True):
-                self.build_nmodl(spec, prefix)
+        build_dir = "spack-build-%s" % spec.version
 
         with working_dir(build_dir, create=True):
+            if spec.satisfies('+cross-compile'):
+                self.build_nmodl(spec, prefix)
+
             source_directory = self.stage.source_path
             configure = Executable(join_path(source_directory, 'configure'))
             configure(*options)

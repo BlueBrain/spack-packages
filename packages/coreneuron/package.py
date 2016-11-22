@@ -63,6 +63,12 @@ class Coreneuron(Package):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
 
+    def get_optimization_level(self):
+        if 'bgq' in self.spec.architecture:
+            return '-O3'
+        else:
+            return '-O2'
+
     # we don't need to use this
     # def profiling_wrapper_off(self):
     #    if self.spec.satisfies('+profile'):
@@ -77,6 +83,8 @@ class Coreneuron(Package):
             c_compiler = self.compiler.cc
             cxx_compiler = self.compiler.cxx
 
+            optflag = self.get_optimization_level()
+
             if spec.satisfies('+profile'):
                 c_compiler = 'tau_cc'
                 cxx_compiler = 'tau_cxx'
@@ -87,8 +95,8 @@ class Coreneuron(Package):
 
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
                        '-DCOMPILE_LIBRARY_TYPE=STATIC',
-                       '-DCMAKE_C_FLAGS=%s' % '-O2',
-                       '-DCMAKE_CXX_FLAGS=%s' % '-O2',
+                       '-DCMAKE_C_FLAGS=%s' % optflag,
+                       '-DCMAKE_CXX_FLAGS=%s' % optflag,
                        '-DCMAKE_BUILD_TYPE=CUSTOM',
                        '-DCMAKE_C_COMPILER=%s' % c_compiler,
                        '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler
