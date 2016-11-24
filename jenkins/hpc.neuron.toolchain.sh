@@ -1,3 +1,10 @@
+#!/bin/bash
+
+# enable debug verbose
+set -x
+set -e
+
+# start from workspace directory where spack is downloaded
 cd $WORKSPACE
 
 # remove old repo if any
@@ -21,23 +28,25 @@ spack arch
 # arch specific directories
 if [ $platform == "cscsviz" ]
 then
-    spack_arch_config="$HOME/.spack/linux"
     setting_arch_dir="spack-config/bbpviz"
+    spack_arch_config="etc/spack/linux"
 else
-    spack_arch_config="$HOME/.spack/bgq"
     setting_arch_dir="spack-config/bbpbgq"
+    spack_arch_config="etc/spack/bgq"
 fi
 
 # copy arch specific setting files
 mkdir -p $spack_arch_config
 cp -r $setting_arch_dir/* $spack_arch_config/
 
-# directory where packages and modules will be built
+# timestamp based on datetime
 PREFIX=/gpfs/bbp.cscs.ch/scratch/gss/bgq/kumbhar/SPACK_INSTALLS/SPACK_BBP_PREFIX
 TIMESTAMP=$(date +%Y_%m_%d_%H_%M)
+
+# directory where packages and modules will be built
 install_prefix="$PREFIX/$platform/install/$TIMESTAMP"
 module_prefix="$PREFIX/$platform/modules/$TIMESTAMP"
-
+mkdir -p $install_prefix $module_prefix
 
 # make a new prefix for this build
 sed -i "s#install_tree:.*#install_tree: $install_prefix #g" $spack_arch_config/config.yaml
@@ -45,7 +54,13 @@ sed -i "s#tcl:.*#tcl: $module_prefix #g" $spack_arch_config/config.yaml
 
 
 # some extra options
-extra_opt="--log-format=junit --dirty"
+extra_opt="--log-format=junit --dirty -v"
+
+
+# print configurations for the build
+spack config get compilers
+spack config get config
+spack config get packages
 
 
 # tau profiling options
@@ -118,3 +133,6 @@ done
 
 # just list the packages at the end
 spack find -v
+
+# give a specific user permission to delete what we just built
+setfacl -R -m u:kumbhar:rwx $install_prefix $module_prefix
