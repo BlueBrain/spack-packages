@@ -46,11 +46,17 @@ TIMESTAMP=$(date +%Y_%m_%d_%H_%M)
 # directory where packages and modules will be built
 install_prefix="$PREFIX/$platform/install/$TIMESTAMP"
 module_prefix="$PREFIX/$platform/modules/$TIMESTAMP"
-mkdir -p $install_prefix $module_prefix
+config_prefix="$PREFIX/$platform/config/$TIMESTAMP"
+
+mkdir -p $install_prefix $module_prefix $config_prefix
 
 # make a new prefix for this build
 sed -i "s#install_tree:.*#install_tree: $install_prefix #g" $spack_arch_config/config.yaml
 sed -i "s#tcl:.*#tcl: $module_prefix #g" $spack_arch_config/config.yaml
+
+
+# just for backup/debug, copy settings to install directory
+cp -r $spack_arch_config $config_prefix/
 
 
 # some extra options
