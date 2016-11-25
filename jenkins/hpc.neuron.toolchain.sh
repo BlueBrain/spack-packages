@@ -121,6 +121,13 @@ do
 
         # install package
         spack install $extra_opt $package %$compiler ^${mpi[$compiler]}
+
+        # just to check if package installed properly
+        if [[ `spack find $package %$compiler ^${mpi[$compiler]}` == *"No package matches"* ]];then
+            echo "Package Installation Check Failed For $package %$compiler !"
+            exit 1
+        fi
+
     done
 
     # only pgi supports gpu variant of coreneuron
@@ -130,9 +137,22 @@ do
         spack spec coreneuron@perfmodels +mpi +gpu %$compiler ^${mpi[$compiler]}
         spack install $extra_opt coreneuron@perfmodels +mpi +gpu %$compiler ^${mpi[$compiler]}
 
+        # just to check if package installed properly
+        if [[ `spack find coreneuron@perfmodels +mpi +gpu %$compiler ^${mpi[$compiler]}` == *"No package matches"* ]];  then
+            echo "Package Installation Check Failed For $package %$compiler !"
+            exit 1
+        fi
+
         # profiled version
         spack spec coreneuron@perfmodels +mpi +gpu +profile %$compiler ^${mpi[$compiler]}
         spack install $extra_opt coreneuron@perfmodels +mpi +gpu +profile %$compiler ^${mpi[$compiler]}
+
+        # just to check if package installed properly
+        if [[ `spack find coreneuron@perfmodels +mpi +gpu +profile %$compiler ^${mpi[$compiler]}` == *"No package matches"* ]];  then
+            echo "Package Installation Check Failed For $package %$compiler !"
+            exit 1
+        fi
+
     fi
 
 done
