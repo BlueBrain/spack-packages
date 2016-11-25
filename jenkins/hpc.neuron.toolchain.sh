@@ -7,8 +7,27 @@ set -e
 # start from workspace directory where spack is downloaded
 cd $WORKSPACE
 
-# remove old repo if any
-rm -rf spack-config spack-repo $HOME/.spack
+# timestamp based on datetime
+PREFIX=/gpfs/bbp.cscs.ch/scratch/gss/bgq/kumbhar/SPACK_PERF_BENCHMARK/
+TIMESTAMP=$(date +%Y_%m_%d_%H_%M)
+
+# directory where packages and modules will be built
+spack_root_prefix="$PREFIX/$platform/$TIMESTAMP/"
+install_prefix="$spack_root_prefix/install"
+module_prefix="$spack_root_prefix/modules"
+benchmark_root="$spack_root_prefix/benchmark"
+spack_root="$spack_root_prefix/spack"
+
+# create directories
+mkdir -p $spack_root_prefix $install_prefix $module_prefix $benchmark_root
+
+# clone new repo for benchmarking purpose
+cd $spack_root_prefix
+git clone https://github.com/pramodk/spack.git
+cd spack
+
+# remove old settings if anyone has copied
+rm -rf $HOME/.spack
 
 # clone configuration repos
 git clone ssh://bbpcode.epfl.ch/user/kumbhar/spack-config
@@ -30,33 +49,21 @@ if [ $platform == "cscsviz" ]
 then
     setting_arch_dir="spack-config/bbpviz"
     spack_arch_config="etc/spack/linux"
+    bench_arch="--bbpviz"
 else
     setting_arch_dir="spack-config/bbpbgq"
     spack_arch_config="etc/spack/bgq"
+    bench_arch="--bbpbgq"
 fi
 
 # copy arch specific setting files
 mkdir -p $spack_arch_config
 cp -r $setting_arch_dir/* $spack_arch_config/
 
-# timestamp based on datetime
-PREFIX=/gpfs/bbp.cscs.ch/scratch/gss/bgq/kumbhar/SPACK_INSTALLS/SPACK_BBP_PREFIX
-TIMESTAMP=$(date +%Y_%m_%d_%H_%M)
-
-# directory where packages and modules will be built
-install_prefix="$PREFIX/$platform/install/$TIMESTAMP"
-module_prefix="$PREFIX/$platform/modules/$TIMESTAMP"
-config_prefix="$PREFIX/$platform/config/$TIMESTAMP"
-
-mkdir -p $install_prefix $module_prefix $config_prefix
 
 # make a new prefix for this build
 sed -i "s#install_tree:.*#install_tree: $install_prefix #g" $spack_arch_config/config.yaml
 sed -i "s#tcl:.*#tcl: $module_prefix #g" $spack_arch_config/config.yaml
-
-
-# just for backup/debug, copy settings to install directory
-cp -r $spack_arch_config $config_prefix/
 
 
 # some extra options
@@ -80,7 +87,6 @@ dev_packages=(
     'coreneuron@perfmodels +mpi'
     'coreneuron@perfmodels +mpi +profile'
 )
-
 
 # each platform has different compilers
 if [ $platform == "cscsviz" ]
@@ -160,5 +166,24 @@ done
 # just list the packages at the end
 spack find -v
 
+# start benchmarking
+cd $benchmark_root
+git clone ssh://bbpcode.epfl.ch/user/kumbhar/nrnperfbench
+cd nrnperfbench
+
+# generate small jobs
+# python nrnbenchmarker.py $bench_arch --profile --verbose --small_benchmarks \
+# 	--no_exclusive_node_alloc --spack_root $SPACK_ROOT --prefix $benchmark_root
+
+python nrnbenchmarker.py $bench_arch --profile --verbose --spack_root $SPACK_ROOT --prefix $benchmark_root
+
+
+# submit jobs
+bash job_submitter.sh
+
+
 # give a specific user permission to delete what we just built
-setfacl -R -m u:kumbhar:rwx $install_prefix $module_prefix
+setfacl -R -m u:kumbhar:rwx $spack_root_prefix
+
+# if we want to delete old jobs and data
+setfacl -R -m u:kumbhar:rex $PREFIX/*
