@@ -186,4 +186,4 @@ bash job_submitter.sh
 setfacl -R -m u:kumbhar:rwx $spack_root_prefix
 
 # if we want to delete old jobs and data
-setfacl -R -m u:kumbhar:rex $PREFIX/*
+setfacl -R -m u:kumbhar:rwx $PREFIX/*
