@@ -19,7 +19,7 @@ compilers:
     spec: xl@12.1
 - compiler:
     modules: [bg-xl]
-    operating_system: CNK
+    operating_system: cnk
     paths:
       cc: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc_r
       cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc++_r
@@ -28,7 +28,7 @@ compilers:
     spec: xl@12.1
 - compiler:
     modules: [bg-xl]
-    operating_system: CNK
+    operating_system: cnk
     paths:
       cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
       cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
