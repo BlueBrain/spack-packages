@@ -34,6 +34,7 @@ class Neurodamus(Package):
     variant('profile', default=False, description="Enable profiling using Tau")
 
     depends_on("hdf5", when='+compile')
+    depends_on("zlib", when='+compile')
     depends_on("neuron", when='+compile')
     depends_on("neuron+profile", when='+compile+profile')
     depends_on("neuron@hdf", when='@hdf+compile')
@@ -53,9 +54,10 @@ class Neurodamus(Package):
                 nrnivmodl = which('nrnivmodl')
                 compile_flags = '-I%s -I%s' % (spec['reportinglib'].prefix.include,
                                                spec['hdf5'].prefix.include)
-                link_flags = '-L%s -lreportinglib -L%s -lhdf5' % (
+                link_flags = '-L%s -lreportinglib -L%s -lhdf5 -L%s -lz' % (
                              spec['reportinglib'].prefix.lib64,
-                             spec['hdf5'].prefix.lib)
+                             spec['hdf5'].prefix.lib,
+                             spec['zlib'].prefix.lib)
 
                 # on os-x there is no mallinfo
                 if(sys.platform == 'darwin'):

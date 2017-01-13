@@ -36,6 +36,7 @@ class Neuronperfmodels(Package):
     depends_on('neuron', when='@neuron')
     depends_on('neuron+profile', when='@neuron+profile')
     depends_on('hdf5', when='@neuron')
+    depends_on('zlib', when='@neuron')
     depends_on('mpi', when='@neuron')
     depends_on('cmake', when='@neuron', type='build')
     depends_on('tau', when='+profile')
@@ -57,9 +58,10 @@ class Neuronperfmodels(Package):
         reporting_lib = spec['reportinglib'].prefix.lib64
         hdf5_inc = spec['hdf5'].prefix.include
         hdf5_lib = spec['hdf5'].prefix.lib
+        zlib_lib = spec['zlib'].prefix.lib
 
         incflags = '-I%s -I%s' % (reporting_inc, hdf5_inc)
-        ldflags = '-L%s -lreportinglib -L%s -lhdf5' % (reporting_lib, hdf5_lib)
+        ldflags = '-L%s -lreportinglib -L%s -lhdf5 -L%s -lz' % (reporting_lib, hdf5_lib, zlib_lib)
 
         return incflags, ldflags
 
