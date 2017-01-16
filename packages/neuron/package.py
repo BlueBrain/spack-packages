@@ -24,6 +24,7 @@ class Neuron(Package):
     homepage = "https://www.neuron.yale.edu/"
 
     version('develop', git='https://github.com/pramodk/nrn.git', preferred=True)
+    version('master', git='https://github.com/nrnhines/nrn.git')
     version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
 
     variant('mpi', default=True, description='Enable MPI parallelism')
@@ -78,9 +79,9 @@ class Neuron(Package):
 
     def get_optimization_level(self):
         if 'bgq' in self.spec.architecture:
-            return '-O3'
+            return '-O3 -g'
         else:
-            return '-O2'
+            return '-O2 -g'
 
     def get_neuron_arch_dir(self):
         arch = self.spec.architecture.target
