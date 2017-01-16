@@ -49,6 +49,10 @@ class Neuron(Package):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
 
+    def profiling_wrapper_off(self):
+        if self.spec.satisfies('+profile'):
+            del os.environ["USE_PROFILER_WRAPPER"]
+
     def patch(self):
         # for coreneuron, remove GLOBAL and TABLE
         filter_file(r'GLOBAL minf', r'RANGE minf', 'src/nrnoc/hh.mod')
@@ -238,6 +242,7 @@ class Neuron(Package):
             self.profiling_wrapper_on()
             make()
             make('install')
+            self.profiling_wrapper_off()
 
     def setup_environment(self, spack_env, run_env):
         arch = self.get_neuron_arch_dir()

@@ -63,16 +63,15 @@ class Coreneuron(Package):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
 
+    def profiling_wrapper_off(self):
+        if self.spec.satisfies('+profile'):
+            del os.environ["USE_PROFILER_WRAPPER"]
+
     def get_optimization_level(self):
         if 'bgq' in self.spec.architecture:
             return '-O3'
         else:
             return '-O2'
-
-    # we don't need to use this
-    # def profiling_wrapper_off(self):
-    #    if self.spec.satisfies('+profile'):
-    #        del os.environ["USE_PROFILER_WRAPPER"]
 
     def install(self, spec, prefix):
 
@@ -168,6 +167,7 @@ class Coreneuron(Package):
             self.profiling_wrapper_on()
             make()
             make('install')
+            self.profiling_wrapper_off()
 
     def setup_environment(self, spack_env, run_env):
         exe = '%s/coreneuron_exec' % self.prefix.bin

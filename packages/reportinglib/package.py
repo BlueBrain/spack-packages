@@ -36,6 +36,10 @@ class Reportinglib(Package):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
 
+    def profiling_wrapper_off(self):
+        if self.spec.satisfies('+profile'):
+            del os.environ["USE_PROFILER_WRAPPER"]
+
     def install(self, spec, prefix):
 
         build_dir = "spack-build-%s" % spec.version
@@ -65,3 +69,4 @@ class Reportinglib(Package):
             self.profiling_wrapper_on()
             make()
             make('install')
+            self.profiling_wrapper_off()

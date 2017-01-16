@@ -45,6 +45,10 @@ class Neuronperfmodels(Package):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
 
+    def profiling_wrapper_off(self):
+        if self.spec.satisfies('+profile'):
+            del os.environ["USE_PROFILER_WRAPPER"]
+
     def arch_specific_flags(self):
         flags = ''
         # on os-x there is no mallinfo
@@ -170,6 +174,7 @@ class Neuronperfmodels(Package):
                 self.build_ringtest(spec, prefix)
                 self.build_tqperf(spec, prefix)
                 self.build_bbp_simtestdata(spec, prefix)
+                self.profiling_wrapper_off()
 
     def setup_environment(self, spack_env, run_env):
         prefix = self.prefix

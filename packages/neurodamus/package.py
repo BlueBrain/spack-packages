@@ -42,6 +42,14 @@ class Neurodamus(Package):
     depends_on('reportinglib+profile', when='+compile+profile')
     depends_on("mpi", when='+compile')
 
+    def profiling_wrapper_on(self):
+        if self.spec.satisfies('+profile'):
+            os.environ["USE_PROFILER_WRAPPER"] = "1"
+
+    def profiling_wrapper_off(self):
+        if self.spec.satisfies('+profile'):
+            del os.environ["USE_PROFILER_WRAPPER"]
+
     def install(self, spec, prefix):
 
         shutil.copytree('lib', '%s/lib' % (prefix), symlinks=False)
@@ -63,8 +71,10 @@ class Neurodamus(Package):
                 if(sys.platform == 'darwin'):
                     compile_flags += ' -DDISABLE_MALLINFO'
 
+                self.profiling_wrapper_on()
                 nrnivmodl('-incflags', compile_flags,
                           '-loadflags', link_flags, modlib)
+                self.profiling_wrapper_off()
 
                 self.check_install(spec)
 
