@@ -29,6 +29,7 @@ class Neurodamus(Package):
     version('develop', git=url, branch='coreneuronsetup')
     version('hdf',     git=url, branch='sandbox/kumbhar/corebluron_h5')
     version('gpu',     git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
+    version('plasticity',     git=url, branch='sandbox/chindemi/glusynapse-master')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
     variant('profile', default=False, description="Enable profiling using Tau")

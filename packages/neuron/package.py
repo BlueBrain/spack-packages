@@ -122,12 +122,24 @@ class Neuron(Package):
             options.extend(['--with-nrnpython=%s' % python_exec, '--disable-pysetup'])
 
             if spec.satisfies('+cross-compile'):
+
                 py_lib = spec['python'].prefix.lib64
+                extra_libs = ''
+
+                if not os.path.isdir(py_lib):
+                    py_lib = spec['python'].prefix.lib
+
+                # todo : bit of hack for argonne systems because they have differnt
+                #        installation structure compared to other systems. Doing
+                #        this temporarily to get production runs going.
+                import socket
+                if 'alcf.anl.gov' in socket.getfqdn():
+                    extra_libs = '-lz -lssl -lcrypto -lutil'
 
                 options.extend(['PYINCDIR=%s/include/%s' % (py_prefix, py_version_string),
-                                'PYLIB=-L%s -l%s' % (py_lib, py_version_string),
+                                'PYLIB=-L%s -l%s %s' % (py_lib, py_version_string, extra_libs),
                                 'PYLIBDIR=%s' % py_lib,
-                                'PYLIBLINK=-L%s -l%s' % (py_lib, py_version_string)])
+                                'PYLIBLINK=-L%s -l%s %s' % (py_lib, py_version_string, extra_libs)])
         else:
             options.extend(['--without-nrnpython'])
         return options
