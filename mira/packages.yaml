@@ -2,6 +2,8 @@ packages:
     mpich:
         paths:
             mpich@3.2%xl@12.1 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/xl
+        buildable: False
+        version: [3.2]
     autoconf:
         paths:
             autoconf@system: /usr
@@ -14,9 +16,9 @@ packages:
         version: [system]
     pkg-config:
         paths:
-            pkg-config@system: /usr
+            pkg-config@0.23: /usr
         buildable: False
-        version: [system]
+        version: [0.23]
     libtool:
         paths:
             libtool@system: /usr
