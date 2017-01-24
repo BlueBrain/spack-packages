@@ -61,8 +61,16 @@ class Neurodamus(Package):
 
                 modlib = 'lib/modlib'
                 nrnivmodl = which('nrnivmodl')
-                compile_flags = '-I%s -I%s' % (spec['reportinglib'].prefix.include,
-                                               spec['hdf5'].prefix.include)
+
+                extra_flags = ''
+
+                if spec.satisfies('@plasticity'):
+                    extra_flags += '-DENABLE_SAVE_STATE'
+
+                compile_flags = '-I%s -I%s %s' % (spec['reportinglib'].prefix.include,
+                                                  spec['hdf5'].prefix.include,
+                                                  extra_flags)
+
                 link_flags = '-L%s -lreportinglib -L%s -lhdf5 -L%s -lz' % (
                              spec['reportinglib'].prefix.lib64,
                              spec['hdf5'].prefix.lib,
