@@ -66,7 +66,7 @@ class Neurodamus(Package):
 
                 extra_flags = ''
 
-                if spec.satisfies('@plasticity'):
+                if spec.satisfies('@plasticity') or spec.satisfies('@oldplasticity'):
                     extra_flags += '-DENABLE_SAVE_STATE'
 
                 compile_flags = '-I%s -I%s %s' % (spec['reportinglib'].prefix.include,
