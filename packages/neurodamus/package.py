@@ -30,6 +30,7 @@ class Neurodamus(Package):
     version('hdf',     git=url, branch='sandbox/kumbhar/corebluron_h5')
     version('gpu',     git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
     version('plasticity',     git=url, branch='sandbox/chindemi/glusynapse-master')
+    version('oldplasticity',     git=url, branch='sandbox/kumbhar/savestate_devel')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
     variant('profile', default=False, description="Enable profiling using Tau")
@@ -39,6 +40,7 @@ class Neurodamus(Package):
     depends_on("neuron", when='+compile')
     depends_on("neuron+profile", when='+compile+profile')
     depends_on("neuron@hdf", when='@hdf+compile')
+    depends_on("neuron@oldplasticity", when='@oldplasticity+compile')
     depends_on('reportinglib', when='+compile')
     depends_on('reportinglib+profile', when='+compile+profile')
     depends_on("mpi", when='+compile')

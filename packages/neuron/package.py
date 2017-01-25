@@ -26,12 +26,14 @@ class Neuron(Package):
     version('develop', git='https://github.com/pramodk/nrn.git', preferred=True)
     version('master', git='https://github.com/nrnhines/nrn.git')
     version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
+    version('oldplasticity', git='ssh://bbpcode.epfl.ch/sim/bluron/bbp', branch='sstate_to_bluron')
 
     variant('mpi', default=True, description='Enable MPI parallelism')
     variant('python', default=True, description='Enable python')
     variant('static', default=True, description='Build static libraries')
     variant('cross-compile', default=False, description='Build for cross-compile environment')
     variant('profile',       default=False, description="Enable Tau profiling")
+    variant('debug',         default=False, description="Compile without optimization")
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
@@ -82,7 +84,9 @@ class Neuron(Package):
         return options
 
     def get_optimization_level(self):
-        if 'bgq' in self.spec.architecture:
+        if self.spec.satisfies('+debug'):
+            return '-g -O0'
+        elif 'bgq' in self.spec.architecture:
             return '-O3 -g'
         else:
             return '-O2 -g'
