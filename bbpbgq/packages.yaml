@@ -42,7 +42,8 @@ packages:
     python:
         paths:
             python@2.6.7 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/python/python-2.6.7/install/python2.6.7-20131119/
-        version: [2.6.7]
+            python@2.7.5 arch=bgq-cnk-ppc64: /bgsys/tools/python2.7.5-20161013/
+        version: [2.7.5]
         buildable: False
     tau:
         variants: ~comm ~phase
