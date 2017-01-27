@@ -23,10 +23,11 @@ class Reportinglib(Package):
     homepage = "https://bbpcode.epfl.ch/code/a/sim/reportinglib/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/reportinglib/bbp"
 
-    version('develop', git='ssh://bbpcode.epfl.ch/sim/reportinglib/bbp')
+    version('develop', git=url)
 
     variant('profile', default=False, description="Enable profiling using Tau")
-    variant('static', default=False, description="Build static library")
+    variant('static',  default=False, description="Build static library")
+    variant('debug',   default=False, description="Build debug version")
 
     depends_on('cmake@2.8.12:', type='build')
     depends_on('mpi')
@@ -60,6 +61,10 @@ class Reportinglib(Package):
             # while building with tau, coreneuron needed static version
             if spec.satisfies('+static'):
                 options.extend(['-DCOMPILE_LIBRARY_TYPE=STATIC'])
+
+            # build debug version
+            if spec.satisfies('+debug'):
+                options.extend(['-DCMAKE_BUILD_TYPE=Debug'])
 
             # especially for bg-q
             options.extend(['-DCMAKE_C_COMPILER=%s' % c_compiler,

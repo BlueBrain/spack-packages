@@ -85,9 +85,9 @@ class Neuron(Package):
 
     def get_optimization_level(self):
         if self.spec.satisfies('+debug'):
-            return '-g -O0'
+            return '-O0 -g'
         elif 'bgq' in self.spec.architecture:
-            return '-O3 -g'
+            return '-O3 -qtune=qp -qarch=qp -q64 -qstrict -qnohot -g'
         else:
             return '-O2 -g'
 

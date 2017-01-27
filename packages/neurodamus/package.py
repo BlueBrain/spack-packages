@@ -34,14 +34,17 @@ class Neurodamus(Package):
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
     variant('profile', default=False, description="Enable profiling using Tau")
+    variant('debug',   default=False, description="Build debug version")
 
     depends_on("hdf5", when='+compile')
     depends_on("zlib", when='+compile')
     depends_on("neuron", when='+compile')
+    depends_on("neuron+debug", when='+compile+debug')
     depends_on("neuron+profile", when='+compile+profile')
     depends_on("neuron@hdf", when='@hdf+compile')
     depends_on("neuron@oldplasticity", when='@oldplasticity+compile')
     depends_on('reportinglib', when='+compile')
+    depends_on('reportinglib+debug', when='+compile+debug')
     depends_on('reportinglib+profile', when='+compile+profile')
     depends_on("mpi", when='+compile')
 
