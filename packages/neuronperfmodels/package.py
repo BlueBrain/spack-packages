@@ -13,7 +13,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-import sys
 import os
 import glob
 import shutil
@@ -49,14 +48,6 @@ class Neuronperfmodels(Package):
         if self.spec.satisfies('+profile'):
             del os.environ["USE_PROFILER_WRAPPER"]
 
-    def arch_specific_flags(self):
-        flags = ''
-        # on os-x there is no mallinfo
-        if(sys.platform == 'darwin'):
-            flags += ' -DDISABLE_MALLINFO'
-
-        return flags
-
     def neurodamus_flags(self, spec):
         reporting_inc = spec['reportinglib'].prefix.include
         reporting_lib = spec['reportinglib'].prefix.lib64
@@ -86,8 +77,7 @@ class Neuronperfmodels(Package):
 
         with working_dir(dest):
             incflags, ldflags = self.neurodamus_flags(spec)
-            cflags = '%s %s' % (incflags, self.arch_specific_flags())
-            self.create_special(cflags, ldflags, 'modlib')
+            self.create_special(incflags, ldflags, 'modlib')
 
     def build_nrntraub(self, spec, prefix):
         src = '%s/nrntraub' % self.stage.source_path
@@ -146,8 +136,7 @@ class Neuronperfmodels(Package):
     def build_single_exec(self, spec, prefix, modpath):
         with working_dir(prefix):
             incflags, ldflags = self.neurodamus_flags(spec)
-            cflags = '%s %s' % (incflags, self.arch_specific_flags())
-            self.create_special(cflags, ldflags, modpath)
+            self.create_special(incflags, ldflags, modpath)
 
     def build_bbp_simtestdata(self, spec, prefix):
         src = '%s/simtestdata' % self.stage.source_path

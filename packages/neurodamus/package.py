@@ -13,7 +13,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-import sys
 import os
 import shutil
 
@@ -81,10 +80,6 @@ class Neurodamus(Package):
                              spec['reportinglib'].prefix.lib64,
                              spec['hdf5'].prefix.lib,
                              spec['zlib'].prefix.lib)
-
-                # on os-x there is no mallinfo
-                if(sys.platform == 'darwin'):
-                    compile_flags += ' -DDISABLE_MALLINFO'
 
                 self.profiling_wrapper_on()
                 nrnivmodl('-incflags', compile_flags,
