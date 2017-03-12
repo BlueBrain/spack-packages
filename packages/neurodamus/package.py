@@ -69,8 +69,8 @@ class Neurodamus(Package):
 
                 extra_flags = ''
 
-                if spec.satisfies('@plasticity') or spec.satisfies('@oldplasticity'):
-                    extra_flags += '-DENABLE_SAVE_STATE'
+                if spec.satisfies('+profile'):
+                    extra_flags += ' -DENABLE_TAU_PROFILER'
 
                 compile_flags = '-I%s -I%s %s' % (spec['reportinglib'].prefix.include,
                                                   spec['hdf5'].prefix.include,
