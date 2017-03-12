@@ -514,29 +514,17 @@ BEGIN_INCLUDE_LIST
  void nrnmpi_barrier() C
  void update(NrnThread *) C
  int nrnmpi_spike_exchange() C
- void nrnmpi_init(int, int *, char ***) C
  size_t nrnbbcore_write() C
  void write_nrnthread(const char *, NrnThread &, nrncore_CellGroup &) C
- double BBS::netpar_mindelay(double)
- void finitialize(void) C
- void nrn_finitialize(int, double) C
  double nrnmpi_dbl_allreduce(double, int) C
- void nrn_spike_exchange_init() C
  void write_nrnthread_task(const char *, nrncore_CellGroup *) C
  void nrnmpi_int_gather(int *, int *, int, int) C
- void NetParEvent::send(double, NetCvode *, NrnThread *)
  void nrn2ncs_outputevent(int, double) C
  void nrn_cleanup_presyn(PreSyn *) C
- void nrnmpi_spike_initialize() C
  void make_spike_type()
  void nrnmpi_int_gatherv(int *, int, int *, int *, int *, int) C
- void _nrn_state#(_NrnThread *, _Memb_list *, int) C
- void _nrn_cur__#(_NrnThread *, _Memb_list *, int) C
- void _nrn_jacob__#(_NrnThread *, _Memb_list *, int) C
-
 
 # directly copied from coreneuron
-
 int main(int, char **, char **)
 void nrn_multithread_job(void *(*)(NrnThread *)) C
 void BBS_netpar_solve(double) C
@@ -546,33 +534,20 @@ void *nrn_fixed_step_group_thread(NrnThread *) C
 void *nrn_fixed_step_thread(NrnThread *) C
 void nonvint(NrnThread *) C
 void nrn_setup(const char *, const char *, int, int) C
-void nrn_finitialize(int, double) C
-void read_phase2(data_reader &, NrnThread &)
 void *setup_tree_matrix_minimal(NrnThread *) C
 void nrn_rhs(NrnThread *) C
-void determine_inputpresyn()
-void read_phase1(data_reader &, NrnThread &)
 void nrn_solve_minimal(NrnThread *) C
-void triang(NrnThread *) C
-void bksub(NrnThread *) C
 void output_spikes(const char *)
-void nrn_lhs(NrnThread *) C
-void update(NrnThread *) C
 void deliver_net_events(NrnThread *) C
 void nrn_deliver_events(NrnThread *) C
-void nrn_cap_jacob(NrnThread *, Memb_list *) C
 void nrn_spike_exchange(NrnThread *) C
 int nrnmpi_spike_exchange() C
-void _nrn_state#(_NrnThread *, _Memb_list *, int) C
-void _nrn_cur__#(_NrnThread *, _Memb_list *, int) C
-void _nrn_jacob__#(_NrnThread *, _Memb_list *, int) C
 
 # for reporting in neurodamus
 int flush__BinReportHelper() C
 int savestate__BinReportHelper() C
 int restorestate__BinReportHelper() C
 void _net_receive__BinReportHelper(Point_process*, double*, double) C
-
 
 # for ReportingLib
 int AllReports::flush(double)
