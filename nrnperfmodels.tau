@@ -78,7 +78,9 @@ ssimplic_thread.c
 memory_utils.cpp
 nrnreport.cpp
 sdprintf.cpp
-
+bgpdma.cpp
+bgpdmasetup.cpp
+bgpmeminfo.c
 # for now we have to give a list
 
 hh.c
@@ -500,6 +502,7 @@ tca.c
 vecevent.c
 halfgap.c
 invlfire.c
+ProfileHelper.c
 END_FILE_INCLUDE_LIST
 
 BEGIN_INCLUDE_LIST
@@ -514,10 +517,8 @@ BEGIN_INCLUDE_LIST
  void nrnmpi_barrier() C
  void update(NrnThread *) C
  int nrnmpi_spike_exchange() C
- void nrnmpi_init(int, int *, char ***) C
  size_t nrnbbcore_write() C
  void write_nrnthread(const char *, NrnThread &, nrncore_CellGroup &) C
- double BBS::netpar_mindelay(double)
  void finitialize(void) C
  void nrn_finitialize(int, double) C
  double nrnmpi_dbl_allreduce(double, int) C
@@ -533,10 +534,27 @@ BEGIN_INCLUDE_LIST
  void _nrn_state#(_NrnThread *, _Memb_list *, int) C
  void _nrn_cur__#(_NrnThread *, _Memb_list *, int) C
  void _nrn_jacob__#(_NrnThread *, _Memb_list *, int) C
-
+ void *nrn_ms_bksub_through_triang(NrnThread *) C
+ void *setup_tree_matrix(NrnThread *) C
+ void nonvint(NrnThread *) C
+ void nrn_rhs(NrnThread *) C
+ void *nrn_ms_bksub(NrnThread *) C
+ int nrnmpi_bgp_conserve(int, int) C
+ void *nrn_ms_treeset_through_triang(NrnThread *) C
+ void *nrn_ms_reduce_solve(NrnThread *) C
+ void nrnmpi_wait(void **) C
+ void nrn_lhs(NrnThread *) C
+ void nrn_solve(NrnThread *) C
+ void triang(NrnThread *) C
+ void update(NrnThread *) C
+ void bksub(NrnThread *) C
+ int nrnmpi_bgp_single_advance(NRNMPI_Spike *) C
+ void nrnmpi_send_doubles(double *, int, int, int) C
+ void nrnmpi_postrecv_doubles(double *, int, int, int, void **) C
+ void nrn_promote() C
+ void nrnmpi_bgp_multisend(NRNMPI_Spike *, int, int *) C
 
 # directly copied from coreneuron
-
 int main(int, char **, char **)
 void nrn_multithread_job(void *(*)(NrnThread *)) C
 void BBS_netpar_solve(double) C
