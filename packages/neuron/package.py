@@ -34,6 +34,7 @@ class Neuron(Package):
     variant('cross-compile', default=False, description='Build for cross-compile environment')
     variant('profile',       default=False, description="Enable Tau profiling")
     variant('debug',         default=False, description="Compile without optimization")
+    variant('multisend',     default=True, description="Enable multi-send spike exchange")
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
@@ -242,6 +243,9 @@ class Neuron(Package):
         # with below autotools option
         if spec.satisfies('+profile'):
             options.extend(['--disable-dependency-tracking'])
+
+        if spec.satisfies('+multisend'):
+            options.extend(['--with-multisend'])
 
         options.extend(['MPICC=%s' % mpi_c_compiler,
                         'MPICXX=%s' % mpi_cxx_compiler])
