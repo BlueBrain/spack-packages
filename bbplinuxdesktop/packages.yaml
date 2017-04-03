@@ -1,0 +1,55 @@
+packages:
+    cmake:
+        paths:
+            cmake@3.6.2: /usr
+        version: [3.6.2]
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@0.29.1: /usr
+        buildable: False
+        version: [0.29.1]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    python:
+        paths:
+            python@2.7.12: /usr
+        version: [2.7.12]
+        buildable: False
+    mpich:
+        paths:
+            mpich@3.2: /usr
+        buildable: False
+        version: [3.2]
+    hdf5:
+        paths:
+            hdf5@1.10.0: /usr
+        buildable: False
+    zlib:
+        paths:
+            zlib@develop: /usr
+        buildable: False
+
+    tau:
+        variants: ~comm ~phase ~openmp
+
+    coreneuron:
+        variants: ~openmp
+
+    all:
+        compiler: [gcc]
+        providers:
+            mpi: [mpich]

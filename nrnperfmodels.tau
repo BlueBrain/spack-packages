@@ -503,6 +503,13 @@ vecevent.c
 halfgap.c
 invlfire.c
 ProfileHelper.c
+khh.c
+nahh.c
+if3.c
+khh.c
+nahh.c
+intfirecur.c
+spikeout.c
 END_FILE_INCLUDE_LIST
 
 BEGIN_INCLUDE_LIST
@@ -601,5 +608,15 @@ bool Report::isDueToReport(double)
 bool Report::isDueToReport(double)
 bool AllReports::isEmpty()
 int CellData::fillMapping(float *, int)
+
+int neurox::Branch::backwardEuler_handler(int const*, unsigned long)
+void neurox::Branch::backwardEulerStep()
+void neurox::Branch::setupTreeMatrix()
+
+Branch.cpp
+main.cpp
+Mechanism.cpp
+neurox.cpp
+Neuron.cpp
 
 END_INCLUDE_LIST
