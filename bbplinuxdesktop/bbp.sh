@@ -24,7 +24,7 @@ uninstall_package() {
 spack reindex
 
 # uninstall all packages
-#uninstall_package
+uninstall_package
 
 # stop if iany package installation fails
 set -e
