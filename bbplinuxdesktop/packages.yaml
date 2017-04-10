@@ -35,9 +35,10 @@ packages:
         buildable: False
         version: [3.2]
     hdf5:
-        paths:
-            hdf5@1.10.0: /usr
-        buildable: False
+        variants: ~cxx ~fortran ~shared +mpi
+    #    paths:
+    #        hdf5@1.10.0: /usr
+    #    buildable: False
     zlib:
         paths:
             zlib@develop: /usr
