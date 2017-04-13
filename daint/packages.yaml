@@ -1,15 +1,9 @@
 packages:
-    craympi:
-        paths:
-            craympi@3.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: /opt/cray/mpt/7.2.2/gni/mpich2-intel/14.0/
-        buildable: False
-        #modules:
-        #    craympi@3.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: PrgEnv-intel/5.2.82
     mpich:
-        paths:
-            mpich@7.2.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: /opt/cray/mpt/7.2.2/gni/mpich2-intel/14.0/
-        #modules:
-        #    mpich@7.2.2%intel@15.0.1.133 arch=cray-CNL-sandybridge: PrgEnv-intel/5.2.82
+        modules:
+            mpich@7.5.0%intel@17.0.0.098 arch=cray-CNL-haswell: cray-mpich/7.5.0
+            mpich@7.5.0%cce@8.5.5 arch=cray-CNL-haswell: cray-mpich/7.5.0
+        version: [7.5.0]
         buildable: False
     autoconf:
         paths:
@@ -23,9 +17,9 @@ packages:
         version: [system]
     pkg-config:
         paths:
-            pkg-config@system: /usr
+            pkg-config@0.28: /usr
         buildable: False
-        version: [system]
+        version: [0.28]
     libtool:
         paths:
             libtool@system: /usr
@@ -37,35 +31,26 @@ packages:
         buildable: False
         version: [3.0.2]
     hdf5:
-        paths:
-            hdf5@1.8.16%intel@15.0.1.133 arch=cray-CNL-sandybridge: /opt/cray/hdf5-parallel/1.8.11/intel/130/
-        buildable: False
-        version: [1.8.16]
-    zlib:
-        paths:
-            zlib@1.2.8%intel@15.0.1.133 arch=cray-CNL-sandybridge: /apps/daint/5.2.UP02/easybuild/software/zlib/1.2.8-CrayGNU-5.2.40/
-        buildable: False
-        version: [1.2.8]
-    python:
-        #paths:
-        #    python@2.7.6: /apps/daint/5.2.UP02/python2.7/2.7.6/
         modules:
-             python@2.7.6: python/2.7.6
-        version: [2.7.6]
+            hdf5@1.8.10 arch=cray-CNL-haswell: cray-hdf5/1.10.0
+        buildable: False
+        version: [1.8.10]
+    python:
+        paths:
+            python@2.7.12: /apps/daint/UES/jenkins/6.0.UP02/gpu/easybuild/software/Python/2.7.12-CrayGNU-2016.11
+        version: [2.7.12]
         buildable: False
     mod2c:
         compiler: [gcc]
-    neuron-nmodl:
-        compiler: [gcc]
     nrnh5:
         variants: +zlib
-#        compiler: [intel]
     neuron:
-        variants: +mpi +hdf5 +cross-compile ~python
+        variants: +mpi +cross-compile
     coreneuron:
-        variants: +hdf5 +neurodamus +report
-
+        variants: +neurodamus +report
+    reportinglib:
+        variants: +static
     all:
-        compiler: [intel,gcc,cray]
-        #providers:
-        #    mpi: [craympi]
+        compiler: [intel@17.0.0.098]
+        providers:
+            mpi: [mpich@7.5.0]
