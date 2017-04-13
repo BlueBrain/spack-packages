@@ -72,8 +72,7 @@ class Neuron(Package):
         if 'cray' in self.spec.architecture:
             options.extend(['--without-memacs',
                             '--without-nmodl',
-                            'MPICC=%s' % self.compiler.cc,
-                            'MPICXX=%s' % self.compiler.cxx])
+                            'cross_compiling=yes'])
         return options
 
     def get_optimization_level(self):
@@ -117,12 +116,13 @@ class Neuron(Package):
             options.extend(['--with-nrnpython=%s' % python_exec, '--disable-pysetup'])
 
             if spec.satisfies('+cross-compile'):
-                py_lib = spec['python'].prefix.lib64
+                py_lib = spec['python'].prefix.lib
+                py_lib_64 = spec['python'].prefix.lib64
 
                 options.extend(['PYINCDIR=%s/include/%s' % (py_prefix, py_version_string),
                                 'PYLIB=-L%s -l%s' % (py_lib, py_version_string),
                                 'PYLIBDIR=%s' % py_lib,
-                                'PYLIBLINK=-L%s -l%s' % (py_lib, py_version_string)])
+                                'PYLIBLINK=-L%s -L%s -l%s' % (py_lib, py_lib_64, py_version_string)])
         else:
             options.extend(['--without-nrnpython'])
         return options
@@ -172,14 +172,14 @@ class Neuron(Package):
 
         # on cray and bg-q, gcc and g++ are for front-end
         # so it's safe to use those for nocmodl compilation
-        gcc = which("gcc")
-        gplusplus = which("g++")
+        c_compiler = which("gcc")
+        cxx_compiler = which("g++")
 
         options = ['--prefix=%s' % prefix,
                    '--with-nmodl-only',
                    '--without-x',
-                   'CC=%s' % gcc,
-                   'CXX=%s' % gplusplus]
+                   'CC=%s' % c_compiler,
+                   'CXX=%s' % cxx_compiler]
 
         source = self.stage.source_path
         configure = Executable(join_path(source, 'configure'))
@@ -191,6 +191,8 @@ class Neuron(Package):
 
         c_compiler = spack_cc
         cxx_compiler = spack_cxx
+        mpi_c_compiler = spack_cc
+        mpi_cxx_compiler = spack_cxx
 
         if spec.satisfies('+mpi'):
             mpi_c_compiler = spec['mpi'].mpicc
@@ -209,9 +211,13 @@ class Neuron(Package):
 
         options = ['--prefix=%s' % prefix,
                    '--without-iv',
+                   '--without-x',
+                   '--without-readline',
                    '--disable-rx3d',
                    'CC=%s' % c_compiler,
-                   'CXX=%s' % cxx_compiler]
+                   'CXX=%s' % cxx_compiler,
+                   'MPICC=%s' % mpi_c_compiler,
+                   'MPICXX=%s' % mpi_cxx_compiler]
 
         options.extend(self.get_configure_options(spec))
         build = Executable('./build.sh')
@@ -222,8 +228,13 @@ class Neuron(Package):
         if spec.satisfies('+profile'):
             options.extend(['--disable-dependency-tracking'])
 
-        options.extend(['MPICC=%s' % mpi_c_compiler,
-                        'MPICXX=%s' % mpi_cxx_compiler])
+        # on cray systems somehow we get error while linking. Even if
+        # if we use cc wrapper we get errors. So explicitly add mpich.
+        # Also, -pthread is not valid pthread option for cray compiler.
+        # As we are not using threads, don't use pthread.
+        if 'cray' in self.spec.architecture:
+            options.extend(['LIBS=-lmpich',
+                            'use_pthread=no'])
 
         build_dir = "spack-build-%s" % spec.version
 

@@ -80,8 +80,8 @@ class Coreneuron(Package):
 
         with working_dir(build_dir, create=True):
 
-            c_compiler = self.compiler.cc
-            cxx_compiler = self.compiler.cxx
+            c_compiler = spack_cc
+            cxx_compiler = spack_cxx
 
             optflag = self.get_optimization_level()
 
