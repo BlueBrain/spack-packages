@@ -33,7 +33,23 @@ class Mod2c(Package):
 
         build_dir = "spack-build-%s" % spec.version
 
+        # See #3818. on cray machine we are not able target front-end
+        # build with auto-generated compilers.yaml file.
+        # As mod2c is front-end only, it's ok to build with GCC.
+
+        if 'cray' in self.spec.architecture:
+            c_compiler = which("gcc")
+            cxx_compiler = which("g++")
+        else:
+            c_compiler = spack_cc
+            cxx_compiler = spack_cxx
+
         with working_dir(build_dir, create=True):
-            cmake('..', '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix)
+
+            options = [ '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+                        '-DCMAKE_C_COMPILER=%s' % c_compiler,
+                        '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler]
+
+            cmake('..', *options)
             make()
             make('install')
