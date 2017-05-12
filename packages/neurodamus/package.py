@@ -31,6 +31,8 @@ class Neurodamus(Package):
     version('plasticity', git=url, branch='sandbox/chindemi/glusynapse-master')
     version('oldplasticity', git=url, branch='sandbox/kumbhar/savestate_devel')
     version('saveupdate', git=url, branch='sandbox/king/saveupdate')
+    version('saveupdateEuler', git=url, branch='sandbox/kumbhar/saveupdateEuler')
+    version('saveupdateClearModel', git=url, branch='sandbox/kumbhar/saveupdate_clearmodel')
     version('saveupdateprofile', git=url, branch='sandbox/kumbhar/saveupdate')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
@@ -46,6 +48,7 @@ class Neurodamus(Package):
     depends_on("neuron@hdf", when='@hdf+compile')
     depends_on("neuron@oldplasticity", when='@oldplasticity+compile')
     depends_on('reportinglib', when='+compile')
+    depends_on('reportinglib@memleakfix', when='@saveupdateClearModel+compile')
     depends_on('reportinglib+debug', when='+compile+debug')
     depends_on('reportinglib+profile', when='+compile+profile')
     depends_on("mpi", when='+compile')
