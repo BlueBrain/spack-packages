@@ -23,7 +23,8 @@ class Reportinglib(Package):
     homepage = "https://bbpcode.epfl.ch/code/a/sim/reportinglib/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/reportinglib/bbp"
 
-    version('develop', git=url)
+    version('develop', git=url, preferred=True)
+    version('memleakfix', git=url, branch='sandbox/kumbhar/memleakfix')
 
     variant('profile', default=False, description="Enable profiling using Tau")
     variant('static',  default=False, description="Build static library")
@@ -32,6 +33,7 @@ class Reportinglib(Package):
     depends_on('cmake@2.8.12:', type='build')
     depends_on('mpi')
     depends_on('tau', when='+profile')
+
 
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
