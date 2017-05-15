@@ -25,9 +25,10 @@ class Coreneuron(Package):
 
     homepage = "https://github.com/BlueBrain/CoreNeuron"
     url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
-    github_url = "ssh://bbpcode.epfl.ch/sim/coreneuron"
+    github_url = "https://github.com/BlueBrain/CoreNeuron.git"
 
-    version('develop',    git=url, preferred=True)
+    version('develop',    git=github_url, preferred=True)
+    version('developopt', git=url, branch='sandbox/kumbhar/dev')
     version('github',     git=github_url)
     version('hdf',        git=url, branch='sandbox/kumbhar/nrnh5')
     version('perfmodels', git=url)
@@ -39,10 +40,12 @@ class Coreneuron(Package):
     variant('tests',         default=False, description="Enable building tests")
     variant('gpu',           default=False, description="Enable GPU build")
     variant('profile',       default=False, description="Enable profiling using Tau")
+    variant('knl',           default=False, description="Enable KNL specific flags")
 
     # mandatory dependencies
     depends_on('mod2c', type='build')
     depends_on('mod2c@github', type='build', when='@github')
+    depends_on('mod2c@developopt', type='build', when='@developopt')
     depends_on('cmake@2.8.12:', type='build')
     depends_on('mpi', when='+mpi')
     depends_on('nrnh5', when='@hdf')
@@ -51,6 +54,7 @@ class Coreneuron(Package):
     depends_on('cuda', when='+gpu')
 
     # optional dependencies
+    # depends_on('neurodamus@developopt~compile', when='@developopt+neurodamusmod~gpu')
     depends_on('neurodamus@develop~compile', when='+neurodamusmod~gpu')
     depends_on('neurodamus@gpu~compile', when='+gpu')
     depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
@@ -68,10 +72,17 @@ class Coreneuron(Package):
             del os.environ["USE_PROFILER_WRAPPER"]
 
     def get_optimization_level(self):
+        flags = "-g"
+
         if 'bgq' in self.spec.architecture:
-            return '-O3'
+            flags += ' -O3'
         else:
-            return '-O2'
+            flags += ' -O2'
+
+        if self.spec.satisfies('+knl'):
+            flags = '-g -xmic-avx512 -O3 -qopt-report=5'
+
+        return flags 
 
     def install(self, spec, prefix):
 
