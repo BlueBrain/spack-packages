@@ -1,0 +1,13 @@
+modules:
+  enable:
+      - lmod
+      - tcl
+  lmod:
+    core_compilers: ['gcc', 'clang']
+    hierarchical_scheme: ['compilers']
+  tcl:
+    all:
+      suffixes:
+          +profile: 'profile'
+    hash_length: 0
+    blacklist: ['pdt', 'reportinglib', 'mpich', 'python', 'hdf5']
