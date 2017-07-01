@@ -14,6 +14,8 @@
 # CRAY macro to remove use of assembly intrinsics. This should not impact performance much.
 # -optPdtCOpts="-D_CRAYC=1". With this random123 for cray will be used which doesn't use any
 # assembly intrinsics.
+# llvm 4.0 has issues while compiling coreneuron due to avx 512 "undeclared dvi..." error
+# llvm 8 from apple works fine on Sierra 10.12
 
 #### LIST OF PACKAGES ####
 _dev_packages=(
@@ -40,22 +42,23 @@ _dev_packages=(
 
 
 dev_packages=(
-    'neuronperfmodels'
-    'neuronperfmodels +profile'
+    'neuronperfmodels@neuron ^reportinglib+static'
     'coreneuron@perfmodels +report ^reportinglib+static'
+    'neuronperfmodels@neuron +profile ^reportinglib+static'
     'coreneuron@perfmodels +profile +report ^reportinglib+static'
 )
 
+
 compilers=(
-    '%clang'
     '%gcc'
+    '%clang'
 )
 
 ##### UNINSTALL PACKAGE #####
 uninstall_package() {
 	for package in "${dev_packages[@]}"
     do
-	    spack uninstall -a -f -d -y $package
+	    spack uninstall -a -f -R -y $package
 	done
 }
 
@@ -63,7 +66,7 @@ uninstall_package() {
 spack reindex
 
 # uninstall all packages
-uninstall_package
+# uninstall_package
 
 # stop if iany package installation fails
 set -e

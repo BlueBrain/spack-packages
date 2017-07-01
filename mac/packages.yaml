@@ -2,10 +2,9 @@ packages:
 
     cmake:
         paths:
-            cmake@system: /usr/local
-            cmake@3.5.2: /usr/local
+            cmake@3.8.2: /usr/local
         buildable: False
-        version: [system, 3.5.2]
+        version: [3.8.2]
 
     autoconf:
         paths:
@@ -45,10 +44,10 @@ packages:
 
     pkg-config:
         paths:
-            pkg-config@system%clang@3.9.0: /usr/local
-            pkg-config@system%gcc: /usr/local
+            pkg-config@0.29.2%clang@8.1.0-apple: /usr/local
+            pkg-config@0.29.1%gcc@4.9.4: /usr/local
         buildable: False
-        version: [system]
+        version: [0.29.1]
 
     environment-modules:
         paths:
@@ -75,6 +74,12 @@ packages:
         buildable: False
         version: [1.2.8]
 
+    qt:
+        paths:
+            qt@5.5.1: /usr/local/Cellar/qt55/5.5.1
+        buildable: False
+        version: [5.5.1]
+
     mpich:
         paths:
             mpich@3.2: /usr/local
@@ -84,6 +89,39 @@ packages:
     boost:
         version: [1.51.0]
 
+    # some packages for LLVM
+    #    binutilss :
+    #        paths:
+    #            binutils@2.28: /usr/local/Cellar/binutils/2.27
+    #        buildable: False
+    #        version: [2.28]
+    #    swigg :
+    #        paths:
+    #            swig@3.0.12: /usr/local/Cellar/swig/3.0.12
+    #        buildable: False
+    #        version: [3.0.12]
+    #    libedit :
+    #        paths:
+    #            libedit@3.1: /usr/local/Cellar/libedit/20160903-3.1
+    #        buildable: False
+    #        version: [3.1]
+    #    ncurses :
+    #        paths:
+    #            ncurses@6.0.2: /usr/local/Cellar/ncurses/6.0_2
+    #        buildable: False
+    #        version: [6.0.2]
+    #    gmp :
+    #        paths:
+    #            gmp@6.1.1: /usr/local/Cellar/gmp/6.1.1
+    #        buildable: False
+    #        version: [6.1.1]
+    #    isl :
+    #        paths:
+    #            isl@0.18: /usr/local/Cellar/isl/0.18
+    #        buildable: False
+    #        version: [0.18]
+    #    # end of llvm
+    #
     tau:
         variants: ~openmp ~comm ~phase
 
@@ -91,6 +129,6 @@ packages:
         variants: ~openmp
 
     all:
-        compiler: [gcc@4.9.3, clang@3.9.0]
+        compiler: [gcc@4.9.3, clang@8.1.0-apple]
         providers:
             mpi: [mpich]
