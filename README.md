@@ -793,3 +793,144 @@ packages:
        providers:
            mpi: [mpich]
 ```
+
+
+## Generating Modules ##
+
+Here are brief instructions how we generate module on OS X with `modules.yaml` provided in this repository.
+
+You can install `lmod` via spack but it's better to install as system package.
+
+```
+brew install lmod
+```
+
+Then activate `lmod` as:
+
+```bash
+LMOD_HOME=`brew --prefix lmod`
+source $LMOD_HOME/lmod/init/bash
+```
+
+> `LMOD_HOME` on OS X is `/usr/local/opt/lmod`
+
+Assuming you have proper `modules.yaml`, we can generate `lmod` modules with Spack as:
+
+```
+spack module refresh --delete-tree -y -m lmod
+```
+
+Make sure to set `MODULEPATH` to the `Core` directory :
+
+```bash
+xport MODULEPATH=/Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/Core/
+```
+
+Now `module av` should show you packages built with core compilers:
+
+```bash
+$ module av
+
+ /Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/Core
+   gcc/4.9.4    llvm/8.1.0-apple (L)
+
+  Where:
+   L:  Module is loaded
+```
+
+Loading one of the compiler will show the modules built with that compiler :
+
+```
+$ module av
+
+ /Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/gcc/4.9.4
+   mod2c/develop    neurodamus/develop             python/2.7.10
+   mpich/3.2        neuronperfmodels/coreneuron
+
+ /Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/Core
+   gcc/4.9.4 (L)    llvm/8.1.0-apple
+
+  Where:
+   L:  Module is loaded
+```
+
+And loading `mpich` will show modules compiled with MPI:
+
+```
+$ module load mpich/3.2
+
+$ module av
+
+ /Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/mpich/3.2-xboj7as/gcc/4.9.4
+   coreneuron/perfmodels-profile          neuronperfmodels/neuron      (D)
+   coreneuron/perfmodels           (D)    reportinglib/develop-profile
+   neuron/master-profile                  reportinglib/develop         (D)
+   neuron/master                   (D)    tau/2.25.2
+   neuronperfmodels/neuron-profile
+
+ /Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/gcc/4.9.4
+   mod2c/develop        neurodamus/develop             python/2.7.10
+   mpich/3.2     (L)    neuronperfmodels/coreneuron
+
+ /Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/Core
+   gcc/4.9.4 (L)    llvm/8.1.0-apple
+
+  Where:
+   L:  Module is loaded
+   D:  Default Module
+
+```
+
+We can now load modules :
+
+```
+$ module load neurodamus/develop mod2c/develop
+$ module list
+Currently Loaded Modules:
+  1) gcc/4.9.4   2) mpich/3.2   3) neurodamus/develop   4) mod2c/develop
+```
+
+If we swap compilers then previously modules should be swapped automaticaly:
+
+```
+$ module swap gcc llvm
+
+Due to MODULEPATH changes, the following have been reloaded:
+  1) mod2c/develop     2) mpich/3.2     3) neurodamus/develop
+```
+
+Similarly the instructions for modules :
+
+```
+MODULES_HOME=`brew --prefix modules`
+source ${MODULES_HOME}/Modules/init/bash
+
+export MODULEPATH=/Users/kumbhar/workarena/software/sources/spack/share/spack/modules/darwin-sierra-x86_64/
+
+spack module refresh --delete-tree -y -m tcl
+```
+
+And `module av` should shows available modules:
+
+```
+$ module av
+
+ /Users/kumbhar/workarena/software/sources/spack/share/spack/modules/darwin-sierra-x86_64/
+ coreneuron/perfmodels-clang-mpich
+ coreneuron/perfmodels-clang-mpich-profile
+ coreneuron/perfmodels-gcc-mpich
+ coreneuron/perfmodels-gcc-mpich-profile
+ mod2c/develop-clang
+ mod2c/develop-gcc
+ mpich/3.2-clang
+ mpich/3.2-gcc
+ neurodamus/develop-clang
+ neurodamus/develop-gcc
+ neuron/master-clang-mpich
+ neuron/master-clang-mpich-profile
+ neuron/master-gcc-mpich
+ neuron/master-gcc-mpich-profile
+ neuronperfmodels/coreneuron-clang
+ neuronperfmodels/coreneuron-gcc
+ ....
+```

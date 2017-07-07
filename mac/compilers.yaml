@@ -6,10 +6,23 @@ compilers:
     modules: []
     operating_system: sierra
     paths:
-      cc: /usr/local/Cellar/gcc@4.9/4.9.4/bin/gcc-4.9
-      cxx: /usr/local/Cellar/gcc@4.9/4.9.4/bin/g++-4.9
-      f77: /usr/local/Cellar/gcc@4.9/4.9.4/bin/gfortran-4.9
-      fc: /usr/local/Cellar/gcc@4.9/4.9.4/bin/gfortran-4.9
+      cc: !!python/unicode '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang'
+      cxx: !!python/unicode '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++'
+      f77: /usr/local/bin/gfortran
+      fc: /usr/local/bin/gfortran
+    spec: clang@8.1.0-apple
+    target: x86_64
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: sierra
+    paths:
+      cc: /usr/local/bin/gcc-4.9
+      cxx: /usr/local/bin/g++-4.9
+      f77: /usr/local/bin/gfortran-4.9
+      fc: /usr/local/bin/gfortran-4.9
     spec: gcc@4.9.4
     target: x86_64
 - compiler:
@@ -19,9 +32,9 @@ compilers:
     modules: []
     operating_system: sierra
     paths:
-      cc: !!python/unicode '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang'
-      cxx: !!python/unicode '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++'
-      f77: null
-      fc: null
-    spec: clang@8.1.0-apple
+      cc: /usr/local/bin/gcc-4.4
+      cxx: /usr/local/bin/g++-4.4
+      f77: /usr/local/bin/gfortran-4.4
+      fc: /usr/local/bin/gfortran-4.4
+    spec: gcc@4.4
     target: x86_64

@@ -1,13 +1,57 @@
 modules:
-  enable:
+
+  enable::
       - lmod
       - tcl
+
   lmod:
-    core_compilers: ['gcc', 'clang']
-    hierarchical_scheme: ['compilers']
+    core_compilers:
+      - 'gcc@4.4'
+    hash_length: 0
+    blacklist: ['pdt', 'hdf5', 'zlib', 'autoconf', 'libtool', 'pkg-config', 'cmake', 'automake']
+    all:
+      suffixes:
+          '+profile': 'profile'
+      environment:
+        set:
+          '${PACKAGE}_ROOT': '${PREFIX}'
+      filter:
+        environment_blacklist: ['CPATH', 'LIBRARY_PATH']
+      #autoload: 'direct'
+
   tcl:
     all:
       suffixes:
-          +profile: 'profile'
+          '+profile': 'profile'
+          '^mpich': 'mpich'
+          '^openmpi': 'openmpi'
+      autoload: 'direct'
+      conflict:
+          - '${PACKAGE}'
+      environment:
+        set:
+          '${PACKAGE}_ROOT': '${PREFIX}'
+      filter:
+        environment_blacklist: ['CPATH', 'LIBRARY_PATH']
     hash_length: 0
-    blacklist: ['pdt', 'reportinglib', 'mpich', 'python', 'hdf5']
+    naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}'
+
+    blacklist: ['pdt', 'hdf5', 'zlib', 'autoconf', 'libtool', 'pkg-config', 'cmake', 'automake', '%gcc@4.4']
+
+    gcc:
+      environment:
+        set:
+          CC: gcc
+          CXX: g++
+          FC: gfortran
+          F90: gfortran
+          F77: gfortran
+
+    mpich:
+      environment:
+        set:
+          SLURM_MPI_TYPE: pmi2
+          OMPI_MCA_btl_openib_warn_default_gid_prefix: '0'
+
+    ^python:
+      autoload: 'direct'
