@@ -25,6 +25,7 @@ class Reportinglib(Package):
 
     version('develop', git=url, preferred=True)
     version('memleakfix', git=url, branch='sandbox/kumbhar/memleakfix')
+    version('gather', git=url, branch='sandbox/king/gatherMappingREP-31')
 
     variant('profile', default=False, description="Enable profiling using Tau")
     variant('static',  default=False, description="Build static library")
