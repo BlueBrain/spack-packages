@@ -56,6 +56,8 @@ class Neurodamus(Package):
     depends_on('reportinglib+profile', when='+compile+profile')
     depends_on("mpi", when='+compile')
 
+    conflicts('^neuron~python', when='@develop+compile')
+
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
