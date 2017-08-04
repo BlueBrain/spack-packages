@@ -1,4 +1,4 @@
 config:
-  install_tree: /projects/PlasticNeocortex/kumbhar/softwares/bgq/install
+  install_tree: /projects/PlasticNeocortex/$user/softwares/bgq/install
   module_roots:
-    tcl: /projects/PlasticNeocortex/kumbhar/softwares/bgq/modules
+    tcl: /projects/PlasticNeocortex/$user/softwares/bgq/modules

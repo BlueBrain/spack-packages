@@ -1,4 +1,4 @@
 config:
-  install_tree: /gpfs/bbp.cscs.ch/project/proj16/kumbhar/SPACK_INSTALL/viz/simulation/install
+  install_tree: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/viz/simulation/install
   module_roots:
-    tcl: /gpfs/bbp.cscs.ch/project/proj16/kumbhar/SPACK_INSTALL/viz/simulation/modules
+    tcl: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/viz/simulation/modules

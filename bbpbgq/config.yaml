@@ -1,4 +1,4 @@
 config:
-  install_tree: /gpfs/bbp.cscs.ch/project/proj16/kumbhar/SPACK_INSTALL/bgq/simulation/install
+  install_tree: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/bgq/simulation/install
   module_roots:
-    tcl: /gpfs/bbp.cscs.ch/project/proj16/kumbhar/SPACK_INSTALL/bgq/simulation/modules
+    tcl: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/bgq/simulation/modules
