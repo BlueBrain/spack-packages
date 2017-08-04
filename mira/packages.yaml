@@ -19,6 +19,16 @@ packages:
             pkg-config@0.23: /usr
         buildable: False
         version: [0.23]
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
     libtool:
         paths:
             libtool@system: /usr
