@@ -1,5 +1,14 @@
 # Getting Started With Spack #
 
+If you are first time here and never used Spack then may be you are interested in:
+
+* [Spack tutorial (SperComputing 2016) ](http://spack.readthedocs.io/en/latest/tutorial.html)
+* [Spack Documentation](http://spack.readthedocs.io/en/latest/#)
+* [Spack Google Group Discussion](https://groups.google.com/forum/#!forum/spack)
+* And [Spack Slack Channel](https://spackpm.slack.com/messages/C5W7NKZJT/)
+
+Otherwise,
+
 This document describes basic steps required to start development environment with Spack. Even though Spack can build entire software stack from scratch, for the developers it is more convenient to bootstrap from the existing packages provided by system which could be your personal laptop or HPC cluster. Hence, following instructions are divided into  platform `independnet` and platform `specific` settings.
 
 ## Platform Independent Settings ##
@@ -28,7 +37,7 @@ git remote add llnl https://github.com/llnl/spack.git
 
 #### Additional Packages ####
 
-NEURON and related packages are maintained in separate repository. In order to build those packages with Spack, add bitbucket r as Spack repository:
+NEURON and CoreNEURON related packages are maintained in separate repository. In order to build those packages with Spack, add bellow github repository as Spack repository:
 
 ```bash
 cd $SOURCE_HOME_DIR
@@ -36,7 +45,7 @@ git clone https://github.com/pramodskumbhar/spack-packages.git
 spack repo add --scope site `pwd`/spack-packages
 ```
 
-Note that you have to update / pull both repositories if there are any upstream changes.
+Make sure to update / pull both repositories if there are any upstream changes.
 
 
 #### Update .bashrc or .bash_profile ####
@@ -48,17 +57,46 @@ export PATH=$SPACK_ROOT/bin:$PATH
 source $SPACK_ROOT/share/spack/setup-env.sh
 ```
 
+We assume that the `module` command is already installed/avaialble on the system. Check Spack documentation if this is not the case.
+
 ## Platform Specific Configuration ##
 
-Here are the instructions to get started on Mac, Linux, Lugano VizCluster and Lugano BG-Q System. Instructions for Cray system (like BlueWater, TITAN, Theta, Piz Daint) will be added later.
+Here are the instructions to get started on Mac, Linux, Lugano VizCluster and Lugano BG-Q System. Instructions for Cray system (like BlueWater, TITAN and Theta) will be added later.
 
-The configurations are present in `spackconfig` repository in btbucket:
+The configurations are present in `spack-configs` repository in btbucket:
 
 ```bash
-https://pkumbhar@bitbucket.org/pramodskumbhar/spack-configs.git
+cd $SOURCE_HOME_DIR
+git clone https://github.com/pramodskumbhar/spack-configs.git
 ```
 
-### Mac OS X ###
+Typically we will copy platform specific configurations to your `$HOME/.spack` directory. For example, on lugano vizcluster we do:
+
+```
+mkdir -p $HOME/.spack/linux/
+cp -r spack-configs/bbpviz/* ~/.spack/linux/
+```
+
+The `config.yaml` (`$HOME/.spack/linux/config.yaml` here) file typically looks like :
+
+```
+config:
+  install_tree: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/viz/simulation/install
+  module_roots:
+    tcl: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/viz/simulation/modules
+
+```
+
+These are paths where packages will be installed and modules will be automatically generated. Update these paths as per your setting and make sure to add `module_roots` path to `MODULEPATH` so that `spack load` will find those:
+
+```
+export MODULEPATH=/gpfs/bbp.cscs.ch/project/proj16/kumbhar/SPACK_INSTALL/viz/simulation/modules:$MODULEPATH
+```
+
+> Note that if `$user` present in the path then replace it with your username i.e. $USER
+
+
+#### Mac OS X ###
 We can build entire software stack including `CMake`, `GCC`, `LLVM`, `MPI` (`MPICH` or `OpenMPI`) with Spack on our laptop. But for the development purpose, most of the time, we don't want to build these packages from source as they take long time to build. In this case it is goood idea to use `Homebrew` or `Macport` to install these pakages. Note that you can skip installing packages from `Homebrew` if you want to install everything from source with Spack. But then you will end up building lots of dependencies.
 
 So lets start installing common packages that we need:
@@ -141,7 +179,7 @@ This will find common compilers available in `$PATH` and print out the list:
     /Users/kumbhar/.spack/darwin/compilers.yaml
 ```
 
-Note that new file `.spack/darwin/compilers.yaml` is created in `$HOME` which store all compiler configuration. This file look like :
+Note that new file `.spack/darwin/compilers.yaml` is created in `$HOME` which stores all compiler configuration. This file looks like :
 
 ``` bash
 compilers:
@@ -267,10 +305,21 @@ With the above configuration we tell spack to not build fortan bindings of `HDF5
 
 > Note that older version of Spack allowed to specify version as `system`. This means the version specified is provided by `system` and use it without checking version requirements. It is now recommended to specify exact version number in `packages.yaml` to avoid incompatible version issues.
 
-With all system packages, `$HOME/.spack/mac/packages.yaml` looks like below:
+With all system packages, `$HOME/.spack/darwin/packages.yaml` looks like below:
 
 ```bash
 packages:
+    gcc:
+        paths:
+            gcc@4.9.4%gcc@4.4: /usr/local
+        buildable: False
+        version: [4.9.4]
+
+    llvm:
+        paths:
+            llvm@8.1.0-apple%gcc@4.4: /usr/local
+        buildable: False
+        version: [8.1.0-apple]
 
     cmake:
         paths:
@@ -354,7 +403,9 @@ packages:
 
     mpich:
         paths:
-            mpich@3.2: /usr/local
+            mpich@3.2%gcc@4.9.4: /usr/local
+            mpich@3.2%clang@8.1.0-apple: /usr/local
+
         buildable: False
         version: [3.2]
 
@@ -554,80 +605,95 @@ done
 ```
 
 
-### Lugano Vizcluster (TODO : Need to Update) ###
+#### Lugano Vizcluster (TODO : Need to Update) ###
 
 All above instructions for OS X platform will be useful to setup development environment on Lugano Vizcluster, read those first. We list few important exceptions that we must have to consider :
 
 * On HPC cluster system like `Lugano Vizcluster`, we dont want to / should not install compilers, MPI libraries etc.
 * We should use existing modules as much as possible.
 * Spack discourage use of `LD_LIBRARY_PATH` from user space. Many existing modules on HPC systems set `LD_LIBRARY_PATH`. In order to use these modules, we have to use `--dirty` flag during installation (related issue has been reported upstream).
-* All `MPI` packages are externally installed. The actual libraries are `mvapich`, `mpich`, `intelmpi` etc. Many times we have to specify these `MPI` libraries explicitly on command line with `install` or `spec` command like `spack spec neuron +mpi ^mvapich2` otherwise we get `list out of index` error. (this is likely a bug and has been reported upstream).
-* I have used packages like `autotools`, `pkg-config` from `/usr/bin/` which is discouraged! I have seen observed that this is not causing any issues. I am using it in `packages.yaml` to quickly bootstrap without building too many packages. But it's may not be good idea!
+* All `MPI` packages are externally installed. The actual libraries are `mvapich2`, `mpich3`, `intelmpi` etc. Many times we have to specify these `MPI` libraries explicitly on command line with `install` or `spec` command like `spack spec neuron +mpi ^mvapich2` otherwise we get `list out of index` error. (this is likely a bug and has been reported upstream).
+* I have used packages like `autotools`, `pkg-config` from `/usr/bin/` which is discouraged! As these are only used for building, I have never seen any issues (if versions are properly specified). I am using those in `packages.yaml` to quickly bootstrap without building too many packages. But it's may not be good idea!
 
 The `$HOME/.spack/linux/packages.yaml` file for vizcluster looks like below:
 
 ```bash
 packages:
-   intelmpi:
-       paths:
-           intelmpi@6.0%intel@17.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64/
-       buildable: False
-   mkl:
-       paths:
-           mkl@1.0%intel@15.0.0 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/intel/mkl
-       buildable: False
-   cmake:
-       paths:
-           cmake@3.6.1 arch=linux-redhat6-x86_64: cmake-3.6.1-gcc-4.4.7-xhpqagp
-       buildable: False
-   mvapich2:
-       paths:
-           mvapich2@2.0.1 arch=linux-redhat6-x86_64: /gpfs/bbp.cscs.ch/apps/viz/tools/mvapich2/mvapich2-2.0.1-nocuda-slurm-14.03.4.2/install
-       buildable: False
-   autoconf:
-       paths:
-           autoconf@system: /usr
-       buildable: False
-       version: [system]
-   automake:
-       paths:
-           automake@system: /usr
-       buildable: False
-       version: [system]
-   pkg-config:
-       paths:
-           pkg-config@0.29.1: /usr
-       buildable: False
-       version: [0.29.1]
-   libtool:
-       paths:
-           libtool@system: /usr
-       buildable: False
-       version: [system]
-   tcl:
-       paths:
-           tcl@8.5: /usr
-       version: [8.5]
-       buildable: False
-   python:
-       paths:
-           python@system: /usr
-       version: [system]
-       buildable: False
-   cuda:
-       modules:
-           cuda@6.0: cuda/6.0
-       version: [6.0]
-       buildable: False
+    intelmpi:
+        paths:
+            intelmpi@develop: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64
+        version: [develop]
+        buildable: False
+    cmake:
+        paths:
+            cmake@3.6.2: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/cmake/3.6.2
+        version: [3.6.2]
+        buildable: False
+    mvapich2:
+        modules:
+            mvapich2@2.0.1%gcc@4.9.0: mvapich2/2.0.1-nocuda
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@0.29.1: /usr
+        buildable: False
+        version: [0.29.1]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    python:
+        paths:
+            python@2.6.6: /usr
+        version: [2.6.6]
+        buildable: False
+    cuda:
+        modules:
+            cuda@6.0: cuda/6.0
+        version: [6.0]
+        buildable: False
+    mpich:
+        modules:
+            mpich@3.2: pgi/mpich/16.5
+        buildable: False
+        version: [3.2]
+    hdf5:
+        paths:
+            hdf5@1.10.0%gcc@4.9.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-gcc
+            hdf5@1.10.0%intel@17.0.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-icc
+            hdf5@1.8.5%pgi@16.5-0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-pgi
+        variants: ~fortran ~shared ~cxx
+        buildable: False
+        version: [1.10.0]
+    zlib:
+        paths:
+            zlib@1.2.8%gcc@4.9.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-gcc
+            zlib@1.2.8%intel@17.0.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-icc
+            zlib@1.2.8%pgi@16.5-0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-pgi
+        buildable: False
+        version: [1.2.8]
 
-   hdf5:
-       variants: ~fortran
-   all:
-       compiler: [gcc@4.9.0, intel@17.0.0, intel@15.0.0]
-       providers:
-           mpi: [mvapich2, intelmpi]
-           blas: [mkl]
-           lapack: [mkl]
+    tau:
+        variants: ~openmp ~comm ~phase
+
+    coreneuron:
+        variants: ~openmp
+
+    all:
+        compiler: [gcc@4.9.0, intel@17.0.0]
+        providers:
+            mpi: [mvapich2, intelmpi, mpich]
 ```
 
 And build script for `Intel`, `PGI` and `GNU` compiler looks like : 
@@ -711,87 +777,111 @@ spack install --dirty mod2c@github %pgi
 ```
 
 
-## Lugano BG-Q Configuration (TODO : Need to Update) ##
+#### Lugano BG-Q Configuration (TODO : Need to Update) ##
 
 ```bash
 $cat .spack/compilers.yaml
 compilers:
 - compiler:
-   modules: []
-   operating_system: redhat6
-   paths:
-     cc: /usr/lib64/ccache/gcc
-     cxx: /usr/lib64/ccache/g++
-     f77: /usr/bin/gfortran
-     fc: /usr/bin/gfortran
-   spec: gcc@4.4.7
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /usr/lib64/ccache/gcc
+      cxx: /usr/lib64/ccache/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.4.7
 - compiler:
-   modules: []
-   operating_system: redhat6
-   paths:
-     cc: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc_r
-     cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc++
-     f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
-     fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
-   spec: xl@12.1
+    modules: []
+    operating_system: redhat6
+    paths:
+      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc_r
+      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc++
+      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
+      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
+    spec: xl@12.1
 - compiler:
-   modules: []
-   operating_system: CNK
-   paths:
-     cc: /usr/bin/bgxlc_r
-     cxx: /usr/bin/bgxlc++
-     f77: /usr/bin/bgxlf_r
-     fc: /usr/bin/bgxlf2008
-   spec: xl@12.1
+    modules: [bg-xl]
+    operating_system: cnk
+    paths:
+      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc_r
+      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc++_r
+      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
+      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
+    spec: xl@12.1
 - compiler:
-   modules: []
-   operating_system: CNK
-   paths:
-     cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
-     cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
-     f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
-     fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
-   spec: gcc@4.4.7
+    modules: [bg-xl]
+    operating_system: cnk
+    paths:
+      cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
+      cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
+      f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+      fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+    spec: gcc@4.4.7
 ```
 
 ```bash
 $cat .spack/packages.yaml
 packages:
-   mpich:
-       paths:
-           mpich@3.2%xl@12.1 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
-           mpich@3.2%gcc@4.4.7 arch=bgq-CNK-ppc64: /bgsys/drivers/ppcfloor/comm/
-       buildable: False
-   autoconf:
-       paths:
-           autoconf@system: /usr
-       buildable: False
-       version: [system]
-   automake:
-       paths:
-           automake@system: /usr
-       buildable: False
-       version: [system]
-   pkg-config:
-       paths:
-           pkg-config@system: /usr
-       buildable: False
-       version: [system]
-   cmake:
-       paths:
-           cmake@2.8.12: /gpfs/bbp.cscs.ch/apps/bgq/tools/cmake/cmake-2.8.12/install
-       buildable: False
-       version: [2.8.12]
-   libtool:
-       paths:
-           libtool@system: /usr
-       buildable: False
-       version: [system]
+    mpich:
+        paths:
+            mpich@3.2%xl@12.1 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/xl
+            mpich@3.2%gcc@4.4.7 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/gcc
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@system: /usr
+        buildable: False
+        version: [system]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    cmake:
+        paths:
+            cmake@2.8.12: /gpfs/bbp.cscs.ch/apps/bgq/tools/cmake/cmake-2.8.12/install
+        buildable: False
+        version: [2.8.12]
+    hdf5:
+        paths:
+            hdf5@1.8.15%xl@12.1 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/hdf5/hdf5-1.8.15-patch1/install
+        buildable: False
+        version: [1.8.15]
+    zlib:
+        paths:
+            zlib@1.2.3%xl@12.1 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/zlib/zlib-1.2.3/install
+        buildable: False
+        version: [1.2.3]
+    python:
+        paths:
+            python@2.6.7 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/python/python-2.6.7/install/python2.6.7-20131119/
+            python@2.7.5 arch=bgq-cnk-ppc64: /bgsys/tools/python2.7.5-20161013/
+        version: [2.7.5]
+        buildable: False
+    tau:
+        variants: ~comm ~phase
 
-   all:
-       compiler: [xl,gcc]
-       providers:
-           mpi: [mpich]
+    #BBP Packages
+    nrnh5:
+        variants: +zlib
+    neuron:
+        variants: +mpi +cross-compile
+
+    all:
+        compiler: [xl,gcc]
+        providers:
+            mpi: [bgqmpi]
 ```
 
 
@@ -823,7 +913,7 @@ spack module refresh --delete-tree -y -m lmod
 Make sure to set `MODULEPATH` to the `Core` directory :
 
 ```bash
-xport MODULEPATH=/Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/Core/
+export MODULEPATH=/Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/Core/
 ```
 
 Now `module av` should show you packages built with core compilers:
