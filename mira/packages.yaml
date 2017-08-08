@@ -56,7 +56,7 @@ packages:
         buildable: False
     tau:
         paths:
-            tau@2.25.2%xl@12.1 arch=bgq-cnk-ppc64: /home/kumbhar/workarena/systems/mira/softwares/install/profilers/tau-2.25/
+            tau@2.25.2%xl@12.1 arch=bgq-cnk-ppc64: /gpfs/mira-fs0/projects/PlasticNeocortex/kumbhar/softwares/manual/install/profilers/tau-2.25/bgq/
         version: [2.25]
         buildable: False
     #BBP Packages
