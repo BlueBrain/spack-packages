@@ -37,12 +37,15 @@ class Mod2c(Package):
         # build with auto-generated compilers.yaml file.
         # As mod2c is front-end only, it's ok to build with GCC.
 
-        if 'cray' in self.spec.architecture:
-            c_compiler = which("gcc")
-            cxx_compiler = which("g++")
-        else:
-            c_compiler = spack_cc
-            cxx_compiler = spack_cxx
+        # Update: on daint it's working fine:
+        # Intel compiler works fine but for cray use ^mod2c %gcc
+
+        #if 'cray' in self.spec.architecture:
+        #    c_compiler = which("gcc")
+        #    cxx_compiler = which("g++")
+
+        c_compiler = spack_cc
+        cxx_compiler = spack_cxx
 
         with working_dir(build_dir, create=True):
 
