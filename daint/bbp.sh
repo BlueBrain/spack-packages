@@ -1,14 +1,15 @@
 #!/bin/bash
-dev_packages=(
-    'neuronperfmodels'
-    'coreneuron@perfmodels +report ^reportinglib+static'
-)
+
+#dev_packages=(
+#    'neuronperfmodels'
+#    'coreneuron@perfmodels +report ^reportinglib+static'
+#)
 
 #    'neuronperfmodels +profile'
 #    'coreneuron@perfmodels +profile +report ^reportinglib+static'
 
 compilers=(
-    '%cce@8.5.5'
+    '%cce@8.5.4'
     '%intel'
 )
 
@@ -34,18 +35,18 @@ set -e
 # for every compiler, build each package
 for compiler in "${compilers[@]}"
 do
-    for package in "${dev_packages[@]}"
-    do
-        spack install $package $compiler
-    done
+    # neuron built version of network models
+    spack install neuronperfmodels
+
+    # mod2c is for front-end and hence need %gcc as compiler
+    spack install coreneuron@perfmodels +report $compiler ^mod2c %gcc
 done
 
 
-
-exit 0
+############# This is historical information ##################
 
 #still doesnt work
-spack install neuron +mpi +cross-compile ^craympi ^neuron-nmodl os=SuSE11
-spack install neurodamus ^neuron+mpi+cross-compile ^craympi ^neuron-nmodl os=SuSE11
+#spack install neuron +mpi +cross-compile ^craympi ^neuron-nmodl os=SuSE11
+#spack install neurodamus ^neuron+mpi+cross-compile ^craympi ^neuron-nmodl os=SuSE11
 #also works
-spack install -v coreneuron%intel +hdf5 ~neurodamus +report ^mpich@7.2.2 os=CNL ^nrnh5+zlib%intel os=CNL ^mod2c%gcc os=SuSE11
+#spack install -v coreneuron%intel +hdf5 ~neurodamus +report ^mpich@7.2.2 os=CNL ^nrnh5+zlib%intel os=CNL ^mod2c%gcc os=SuSE11

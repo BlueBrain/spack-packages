@@ -246,19 +246,6 @@ compilers:
     modules: []
     operating_system: sles12
     paths:
-      cc: /opt/cray/pe/craype/2.5.8/bin/cc
-      cxx: /opt/cray/pe/craype/2.5.8/bin/CC
-      f77: /opt/cray/pe/craype/2.5.8/bin/ftn
-      fc: /opt/cray/pe/craype/2.5.8/bin/ftn
-    spec: cce@5.5
-    target: x86_64
-- compiler:
-    environment: {}
-    extra_rpaths: []
-    flags: {}
-    modules: []
-    operating_system: sles12
-    paths:
       cc: /usr/bin/gcc-4.8
       cxx: /usr/bin/g++-4.8
       f77: /usr/bin/gfortran-4.8

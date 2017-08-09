@@ -605,7 +605,7 @@ done
 ```
 
 
-#### Lugano Vizcluster (TODO : Need to Update) ###
+#### Lugano Vizcluster ###
 
 All above instructions for OS X platform will be useful to setup development environment on Lugano Vizcluster, read those first. We list few important exceptions that we must have to consider :
 
@@ -613,9 +613,16 @@ All above instructions for OS X platform will be useful to setup development env
 * We should use existing modules as much as possible.
 * Spack discourage use of `LD_LIBRARY_PATH` from user space. Many existing modules on HPC systems set `LD_LIBRARY_PATH`. In order to use these modules, we have to use `--dirty` flag during installation (related issue has been reported upstream).
 * All `MPI` packages are externally installed. The actual libraries are `mvapich2`, `mpich3`, `intelmpi` etc. Many times we have to specify these `MPI` libraries explicitly on command line with `install` or `spec` command like `spack spec neuron +mpi ^mvapich2` otherwise we get `list out of index` error. (this is likely a bug and has been reported upstream).
-* I have used packages like `autotools`, `pkg-config` from `/usr/bin/` which is discouraged! As these are only used for building, I have never seen any issues (if versions are properly specified). I am using those in `packages.yaml` to quickly bootstrap without building too many packages. But it's may not be good idea!
+* I have used packages like `autotools`, `pkg-config` from `/usr/bin/` which is discouraged! As these are only used for building, I have never seen any issues (if versions are properly specified). I am using those in `packages.yaml` to quickly bootstrap without building too many packages. But it's may not be good idake sure to copy up to date version from `bbpviz` directory as:
 
-The `$HOME/.spack/linux/packages.yaml` file for vizcluster looks like below:
+Make sure to copy up to date version from `bbpviz` directory as:
+
+```
+mkdir -p $HOME/.spack/linux
+cp -r bbpviz/* $HOME/.spack/linux/
+```
+
+The configuration looks like:
 
 ```bash
 packages:
@@ -777,111 +784,31 @@ spack install --dirty mod2c@github %pgi
 ```
 
 
-#### Lugano BG-Q Configuration (TODO : Need to Update) ##
+#### Lugano BG-Q Configuration ##
 
-```bash
-$cat .spack/compilers.yaml
-compilers:
-- compiler:
-    modules: []
-    operating_system: redhat6
-    paths:
-      cc: /usr/lib64/ccache/gcc
-      cxx: /usr/lib64/ccache/g++
-      f77: /usr/bin/gfortran
-      fc: /usr/bin/gfortran
-    spec: gcc@4.4.7
-- compiler:
-    modules: []
-    operating_system: redhat6
-    paths:
-      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc_r
-      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/xlc++
-      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
-      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
-    spec: xl@12.1
-- compiler:
-    modules: [bg-xl]
-    operating_system: cnk
-    paths:
-      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc_r
-      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc++_r
-      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf_r
-      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
-    spec: xl@12.1
-- compiler:
-    modules: [bg-xl]
-    operating_system: cnk
-    paths:
-      cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
-      cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
-      f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
-      fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
-    spec: gcc@4.4.7
+Note that up to date configurations are under `bbpbgq/` directory. Make sure to copy those as:
+
+```
+mkdir -p $HOME/.spack/bgq/
+cp bbpbgq/* $HOME/.spack/bgq/
 ```
 
-```bash
-$cat .spack/packages.yaml
-packages:
-    mpich:
-        paths:
-            mpich@3.2%xl@12.1 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/xl
-            mpich@3.2%gcc@4.4.7 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/gcc
-        buildable: False
-    autoconf:
-        paths:
-            autoconf@system: /usr
-        buildable: False
-        version: [system]
-    automake:
-        paths:
-            automake@system: /usr
-        buildable: False
-        version: [system]
-    pkg-config:
-        paths:
-            pkg-config@system: /usr
-        buildable: False
-        version: [system]
-    libtool:
-        paths:
-            libtool@system: /usr
-        buildable: False
-        version: [system]
-    cmake:
-        paths:
-            cmake@2.8.12: /gpfs/bbp.cscs.ch/apps/bgq/tools/cmake/cmake-2.8.12/install
-        buildable: False
-        version: [2.8.12]
-    hdf5:
-        paths:
-            hdf5@1.8.15%xl@12.1 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/hdf5/hdf5-1.8.15-patch1/install
-        buildable: False
-        version: [1.8.15]
-    zlib:
-        paths:
-            zlib@1.2.3%xl@12.1 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/zlib/zlib-1.2.3/install
-        buildable: False
-        version: [1.2.3]
-    python:
-        paths:
-            python@2.6.7 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/python/python-2.6.7/install/python2.6.7-20131119/
-            python@2.7.5 arch=bgq-cnk-ppc64: /bgsys/tools/python2.7.5-20161013/
-        version: [2.7.5]
-        buildable: False
-    tau:
-        variants: ~comm ~phase
+#### Piz Daint Configuration ##
 
-    #BBP Packages
-    nrnh5:
-        variants: +zlib
-    neuron:
-        variants: +mpi +cross-compile
+Note that up to date configurations are under `daint/` directory. Make sure to copy those as:
 
-    all:
-        compiler: [xl,gcc]
-        providers:
-            mpi: [bgqmpi]
+```
+mkdir -p $HOME/.spack/cray/
+cp daint/* $HOME/.spack/cray/
+```
+
+The instructions / scrit to install NEURON/CoreNEURON is provided under `daint/bbp.sh`.
+
+Also I have been updating Spack with the latest upstream changes from LLNL repository. I have created new branch called `upstream` which should be used on Cray platforms. It should work on lugano/mira but I just tested it on Piz Daint. So make sure to clone this new branch on Piz Daint.
+
+```
+cd spack
+git checkout upstream
 ```
 
 
