@@ -15,6 +15,7 @@
 from spack import *
 import os
 import sys
+import glob
 
 
 class Neuron(Package):
@@ -129,6 +130,7 @@ class Neuron(Package):
 
                 py_lib = spec['python'].prefix.lib
                 py_lib_64 = spec['python'].prefix.lib64
+                py_inc_dir = '%s/include/%s' % (py_prefix, py_version_string)
                 extra_libs = ''
 
                 if not os.path.isdir(py_lib):
@@ -140,8 +142,17 @@ class Neuron(Package):
                 import socket
                 if 'alcf.anl.gov' in socket.getfqdn():
                     extra_libs = '-lz -lssl -lcrypto -lutil'
+                elif 'thetalog' in socket.getfqdn():
+                    # another hack for theta until sysadmins fix the permissions! :(
+                    # need to cleanup this soon!
+                    py_version_string = 'python3.5m'
 
-                options.extend(['PYINCDIR=%s/include/%s' % (py_prefix, py_version_string),
+                    # on platform like theta cray, intel python has extra directory include/python3.5m/
+                    # find directory of Python.h
+                    python_h_file = [y for x in os.walk(py_prefix) for y in glob.glob(os.path.join(x[0], 'Python.h'))][0]
+                    py_inc_dir = os.path.dirname(python_h_file)
+
+                options.extend(['PYINCDIR=%s' % (py_inc_dir),
                                 'PYLIB=-L%s -l%s %s' % (py_lib, py_version_string, extra_libs),
                                 'PYLIBDIR=%s' % py_lib,
                                 'PYLIBLINK=-L%s -L%s -l%s %s' % (py_lib, py_lib_64, py_version_string, extra_libs)])

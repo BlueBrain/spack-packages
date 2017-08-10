@@ -79,10 +79,10 @@ class Coreneuron(Package):
         else:
             flags += ' -O2'
 
-        if self.spec.satisfies('+knl'):
+        if self.spec.satisfies('+knl') and '%intel' in self.spec:
             flags = '-g -xmic-avx512 -O3 -qopt-report=5'
 
-        return flags 
+        return flags
 
     def install(self, spec, prefix):
 
