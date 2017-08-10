@@ -24,7 +24,8 @@ class Reportinglib(Package):
     url      = "ssh://bbpcode.epfl.ch/sim/reportinglib/bbp"
 
     version('develop', git=url, preferred=True)
-    version('memleakfix', git=url, branch='sandbox/kumbhar/memleakfix')
+
+    # temporary version for branch being tested for INCITE
     version('gather', git=url, branch='sandbox/king/gatherMappingREP-31')
 
     variant('profile', default=False, description="Enable profiling using Tau")
@@ -34,7 +35,6 @@ class Reportinglib(Package):
     depends_on('cmake@2.8.12:', type='build')
     depends_on('mpi')
     depends_on('tau', when='+profile')
-
 
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
@@ -69,7 +69,7 @@ class Reportinglib(Package):
             if spec.satisfies('+debug'):
                 options.extend(['-DCMAKE_BUILD_TYPE=Debug'])
 
-            # especially for bg-q
+            # especially for bg-q where we don't use cmake to find mpi libs
             options.extend(['-DCMAKE_C_COMPILER=%s' % c_compiler,
                             '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler])
 

@@ -24,44 +24,50 @@ class Coreneuron(Package):
     and optimal performance."""
 
     homepage = "https://github.com/BlueBrain/CoreNeuron"
-    url      = "ssh://bbpcode.epfl.ch/sim/coreneuron"
-    github_url = "https://github.com/BlueBrain/CoreNeuron.git"
+    url      = "https://github.com/BlueBrain/CoreNeuron"
+    bbpurl   = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop',    git=github_url, preferred=True)
-    version('developopt', git=url, branch='sandbox/kumbhar/dev')
-    version('github',     git=github_url)
-    version('hdf',        git=url, branch='sandbox/kumbhar/nrnh5')
+    version('develop', git=url, preferred=True)
+
+    # TODO: same as develop but for legacy reasons
     version('perfmodels', git=url)
+
+    # development version from bbp
+    version('hdf', git=bbpurl, branch='sandbox/kumbhar/nrnh5')
+    version('devopt', git=bbpurl, branch='sandbox/kumbhar/dev')
 
     variant('mpi',           default=True,  description="Enable MPI support")
     variant('openmp',        default=True,  description="Enable OpenMP support")
     variant('neurodamusmod', default=True,  description="Build only MOD files from Neurodamus")
     variant('report',        default=True,  description="Enable reports using ReportingLib")
-    variant('tests',         default=False, description="Enable building tests")
     variant('gpu',           default=False, description="Enable GPU build")
-    variant('profile',       default=False, description="Enable profiling using Tau")
     variant('knl',           default=False, description="Enable KNL specific flags")
+    variant('tests',         default=False, description="Enable building tests")
+    variant('profile',       default=False, description="Enable profiling using Tau")
 
     # mandatory dependencies
-    depends_on('mod2c', type='build')
-    depends_on('mod2c@github', type='build', when='@github')
-    depends_on('mod2c@developopt', type='build', when='@developopt')
     depends_on('cmake@2.8.12:', type='build')
+    depends_on('mod2c', type='build')
     depends_on('mpi', when='+mpi')
+    depends_on('reportinglib', when='+report')
+    depends_on('cuda', when='+gpu')
+    depends_on('boost', when='+tests')
+
+    depends_on('mod2c@devopt', type='build', when='@devopt')
     depends_on('nrnh5', when='@hdf')
     depends_on('hdf5', when='@hdf')
     depends_on('zlib', when='@hdf')
-    depends_on('cuda', when='+gpu')
 
-    # optional dependencies
-    # depends_on('neurodamus@developopt~compile', when='@developopt+neurodamusmod~gpu')
+    # granular dependency selection for neurodamus
     depends_on('neurodamus@develop~compile', when='+neurodamusmod~gpu')
     depends_on('neurodamus@gpu~compile', when='+gpu')
+
+    # neuron models for benchmarking
     depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
-    depends_on('reportinglib', when='+report')
-    depends_on('reportinglib+profile', when='+report+profile')
-    depends_on('boost', when='+tests')
+
+    # granular dependency selection for profiling
     depends_on('tau', when='+profile')
+    depends_on('reportinglib+profile', when='+report+profile')
 
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
@@ -71,13 +77,11 @@ class Coreneuron(Package):
         if self.spec.satisfies('+profile'):
             del os.environ["USE_PROFILER_WRAPPER"]
 
-    def get_optimization_level(self):
-        flags = "-g"
+    def get_opt_flags(self):
+        flags = "-g -O2"
 
-        if 'bgq' in self.spec.architecture:
-            flags += ' -O3'
-        else:
-            flags += ' -O2'
+        if 'bgq' in self.spec.architecture and '%xl' in self.spec:
+            flags = '-O3 -qtune=qp -qarch=qp -q64 -qhot=simd -qsmp -qthreaded -g'
 
         if self.spec.satisfies('+knl') and '%intel' in self.spec:
             flags = '-g -xmic-avx512 -O3 -qopt-report=5'
@@ -93,15 +97,15 @@ class Coreneuron(Package):
             c_compiler = spack_cc
             cxx_compiler = spack_cxx
 
-            optflag = self.get_optimization_level()
+            optflag = self.get_opt_flags()
 
             if spec.satisfies('+profile'):
                 c_compiler = 'tau_cc'
                 cxx_compiler = 'tau_cxx'
-            # for bg-q, our cmake is not setup properly
             elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
-                    c_compiler = spec['mpi'].mpicc
-                    cxx_compiler = spec['mpi'].mpicxx
+                # for bg-q, our cmake is not setup properly
+                c_compiler = spec['mpi'].mpicc
+                cxx_compiler = spec['mpi'].mpicxx
 
             options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
                        '-DCOMPILE_LIBRARY_TYPE=STATIC',
@@ -143,7 +147,7 @@ class Coreneuron(Package):
                                 '-DENABLE_OPENACC=ON',
                                 '-DENABLE_OPENACC_INFO=ON'])
                 # PGI compiler not able to compile nrnreport.cpp when enabled
-                # OpenMP, OpenACC and Reporting. Disable ReportingLib
+                # OpenMP, OpenACC and Reporting. Disable ReportingLib for GPU
                 options.extend(['-DENABLE_REPORTINGLIB:BOOL=OFF'])
 
             # tqperf test in perfmodels use net_move functionality which
@@ -151,27 +155,27 @@ class Coreneuron(Package):
             if spec.satisfies('@perfmodels'):
                 options.extend(['-DENABLE_SPLAYTREE_QUEUING=ON'])
 
-            mech_set = False
+            mech_dir_set = False
             modlib_dir = ''
 
             if 'MOD_FILE_DIR' in os.environ:
                 modlib_dir = os.environ['MOD_FILE_DIR']
-                mech_set = True
+                mech_dir_set = True
                 if not os.path.isdir(modlib_dir):
                     raise RuntimeError("MOD_FILE_DIR environment variable set but directory doesn't exist!")
 
             if spec.satisfies('@perfmodels'):
                 modlib_dir = self.nrnperf_modfiles
-                mech_set = True
+                mech_dir_set = True
             elif spec.satisfies('+neurodamusmod'):
                 neurodamus_dir = self.spec['neurodamus'].prefix
                 modlib_dir = '%s;%s/lib/modlib' % (modlib_dir, neurodamus_dir)
                 modfile_list = '%s/lib/modlib/coreneuron_modlist.txt' % (neurodamus_dir)
 
                 options.extend(['-DADDITIONAL_MECHS=%s' % (modfile_list)])
-                mech_set = True
+                mech_dir_set = True
 
-            if mech_set:
+            if mech_dir_set:
                 options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
 
             cmake('..', *options)

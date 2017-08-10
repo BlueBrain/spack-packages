@@ -23,11 +23,15 @@ class Neuron(Package):
     """NEURON simulation environment"""
 
     homepage = "https://www.neuron.yale.edu/"
+    url      = "https://github.com/nrnhines/nrn"
 
-    version('develop', git='https://github.com/pramodk/nrn.git', preferred=True)
-    version('master', git='https://github.com/nrnhines/nrn.git')
-    version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
-    version('oldplasticity', git='ssh://bbpcode.epfl.ch/sim/bluron/bbp', branch='sstate_to_bluron')
+    # TODO: extra urls from development
+    devurl   = "https://github.com/pramodk/nrn.git"
+    bbpurl   = "ssh://bbpcode.epfl.ch/user/kumbhar/neuron"
+
+    version('master', git=url, preferred=True)
+    version('develop', git=devurl)
+    version('hdf', git=bbpurl, branch='bbpcode_trunk')
 
     variant('mpi', default=True, description='Enable MPI parallelism')
     variant('python', default=True, description='Enable python')
