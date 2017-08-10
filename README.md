@@ -793,7 +793,7 @@ mkdir -p $HOME/.spack/bgq/
 cp bbpbgq/* $HOME/.spack/bgq/
 ```
 
-#### Piz Daint Configuration ##
+#### Piz Daint Configuration ####
 
 Note that up to date configurations are under `daint/` directory. Make sure to copy those as:
 
@@ -806,6 +806,23 @@ The instructions / scrit to install NEURON/CoreNEURON is provided under `daint/b
 
 Also I have been updating Spack with the latest upstream changes from LLNL repository. I have created new branch called `upstream` which should be used on Cray platforms. It should work on lugano/mira but I just tested it on Piz Daint. So make sure to clone this new branch on Piz Daint.
 
+```
+cd spack
+git checkout upstream
+```
+
+#### Theta Configuration ####
+
+Note that up to date configurations are under `theta/` directory. Make sure to copy those as:
+
+```
+mkdir -p $HOME/.spack/cray/
+cp theta/* $HOME/.spack/cray/
+```
+
+The instructions / scrit to install NEURON/CoreNEURON is provided under `theta/bbp.sh`.
+
+Similar to piz-daint make sure to use `upstream` branch of spack.
 ```
 cd spack
 git checkout upstream
