@@ -24,8 +24,11 @@ class Mod2c(Package):
     homepage = "https://github.com/BlueBrain/mod2c"
     url      = "https://github.com/BlueBrain/mod2c.git"
 
+    # additional repo paths if any
+    bbp_url = "ssh://bbpcode.epfl.ch/sim/mod2c"
+
     version('develop', git=url, preferred=True)
-    version('developopt', git='ssh://bbpcode.epfl.ch/sim/mod2c', branch='sandbox/kumbhar/dev')
+    version('devopt', git=bbp_url, branch='sandbox/kumbhar/dev')
 
     depends_on('cmake@2.8.12:', type='build')
 
@@ -33,25 +36,11 @@ class Mod2c(Package):
 
         build_dir = "spack-build-%s" % spec.version
 
-        # See #3818. on cray machine we are not able target front-end
-        # build with auto-generated compilers.yaml file.
-        # As mod2c is front-end only, it's ok to build with GCC.
-
-        # Update: on daint it's working fine:
-        # Intel compiler works fine but for cray use ^mod2c %gcc
-
-        #if 'cray' in self.spec.architecture:
-        #    c_compiler = which("gcc")
-        #    cxx_compiler = which("g++")
-
-        c_compiler = spack_cc
-        cxx_compiler = spack_cxx
-
         with working_dir(build_dir, create=True):
 
-            options = [ '-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                        '-DCMAKE_C_COMPILER=%s' % c_compiler,
-                        '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler]
+            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+                       '-DCMAKE_C_COMPILER=%s' % spack_cc,
+                       '-DCMAKE_CXX_COMPILER=%s' % spack_cxx]
 
             cmake('..', *options)
             make()
