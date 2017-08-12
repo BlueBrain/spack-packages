@@ -1,0 +1,75 @@
+#=============================================================================
+# Travis Project settings
+#=============================================================================
+
+#=============================================================================
+# Environment
+#=============================================================================
+env:
+  global:
+    - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
+    - PATH=$SPACK_ROOT/bin:$PATH
+
+#=============================================================================
+# Build matrix
+#   - Note that we should not use osx_image otherwise brew will fail.
+#     This is because mpich depends on gcc and installation of gcc fails
+#     with brew link.
+#=============================================================================
+matrix:
+  fast_finish: true
+  include:
+    - language: cpp
+      os: linux
+      dist: trusty
+      sudo: true
+      env: [ MPI=mpich]
+    - language: cpp
+      os: osx
+      sudo: false
+      env: [ MPI=mpich]
+
+# Common packages for devlopment build
+addons:
+  apt:
+    packages:
+      - build-essential
+      - automake
+      - cmake
+      - bison
+      - flex
+      - pkg-config
+      - autoconf
+      - automake
+      - make
+      - libncurses-dev
+      - environment-modules
+
+# Install software dependencies
+install:
+  - .travis/install_dependencies.sh $MPI
+  - .travis/setup_spack.sh
+
+#=============================================================================
+# Building
+#=============================================================================
+script:
+
+  - echo "------- SPACK CONFIGURATIONS -------"
+  - spack compilers
+  - spack config get packages
+
+  - echo "------- INSTALL PACKAGES -------"
+  - .travis/install_packages.sh
+
+  - source $SPACK_ROOT/share/spack/setup-env.sh
+  - spack find -v
+
+#=============================================================================
+# Notifications
+#=============================================================================
+notifications:
+  email:
+    recipients: pramod.s.kumbhar@gmail.com
+    on_success: change
+    on_failure: always
