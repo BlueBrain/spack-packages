@@ -13,16 +13,16 @@ echo "---------> $MPI :: $MPI_IMPL"
 case "$os" in
     Darwin)
         brew update
-        brew install mpich flex bison modules
+        brew install flex bison modules
         brew tap homebrew/science
         brew install lmod
 
         case "$MPI_IMPL" in
             mpich|mpich3)
-                brew ls --versions mpich || brew install mpich
+                brew install mpich
                 ;;
             openmpi)
-                brew ls --versions openmpi || brew install openmpi
+                brew install openmpi
                 ;;
             *)
                 echo "ERROR: Unknown MPI Implementation: $MPI_IMPL"
@@ -40,18 +40,19 @@ case "$os" in
 
         case "$MPI_IMPL" in
             mpich|mpich3)
-                sudo apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 libmpich-dev
-                wget -q http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mpich/mpich_3.0.4-6ubuntu1_amd64.deb
-                sudo dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
+                sudo apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 mpich libmpich-dev
+                #wget -q http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mpich/mpich_3.0.4-6ubuntu1_amd64.deb
+                #sudo dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
                 ;;
             openmpi)
-                sudo apt-get install -y gfortran
-                wget --no-check-certificate https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-1.10.2.tar.gz
-                tar -zxf openmpi-1.10.2.tar.gz
-                cd openmpi-1.10.2
-                sh ./configure --prefix=$HOME/OpenMPI > /dev/null
-                make -j > /dev/null
-                 make install > /dev/null
+                #sudo apt-get install -y gfortran
+                #wget --no-check-certificate https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-1.10.2.tar.gz
+                #tar -zxf openmpi-1.10.2.tar.gz
+                #cd openmpi-1.10.2
+                #sh ./configure --prefix=$HOME/OpenMPI > /dev/null
+                #make -j > /dev/null
+                #make install > /dev/null
+                sudo apt-get install -y openmpi-bin libopenmpi-dev
                 ;;
             *)
                 echo "ERROR: Unknown MPI Implementation: $MPI_IMPL"
