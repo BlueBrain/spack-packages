@@ -1,0 +1,102 @@
+#=============================================================================
+# Project settings
+#=============================================================================
+# Only build master; do not build every branch.
+branches:
+  only:
+    - master
+
+#=============================================================================
+# Build matrix
+#=============================================================================
+matrix:
+  fast_finish: true
+  include:
+    - language: c
+      os: linux
+      dist: trusty
+      env: [ TEST_SUITE=unit, COVERAGE=true ]
+
+#=============================================================================
+# Compilers (gcc only for now)
+#=============================================================================
+compiler:
+  - gcc
+
+#=============================================================================
+# Environment
+#=============================================================================
+# Use new Travis infrastructure (Docker can't sudo yet)
+sudo: false
+
+# Docs need graphviz to build
+addons:
+  apt:
+    packages:
+      - gfortran
+      - build-essential
+      - automake
+      - cmake
+      - bison
+      - flex
+      - pkg-config
+      - autoconf
+      - automake
+      - make
+      - python2.7-dev
+      - libncurses-dev
+
+# Work around Travis's lack of support for Python on OSX
+before_install:
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions python > /dev/null || brew install python; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gcc    > /dev/null || brew install gcc;    fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gnupg2 > /dev/null || brew install gnupg2; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
+
+# Install various dependencies
+install:
+  - pip install --upgrade pip
+#  - pip install --upgrade six
+#  - pip install --upgrade setuptools
+#  - pip install --upgrade codecov
+#  - pip install --upgrade flake8
+#  - if [[ "$TEST_SUITE" == "doc" ]]; then pip install --upgrade -r lib/spack/docs/requirements.txt; fi
+
+before_script:
+  # Need this for the git tests to succeed.
+  - git config --global user.email "unknow_me@example.com"
+  - git config --global user.name "Test User"
+
+  # Need this to be able to compute the list of changed files
+  - git fetch origin master:master
+
+#=============================================================================
+# Building
+#=============================================================================
+script:
+  - ./.travis.spack_setup.sh
+  - echo $PATH
+  - pwd
+  - source spack/share/spack/setup-env.sh
+  - export PATH=`pwd`/spack/bin:$PATH
+  - spack spec coreneuron
+  - spack spec mod2c
+  - spack install coreneuron
+  - ls -la $HOME/
+  - cat $HOME/.spack/packages.yaml
+  - spack find -v
+  - spack load coreneuron
+
+#after_success:
+#  - codecov --env PY_VERSION
+
+#=============================================================================
+# Notifications
+#=============================================================================
+notifications:
+  email:
+    recipients: pramod.s.kumbhar@gmail.com
+    on_success: change
+    on_failure: always
