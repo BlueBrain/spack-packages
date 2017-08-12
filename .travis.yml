@@ -9,7 +9,11 @@ branches:
 #=============================================================================
 # Environment
 #=============================================================================
-# Use new Travis infrastructure
+env:
+  global:
+    - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
+    - PATH=$SPACK_ROOT/bin:$PATH
+    - MODULEPATH
 
 
 #=============================================================================
@@ -30,25 +34,7 @@ matrix:
       os: osx
       sudo: false
       env: [ MPI=mpich]
-    - language: cpp
-      os: linux
-      dist: trusty
-      sudo: true
-      env: [ MPI=openmpi]
-    - language: cpp
-      os: osx
-      sudo: false
-      env: [ MPI=openmpi]
 
-
-#=============================================================================
-# Build matrix
-#=============================================================================
-env:
-  global:
-    - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
-    - PATH=$SPACK_ROOT/bin:$PATH
-    - MODULEPATH
 
 # Common packages for devlopment build
 addons:
@@ -66,24 +52,12 @@ addons:
       - libncurses-dev
       - environment-modules
 
-# Work around Travis's lack of support for Python on OSX
-before_install:
-  - sh .travis.mpi-install.sh $MPI
 
-# Install various dependencies
-#install:
-#  - pip install --upgrade pip
-#  - pip install --upgrade six
-#  - pip install --upgrade setuptools
-#  - pip install --upgrade codecov
-#  - pip install --upgrade flake8
-#  - if [[ "$TEST_SUITE" == "doc" ]]; then pip install --upgrade -r lib/spack/docs/requirements.txt; fi
+# Install software dependencies
+install:
+  - ./install_dependencies.sh $MPI
+  - ./setup_spack.sh
 
-before_script:
-  # Need this for the git tests to succeed.
-  - export PATH=$SPACK_ROOT/bin:$PATH
-  - ./.travis.spack_setup.sh
-  - echo $MODULEPATH
 
 #=============================================================================
 # Building
@@ -109,8 +83,6 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source /etc/profile.d/modules.sh && source $SPACK_ROOT/share/spack/setup-env.sh && module av && echo $MODULEPATH; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source /usr/local/opt/modules/Modules/init/sh && source $SPACK_ROOT/share/spack/setup-env.sh && echo $MODULEPATH && module av; fi
 
-#after_success:
-#  - codecov --env PY_VERSION
 
 #=============================================================================
 # Notifications
