@@ -25,18 +25,28 @@ matrix:
       os: linux
       dist: trusty
       sudo: true
-      env: [ TEST_SUITE=unit]
+      env: [ MPI=mpich]
     - language: cpp
       os: osx
       sudo: false
-      env: [ TEST_SUITE=unit]
+      env: [ MPI=mpich]
+    - language: cpp
+      os: linux
+      dist: trusty
+      sudo: true
+      env: [ MPI=openmpi]
+    - language: cpp
+      os: osx
+      sudo: false
+      env: [ MPI=openmpi]
+
 
 #=============================================================================
 # Build matrix
 #=============================================================================
 env:
   global:
-    - MPI_IMPL=mpich
+    - MPI_IMPL=$MPI
     - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
     - PATH=$SPACK_ROOT/bin:$PATH
     - MODULEPATH
@@ -99,7 +109,7 @@ script:
   - spack spec coreneuron
   - spack install mod2c
   - spack install coreneuron ~neurodamusmod ~report
-  - spack install -v neuron@master
+  - spack install neuron@master
   - spack find -v
   - echo $MODULEPATH
   - spack load mod2c
