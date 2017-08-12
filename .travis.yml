@@ -7,15 +7,27 @@ branches:
     - master
 
 #=============================================================================
+# Environment
+#=============================================================================
+# Use new Travis infrastructure
+
+
+#=============================================================================
 # Build matrix
 #=============================================================================
 matrix:
   fast_finish: true
   include:
-    - language: c
+    - language: cpp
       os: linux
       dist: trusty
-      env: [ TEST_SUITE=unit, COVERAGE=true ]
+      sudo: true
+      env: [ TEST_SUITE=unit]
+    - language: cpp
+      os: osx
+      sudo: false
+      #osx_image: xcode8.1
+      env: [ TEST_SUITE=unit]
 
 #=============================================================================
 # Build matrix
@@ -26,12 +38,6 @@ env:
     - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
     - PATH=$SPACK_ROOT/bin:$PATH
     - MODULEPATH
-
-#=============================================================================
-# Environment
-#=============================================================================
-# Use new Travis infrastructure
-sudo: true
 
 # Common packages for devlopment build
 addons:
@@ -52,11 +58,11 @@ addons:
 # Work around Travis's lack of support for Python on OSX
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions python > /dev/null || brew install python; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gcc    > /dev/null || brew install gcc;    fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gnupg2 > /dev/null || brew install gnupg2; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
+    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions python > /dev/null || brew install python; fi
+    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gcc    > /dev/null || brew install gcc;    fi
+    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gnupg2 > /dev/null || brew install gnupg2; fi
+    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv; fi
+    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
   - sh .travis.mpi-install.sh $MPI_IMPL
 
 # Install various dependencies
@@ -72,11 +78,7 @@ before_script:
   # Need this for the git tests to succeed.
   - export PATH=$SPACK_ROOT/bin:$PATH
   - ./.travis.spack_setup.sh
-  - source /etc/profile.d/modules.sh
-  - source $SPACK_ROOT/share/spack/setup-env.sh
   - echo $MODULEPATH
-  - env | grep MODULE
-  - sudo pip install --upgrade virtualenv
 
 #=============================================================================
 # Building
@@ -88,12 +90,17 @@ script:
   - spack config get packages
   - echo "------------------------------------"
 
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "-->LINUX"; source /etc/profile.d/modules.sh; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "-->OSX"; source /usr/local/opt/modules/Modules/init/bash; fi
+  - source $SPACK_ROOT/share/spack/setup-env.sh
+
   - spack spec coreneuron
+  - spack install mod2c
   - spack install coreneuron ~neurodamusmod ~report
   - spack install -v neuron@master
   - spack find -v
   - echo $MODULEPATH
-  - spack load coreneuron
+  - spack load mod2c
 
 #after_success:
 #  - codecov --env PY_VERSION

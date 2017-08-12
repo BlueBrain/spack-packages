@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 # This configuration file was taken from the mpi4py and Julia project
 # and then modified for spack-packages repository
 
@@ -11,13 +11,27 @@ os=`uname`
 case "$os" in
     Darwin)
         brew update
-        brew upgrade cmake
+        sudo chown -R $(whoami) /usr/local
+        which python
+        python --version
+        #brew ls --versions python > /dev/null || brew install python
+        brew ls --versions mpich || brew install mpich
+        brew ls --versions flex || brew install flex
+        brew ls --versions bison || brew install bison
+        brew ls --versions modules || brew install modules
+        brew tap homebrew/science
+        brew ls --versions lmod || brew install lmod
+
+        ls /usr/local/bin/
+        which python
+        python --version
+
         case "$MPI_IMPL" in
             mpich|mpich3)
-                brew install mpich
+                brew ls --versions mpich || brew install mpich
                 ;;
             openmpi)
-                brew install openmpi
+                brew ls --versions openmpi || brew install openmpi
                 ;;
             *)
                 echo "ERROR: Unknown MPI Implementation: $MPI_IMPL"
@@ -37,7 +51,7 @@ case "$os" in
             mpich|mpich3)
                 sudo apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 libmpich-dev
                 wget -q http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mpich/mpich_3.0.4-6ubuntu1_amd64.deb
-                sudo dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
+                dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
                 ;;
             openmpi)
                 sudo apt-get install -y gfortran
@@ -46,7 +60,7 @@ case "$os" in
                 cd openmpi-1.10.2
                 sh ./configure --prefix=$HOME/OpenMPI > /dev/null
                 make -j > /dev/null
-                sudo make install > /dev/null
+                 make install > /dev/null
                 ;;
             *)
                 echo "ERROR: Unknown MPI Implementation: $MPI_IMPL"
