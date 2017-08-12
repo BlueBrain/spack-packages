@@ -1,4 +1,10 @@
 packages:
+
+    mpich:
+        paths:
+            mpich@3.0.4: /usr
+        version: [3.0.4]
+        buildable: False
     cmake:
         paths:
             cmake@3.2.2: /usr

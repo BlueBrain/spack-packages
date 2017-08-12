@@ -18,6 +18,15 @@ matrix:
       env: [ TEST_SUITE=unit, COVERAGE=true ]
 
 #=============================================================================
+# Build matrix
+#=============================================================================
+env:
+  global:
+    - MPI_IMPL=mpich
+    - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
+    - PATH=$SPACK_ROOT/bin:$PATH
+
+#=============================================================================
 # Compilers (gcc only for now)
 #=============================================================================
 compiler:
@@ -33,7 +42,6 @@ sudo: false
 addons:
   apt:
     packages:
-      - gfortran
       - build-essential
       - automake
       - cmake
@@ -54,6 +62,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gnupg2 > /dev/null || brew install gnupg2; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
+  - sh .travis.install-mpi.sh $MPI_IMPL
 
 # Install various dependencies
 install:
@@ -66,16 +75,13 @@ install:
 
 before_script:
   # Need this for the git tests to succeed.
-  - git config --global user.email "unknow_me@example.com"
-  - git config --global user.name "Test User"
-
-  # Need this to be able to compute the list of changed files
-  - git fetch origin master:master
+  - export PATH=$SPACK_ROOT/bin:$PATH
 
 #=============================================================================
 # Building
 #=============================================================================
 script:
+  - git log  --pretty=oneline | tail -n 5
   - ./.travis.spack_setup.sh
   - echo $PATH
   - pwd
@@ -87,6 +93,7 @@ script:
   - ls -la $HOME/
   - cat $HOME/.spack/packages.yaml
   - spack find -v
+  - source  /etc/profile.d/modules.sh
   - spack load coreneuron
 
 #after_success:
