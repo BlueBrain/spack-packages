@@ -4,10 +4,9 @@ set -e
 set -x
 
 MPI_LIB_NAME="$1"
-os=`uname`
 
-case "$os" in
-    Darwin)
+case "$TRAVIS_OS_NAME" in
+    osx)
         brew update
         brew install flex bison modules
         brew tap homebrew/science
@@ -27,7 +26,7 @@ case "$os" in
         esac
     ;;
 
-    Linux)
+    linux)
         sudo apt-get update -q
 
         # TODO: workaround for bug in Ubuntu 14.04
