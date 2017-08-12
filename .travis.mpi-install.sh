@@ -51,7 +51,7 @@ case "$os" in
             mpich|mpich3)
                 sudo apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 libmpich-dev
                 wget -q http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mpich/mpich_3.0.4-6ubuntu1_amd64.deb
-                dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
+                sudo dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
                 ;;
             openmpi)
                 sudo apt-get install -y gfortran
