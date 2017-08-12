@@ -8,6 +8,8 @@ set -x
 MPI_IMPL="$1"
 os=`uname`
 
+echo "---------> $MPI :: $MPI_IMPL"
+
 case "$os" in
     Darwin)
         brew update

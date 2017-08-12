@@ -46,7 +46,6 @@ matrix:
 #=============================================================================
 env:
   global:
-    - MPI_IMPL=$MPI
     - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
     - PATH=$SPACK_ROOT/bin:$PATH
     - MODULEPATH
@@ -69,17 +68,11 @@ addons:
 
 # Work around Travis's lack of support for Python on OSX
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
-    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions python > /dev/null || brew install python; fi
-    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gcc    > /dev/null || brew install gcc;    fi
-    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gnupg2 > /dev/null || brew install gnupg2; fi
-    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv; fi
-    #- if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
-  - sh .travis.mpi-install.sh $MPI_IMPL
+  - sh .travis.mpi-install.sh $MPI
 
 # Install various dependencies
-install:
-  - pip install --upgrade pip
+#install:
+#  - pip install --upgrade pip
 #  - pip install --upgrade six
 #  - pip install --upgrade setuptools
 #  - pip install --upgrade codecov
@@ -113,6 +106,8 @@ script:
   - spack find -v
   - echo $MODULEPATH
   - spack load mod2c
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source /etc/profile.d/modules.sh && source $SPACK_ROOT/share/spack/setup-env.sh && module av && echo $MODULEPATH; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source /usr/local/opt/modules/Modules/init/sh && source $SPACK_ROOT/share/spack/setup-env.sh && echo $MODULEPATH && module av; fi
 
 #after_success:
 #  - codecov --env PY_VERSION
