@@ -1,25 +1,18 @@
 #!/bin/bash
-set -x
+set -xe
 
 # spack (personal fork)
 git clone https://github.com/pramodskumbhar/spack.git
 cd spack && git checkout upstream
 
-echo $PATH
-env
-
+set +x
 source $SPACK_ROOT/share/spack/setup-env.sh
-export PATH=$SPACK_ROOT/bin:$PATH
+set -x
 
+# set spack packages
 cd ..
 mkdir -p $HOME/.spack/
 cp .travis.packages.yaml $HOME/.spack/packages.yaml
 
-# add
+# add repository of packages
 spack repo add --scope site .
-
-cd $WORK_DIR
-
-spack compilers
-spack spec neuron
-

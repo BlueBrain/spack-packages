@@ -1,6 +1,6 @@
 #!/bin/sh
-# This configuration file was taken originally from the mpi4py project
-# <http://mpi4py.scipy.org/>, and then modified for Julia
+# This configuration file was taken from the mpi4py and Julia project
+# and then modified for spack-packages repository
 
 set -e
 set -x
@@ -20,45 +20,44 @@ case "$os" in
                 brew install openmpi
                 ;;
             *)
-                echo "Unknown MPI implementation: $MPI_IMPL"
+                echo "ERROR: Unknown MPI Implementation: $MPI_IMPL"
                 exit 1
                 ;;
         esac
     ;;
 
     Linux)
-        apt-get update -q
+        sudo apt-get update -q
         case "$MPI_IMPL" in
             mpich1)
-                apt-get install -y gfortran mpich-shmem-bin libmpich-shmem1.0-dev
+                sudo apt-get install -y gfortran mpich-shmem-bin libmpich-shmem1.0-dev
                 ;;
             mpich2)
-                apt-get install -y gfortran mpich2 libmpich2-3 libmpich2-dev
+                sudo apt-get install -y gfortran mpich2 libmpich2-3 libmpich2-dev
                 ;;
             mpich|mpich3)
-                apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 libmpich-dev
+                sudo apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 libmpich-dev
                 wget -q http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mpich/mpich_3.0.4-6ubuntu1_amd64.deb
-                dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
-                # rm -f ./mpich_3.1-1ubuntu_amd64.deb
+                sudo dpkg -i ./mpich_3.0.4-6ubuntu1_amd64.deb
                 ;;
             openmpi)
-                apt-get install -y gfortran
+                sudo apt-get install -y gfortran
                 wget --no-check-certificate https://www.open-mpi.org/software/ompi/v1.10/downloads/openmpi-1.10.2.tar.gz
                 tar -zxf openmpi-1.10.2.tar.gz
                 cd openmpi-1.10.2
                 sh ./configure --prefix=$HOME/OpenMPI > /dev/null
                 make -j > /dev/null
-                make install > /dev/null
+                sudo make install > /dev/null
                 ;;
             *)
-                echo "Unknown MPI implementation: $MPI_IMPL"
+                echo "ERROR: Unknown MPI Implementation: $MPI_IMPL"
                 exit 1
                 ;;
         esac
         ;;
 
     *)
-        echo "Unknown operating system: $os"
+        echo "Unknown Operating System: $os"
         exit 1
         ;;
 esac

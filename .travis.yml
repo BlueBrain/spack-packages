@@ -25,20 +25,15 @@ env:
     - MPI_IMPL=mpich
     - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
     - PATH=$SPACK_ROOT/bin:$PATH
-
-#=============================================================================
-# Compilers (gcc only for now)
-#=============================================================================
-compiler:
-  - gcc
+    - MODULEPATH
 
 #=============================================================================
 # Environment
 #=============================================================================
-# Use new Travis infrastructure (Docker can't sudo yet)
-sudo: false
+# Use new Travis infrastructure
+sudo: true
 
-# Docs need graphviz to build
+# Common packages for devlopment build
 addons:
   apt:
     packages:
@@ -53,6 +48,7 @@ addons:
       - make
       - python2.7-dev
       - libncurses-dev
+      - environment-modules
 
 # Work around Travis's lack of support for Python on OSX
 before_install:
@@ -62,7 +58,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew ls --versions gnupg2 > /dev/null || brew install gnupg2; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then virtualenv venv; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source venv/bin/activate; fi
-  - sh .travis.install-mpi.sh $MPI_IMPL
+  - sh .travis.mpi-install.sh $MPI_IMPL
 
 # Install various dependencies
 install:
@@ -76,24 +72,28 @@ install:
 before_script:
   # Need this for the git tests to succeed.
   - export PATH=$SPACK_ROOT/bin:$PATH
+  - ./.travis.spack_setup.sh
+  - source /etc/profile.d/modules.sh
+  - source $SPACK_ROOT/share/spack/setup-env.sh
+  - echo $MODULEPATH
+  - env | grep MODULE
+  - sudo pip install --upgrade virtualenv
 
 #=============================================================================
 # Building
 #=============================================================================
 script:
-  - git log  --pretty=oneline | tail -n 5
-  - ./.travis.spack_setup.sh
-  - echo $PATH
-  - pwd
-  - source spack/share/spack/setup-env.sh
-  - export PATH=`pwd`/spack/bin:$PATH
+
+  - echo "------- SPACK CONFIGURATIONS -------"
+  - spack compilers
+  - spack config get packages
+  - echo "------------------------------------"
+
   - spack spec coreneuron
-  - spack spec mod2c
-  - spack install coreneuron
-  - ls -la $HOME/
-  - cat $HOME/.spack/packages.yaml
+  - spack install coreneuron ~neurodamusmod ~report
+  - spack install -v neuron@master
   - spack find -v
-  - source  /etc/profile.d/modules.sh
+  - echo $MODULEPATH
   - spack load coreneuron
 
 #after_success:
