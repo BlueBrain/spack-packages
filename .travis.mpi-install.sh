@@ -11,20 +11,9 @@ os=`uname`
 case "$os" in
     Darwin)
         brew update
-        sudo chown -R $(whoami) /usr/local
-        which python
-        python --version
-        #brew ls --versions python > /dev/null || brew install python
-        brew ls --versions mpich || brew install mpich
-        brew ls --versions flex || brew install flex
-        brew ls --versions bison || brew install bison
-        brew ls --versions modules || brew install modules
+        brew install mpich flex bison modules
         brew tap homebrew/science
-        brew ls --versions lmod || brew install lmod
-
-        ls /usr/local/bin/
-        which python
-        python --version
+        brew install lmod
 
         case "$MPI_IMPL" in
             mpich|mpich3)
