@@ -12,7 +12,7 @@ set -x
 # set spack packages
 cd ..
 mkdir -p $HOME/.spack/
-cp packages.$TRAVIS_OS_NAME.yaml $HOME/.spack/packages.yaml
+cp .travis/packages.$TRAVIS_OS_NAME.yaml $HOME/.spack/packages.yaml
 
 # add repository of packages
 spack repo add --scope site .

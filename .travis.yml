@@ -1,10 +1,6 @@
 #=============================================================================
-# Project settings
+# Travis Project settings
 #=============================================================================
-# Only build master; do not build every branch.
-branches:
-  only:
-    - master
 
 #=============================================================================
 # Environment
@@ -13,8 +9,6 @@ env:
   global:
     - SPACK_ROOT=$TRAVIS_BUILD_DIR/spack
     - PATH=$SPACK_ROOT/bin:$PATH
-    - MODULEPATH
-
 
 #=============================================================================
 # Build matrix
@@ -35,7 +29,6 @@ matrix:
       sudo: false
       env: [ MPI=mpich]
 
-
 # Common packages for devlopment build
 addons:
   apt:
@@ -52,12 +45,10 @@ addons:
       - libncurses-dev
       - environment-modules
 
-
 # Install software dependencies
 install:
-  - ./install_dependencies.sh $MPI
-  - ./setup_spack.sh
-
+  - .travis/install_dependencies.sh $MPI
+  - .travis/setup_spack.sh
 
 #=============================================================================
 # Building
@@ -67,22 +58,12 @@ script:
   - echo "------- SPACK CONFIGURATIONS -------"
   - spack compilers
   - spack config get packages
-  - echo "------------------------------------"
 
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo "-->LINUX"; source /etc/profile.d/modules.sh; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then echo "-->OSX"; source /usr/local/opt/modules/Modules/init/bash; fi
+  - echo "------- INSTALL PACKAGES -------"
+  - .travis/install_packages.sh
+
   - source $SPACK_ROOT/share/spack/setup-env.sh
-
-  - spack spec coreneuron
-  - spack install mod2c
-  - spack install coreneuron ~neurodamusmod ~report
-  - spack install neuron@master
   - spack find -v
-  - echo $MODULEPATH
-  - spack load mod2c
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then source /etc/profile.d/modules.sh && source $SPACK_ROOT/share/spack/setup-env.sh && module av && echo $MODULEPATH; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then source /usr/local/opt/modules/Modules/init/sh && source $SPACK_ROOT/share/spack/setup-env.sh && echo $MODULEPATH && module av; fi
-
 
 #=============================================================================
 # Notifications

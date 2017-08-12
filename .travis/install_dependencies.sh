@@ -7,7 +7,7 @@ MPI_LIB_NAME="$1"
 
 case "$TRAVIS_OS_NAME" in
     osx)
-        brew update
+        brew update > /dev/null
         brew install flex bison modules
         brew tap homebrew/science
         brew install lmod
@@ -35,7 +35,7 @@ case "$TRAVIS_OS_NAME" in
 
         case "$MPI_LIB_NAME" in
             mpich|mpich3)
-                sudo apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 mpich libmpich-dev
+                sudo apt-get install -y mpich libmpich-dev
                 ;;
             openmpi)
                 sudo apt-get install -y openmpi-bin libopenmpi-dev
