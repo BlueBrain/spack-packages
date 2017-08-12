@@ -46,7 +46,6 @@ addons:
       - autoconf
       - automake
       - make
-      - python2.7-dev
       - libncurses-dev
       - environment-modules
 

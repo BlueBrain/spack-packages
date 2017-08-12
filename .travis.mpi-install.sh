@@ -28,13 +28,12 @@ case "$os" in
 
     Linux)
         sudo apt-get update -q
+
+        # TODO: for bug in Ubuntu 14.04
+        # check https://bugs.launchpad.net/ubuntu/+source/python2.7/+bug/1115466
+        sudo ln -s /usr/lib/python2.7/plat-*/_sysconfigdata_nd.py /usr/lib/python2.7/
+
         case "$MPI_IMPL" in
-            mpich1)
-                sudo apt-get install -y gfortran mpich-shmem-bin libmpich-shmem1.0-dev
-                ;;
-            mpich2)
-                sudo apt-get install -y gfortran mpich2 libmpich2-3 libmpich2-dev
-                ;;
             mpich|mpich3)
                 sudo apt-get install -y gfortran libcr0 default-jdk hwloc libmpich10 libmpich-dev
                 wget -q http://de.archive.ubuntu.com/ubuntu/pool/universe/m/mpich/mpich_3.0.4-6ubuntu1_amd64.deb
