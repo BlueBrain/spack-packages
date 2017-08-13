@@ -29,7 +29,7 @@ fi
 
 for package in "${packages[@]}"
 do
-    spack install $package
+    spack install -v $package
 
     # check if package installed properly
     if [[ `spack find $package` == *"No package matches"* ]];  then

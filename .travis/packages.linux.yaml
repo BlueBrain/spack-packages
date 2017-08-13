@@ -40,6 +40,11 @@ packages:
             gsl@1.16: /usr
         buildable: False
         version: [1.16]
+    py-cython:
+        paths:
+            py-cython@0.20.1: /usr
+        buildable: False
+        version: [0.20.1]
     tau:
         variants: ~openmp ~comm ~phase
     coreneuron:

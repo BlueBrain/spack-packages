@@ -30,6 +30,7 @@ case "$TRAVIS_OS_NAME" in
     linux)
         sudo apt-get update -q
         sudo apt-get install -y libgsl0-dev
+        sudo apt-get install -y cython
 
         # TODO: workaround for bug in Ubuntu 14.04
         # check https://bugs.launchpad.net/ubuntu/+source/python2.7/+bug/1115466
