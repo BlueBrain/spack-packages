@@ -24,17 +24,19 @@ class Neurodamus(Package):
     homepage = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
 
-    version('master', git=url)
-    version('develop', git=url, branch='coreneuronsetup')
-    version('saveupdate', git=url, branch='sandbox/king/saveupdate')
+    version('master',       git=url)
+    version('develop',      git=url, branch='coreneuronsetup')
+    version('saveupdate',   git=url, branch='sandbox/king/saveupdate')
 
     # version being tested for incite
     version('saveupdateIO', git=url, branch='sandbox/king/saveupdate')
 
     # versions for development of coreneuron
-    version('devopt', git=url, branch='sandbox/kumbhar/coreneuronsetupopt')
-    version('hdf', git=url, branch='sandbox/kumbhar/corebluron_h5')
-    version('plasticity', git=url, branch='sandbox/chindemi/glusynapse-master')
+    version('devopt',       git=url, branch='sandbox/kumbhar/coreneuronsetupopt')
+    version('hdf',          git=url, branch='sandbox/kumbhar/corebluron_h5')
+    version('gpu',          git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
+    version('simplification', git=url, branch='sandbox/roessert/MegaPaperCompatibility_simplification')
+    version('parspike',     git=url, branch='sandbox/kumbhar/parspike')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
     variant('profile', default=False, description="Enable profiling using Tau")
