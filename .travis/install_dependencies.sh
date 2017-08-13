@@ -9,6 +9,7 @@ case "$TRAVIS_OS_NAME" in
     osx)
         brew update > /dev/null
         brew install flex bison modules
+        brew install gsl
         brew tap homebrew/science
         brew install lmod
 
@@ -28,6 +29,7 @@ case "$TRAVIS_OS_NAME" in
 
     linux)
         sudo apt-get update -q
+        sudo apt-get install -y libgsl0-dev
 
         # TODO: workaround for bug in Ubuntu 14.04
         # check https://bugs.launchpad.net/ubuntu/+source/python2.7/+bug/1115466

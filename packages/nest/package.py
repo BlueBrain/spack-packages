@@ -41,22 +41,25 @@ from spack import *
 import string
 import os
 
+
 class Nest(Package):
-    """FIXME: Put a proper description of your package here."""
+    """NEST is a simulator for spiking neural network models that focuses
+    on the dynamics, size and structure of neural systems rather than on
+    the exact morphology of individual neurons. The development of NEST
+    is coordinated by the NEST Initiative."""
 
     homepage = "https://github.com/nest/nest-simulator"
-    github_url      = "https://github.com/nest/nest-simulator.git"
+    url      = "https://github.com/nest/nest-simulator"
 
-    version('develop', git=github_url, preferred=True)
+    version('develop', git=url)
 
-    variant('mpi',           default=True,  description="Enable MPI support")
-    variant('openmp',        default=True,  description="Enable OpenMP support")
-    variant('python',        default=True,  description="Enable python bindings")
-    variant('gsl',           default=True,  description="Enable GNU Scientific Library")
-    variant('profile',       default=False, description="Enable profiling using Tau")
-    variant('knl',           default=False, description="Enable KNL specific flags")
-    variant('static',        default=False, description="Build static libraries")
-
+    variant('mpi',      default=True,  description="Enable MPI support")
+    variant('openmp',   default=True,  description="Enable OpenMP support")
+    variant('python',   default=True,  description="Enable python bindings")
+    variant('gsl',      default=True,  description="Enable GNU Scientific Library")
+    variant('profile',  default=False, description="Enable profiling using Tau")
+    variant('knl',      default=False, description="Enable KNL specific flags")
+    variant('static',   default=False, description="Build static libraries")
 
     depends_on('mpi', when='+mpi')
     depends_on('gsl', when='+gsl')
@@ -104,17 +107,16 @@ class Nest(Package):
                     cxx_compiler = self.spec['mpi'].mpicxx
 
             cmake_options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                       '-DCMAKE_C_FLAGS=%s' % optflag,
-                       '-DCMAKE_CXX_FLAGS=%s' % optflag,
-                       '-DCMAKE_C_COMPILER=%s' % c_compiler,
-                       '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler,
-                       '-Dwith-ltdl=OFF',
-                       '-Dwith-readline=OFF'
-                       ]
+                             '-DCMAKE_C_FLAGS=%s' % optflag,
+                             '-DCMAKE_CXX_FLAGS=%s' % optflag,
+                             '-DCMAKE_C_COMPILER=%s' % c_compiler,
+                             '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler,
+                             '-Dwith-ltdl=OFF',
+                             '-Dwith-readline=OFF']
 
             # not sure the -Dwith-optimize=flags option is required if we already set CMAKE_C_FLAGS above
             # but just to be safe
-            semicolon_separated_optflag = optflag.translate(string.maketrans(' ',';'))
+            semicolon_separated_optflag = optflag.translate(string.maketrans(' ', ';'))
             cmake_options.extend(['-Dwith-optimize=' + semicolon_separated_optflag])
 
             if self.spec.satisfies('~python'):
@@ -161,17 +163,7 @@ class Nest(Package):
         # I wish there was a way to detect the specs here.
         # If the user didn't want python, no need to pollute their env.
         # How to get python version specified by user???
-        if not self.spec.satisfies('~python'):
+        if self.spec.satisfies('+python'):
             py_version_string = 'python{0}'.format(self.spec['python'].version.up_to(2))
             nest_package_py_path = os.path.join(self.prefix.lib64, py_version_string, 'site-packages')
-            print('PYTHONPATH')
-            print(nest_package_py_path)
             run_env.prepend_path('PYTHONPATH', nest_package_py_path)
-
-
-
-
-
-
-
-

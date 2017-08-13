@@ -8,6 +8,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     packages=(
         'mod2c'
         'coreneuron ~neurodamusmod ~report'
+        'nest'
         'neuron'
     )
 
@@ -18,6 +19,7 @@ else
     packages=(
         'mod2c'
         'coreneuron ~neurodamusmod ~report'
+        'nest'
         'neuron'
     )
 
