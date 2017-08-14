@@ -149,7 +149,8 @@ class Neuron(Package):
                 elif 'thetalog' in socket.getfqdn():
                     # another hack for theta until sysadmins fix the permissions! :(
                     # need to cleanup this soon!
-                    py_version_string = 'python3.5m'
+                    if spec.satisfies('^python@3.5'):
+                        py_version_string = 'python3.5m'
 
                     # on platform like theta cray, intel python has extra directory include/python3.5m/
                     # find directory of Python.h

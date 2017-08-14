@@ -29,6 +29,7 @@ class Mod2c(Package):
 
     version('develop', git=url, preferred=True)
     version('devopt', git=bbp_url, branch='sandbox/kumbhar/dev')
+    version('checkpoint', git=url, branch='checkpoint-restart_prototype')
 
     depends_on('cmake@2.8.12:', type='build')
 
