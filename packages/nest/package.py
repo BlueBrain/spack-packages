@@ -40,6 +40,7 @@
 from spack import *
 import string
 import os
+import subprocess
 
 
 class Nest(Package):
@@ -146,6 +147,9 @@ class Nest(Package):
             else:
                 cmake_options.extend(['-Dstatic-libraries=ON'])
 
+            if 'cray' in self.spec.architecture:
+                cmake_options.extend(['-Dwith-warning=OFF'])
+
             cmake('..', *cmake_options)
             self.profiling_wrapper_on()
             make()
@@ -165,5 +169,6 @@ class Nest(Package):
         # How to get python version specified by user???
         if self.spec.satisfies('+python'):
             py_version_string = 'python{0}'.format(self.spec['python'].version.up_to(2))
-            nest_package_py_path = os.path.join(self.prefix.lib64, py_version_string, 'site-packages')
+            nest_lib_dir = subprocess.check_output([self.prefix.bin + '/nest-config', '--libdir'])
+            nest_package_py_path = os.path.join(self.prefix, nest_lib_dir, py_version_string, 'site-packages')
             run_env.prepend_path('PYTHONPATH', nest_package_py_path)
