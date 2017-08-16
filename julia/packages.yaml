@@ -1,0 +1,55 @@
+packages:
+    intelmpi:
+        modules:
+            intelmpi@develop: intel-impi/2017.1.132
+        version: [develop]
+        buildable: False
+    cmake:
+        paths:
+            cmake@2.8.12: /usr/
+        version: [2.8.12]
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@0.29.1: /usr
+        buildable: False
+        version: [0.29.1]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    python:
+        paths:
+            python@2.7.12: /global/opt/jsc/Python-2.7.12
+        version: [2.7.12]
+        buildable: False
+    hdf5:
+        paths:
+            hdf5@1.8.16%intel: /global/hdf5/1.8.16/intel-16
+        variants: ~fortran ~cxx
+        buildable: False
+        version: [1.8.16]
+    zlib:
+        version: [1.2.8]
+
+    tau:
+        variants: ~openmp ~comm ~phase
+
+    neuron:
+        variants: ~python
+
+    all:
+        compiler: [intel]
+        providers:
+            mpi: [intelmpi]
