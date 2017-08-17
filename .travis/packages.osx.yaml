@@ -35,6 +35,11 @@ packages:
             python@2.7: /usr/local
         version: [2.7]
         buildable: False
+    gsl:
+        paths:
+            gsl@2.4: /usr/local
+        buildable: False
+        version: [2.4]
     tau:
         variants: ~openmp ~comm ~phase
     coreneuron:
