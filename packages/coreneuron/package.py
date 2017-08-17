@@ -31,6 +31,7 @@ class Coreneuron(Package):
 
     # TODO: same as develop but for legacy reasons
     version('perfmodels', git=url)
+    version('checkpoint', git=url, branch='checkpoint-restart_prototype')
 
     # development version from bbp
     version('hdf', git=bbpurl, branch='sandbox/kumbhar/nrnh5')
@@ -57,6 +58,8 @@ class Coreneuron(Package):
     depends_on('nrnh5', when='@hdf')
     depends_on('hdf5', when='@hdf')
     depends_on('zlib', when='@hdf')
+
+    depends_on('mod2c@checkpoint', type='build', when='@checkpoint')
 
     # granular dependency selection for neurodamus
     depends_on('neurodamus@develop~compile', when='+neurodamusmod~gpu')
