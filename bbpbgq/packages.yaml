@@ -55,13 +55,12 @@ packages:
         paths:
             python@2.6.7 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/external/python/python-2.6.7/install/python2.6.7-20131119/
             python@2.7.5 arch=bgq-cnk-ppc64: /bgsys/tools/python2.7.5-20161013/
-            python@2.7 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/1rk9qgibrcnmcm64d7w6160xcjasm7h7-generated-env-module-python
-        version: [2.7.5]
+            python@2.7.0 arch=bgq-cnk-ppc64: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/1rk9qgibrcnmcm64d7w6160xcjasm7h7-generated-env-module-python
+        version: [2.7.5, 2.7.0]
         buildable: False
     tau:
         variants: ~comm ~phase
         version: [2.25.2]
-
     pdt:
         version: [3.22.1]
 

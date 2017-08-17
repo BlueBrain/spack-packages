@@ -73,3 +73,9 @@ for package in "${dev_packages[@]}"
 do
     spack install $extra_opt $package $compiler
 done
+
+
+## ADDITIONAL PACKAGES ##
+
+# spack install -v nest +python ^python@2.7.0
+# spack install -v nest ~shared +python ^python@2.7.0
