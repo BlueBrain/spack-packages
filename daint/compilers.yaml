@@ -155,6 +155,24 @@ compilers:
     flags: {}
     modules:
     - PrgEnv-intel
+    - perftools-base
+    - perftools
+    - !!python/unicode 'intel/17.0.0.098'
+    operating_system: CNL
+    paths:
+      cc: cc
+      cxx: CC
+      f77: ftn
+      fc: ftn
+    spec: intel@17.0.0.999
+    target: any
+
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules:
+    - PrgEnv-intel
     - !!python/unicode 'intel/16.0.3.210'
     operating_system: CNL
     paths:
