@@ -802,14 +802,7 @@ mkdir -p $HOME/.spack/cray/
 cp daint/* $HOME/.spack/cray/
 ```
 
-The instructions / scrit to install NEURON/CoreNEURON is provided under `daint/bbp.sh`.
-
-Also I have been updating Spack with the latest upstream changes from LLNL repository. I have created new branch called `upstream` which should be used on Cray platforms. It should work on lugano/mira but I just tested it on Piz Daint. So make sure to clone this new branch on Piz Daint.
-
-```
-cd spack
-git checkout upstream
-```
+The instructions / script to install NEURON/CoreNEURON is provided under `daint/bbp.sh`.
 
 #### Theta Configuration ####
 
@@ -821,12 +814,6 @@ cp theta/* $HOME/.spack/cray/
 ```
 
 The instructions / scrit to install NEURON/CoreNEURON is provided under `theta/bbp.sh`.
-
-Similar to piz-daint make sure to use `upstream` branch of spack.
-```
-cd spack
-git checkout upstream
-```
 
 
 ## Generating Modules ##
