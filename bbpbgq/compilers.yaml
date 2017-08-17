@@ -1,6 +1,6 @@
 compilers:
 - compiler:
-    modules: []
+    modules: [bg-xl]
     operating_system: cnk
     paths:
       cc: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc
