@@ -61,7 +61,6 @@ packages:
     tau:
         variants: ~comm ~phase
         version: [2.25.2]
-        buildable: False
     gsl:
         paths:
             gsl@1.16: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/789cxs76pmxrk2n68z272jnd7mbb42rd-generated-env-module-gsl/
