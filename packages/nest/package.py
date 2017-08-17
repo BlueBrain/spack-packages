@@ -125,12 +125,12 @@ class Nest(Package):
                 cmake_options.extend(['-Dcythonize-pynest=OFF'])
             else:
                 cmake_options.extend(['-Dwith-python=ON'])
-                cmake_options.extend(['-Dcythonize-pynest=ON'])
+                cmake_options.extend(['-Dcythonize-pynest=%s' % self.spec['py-cython'].prefix])
 
             if self.spec.satisfies('~gsl'):
                 cmake_options.extend(['-Dwith-gsl=OFF'])
             else:
-                cmake_options.extend(['-Dwith-gsl=ON'])
+                cmake_options.extend(['-Dwith-gsl=%s' % self.spec['gsl'].prefix])
 
             if self.spec.satisfies('~mpi'):
                 cmake_options.extend(['-Dwith-mpi=OFF'])
@@ -169,6 +169,11 @@ class Nest(Package):
         # How to get python version specified by user???
         if self.spec.satisfies('+python'):
             py_version_string = 'python{0}'.format(self.spec['python'].version.up_to(2))
-            nest_lib_dir = subprocess.check_output([self.prefix.bin + '/nest-config', '--libdir'])
-            nest_package_py_path = os.path.join(self.prefix, nest_lib_dir, py_version_string, 'site-packages')
-            run_env.prepend_path('PYTHONPATH', nest_package_py_path)
+            try:
+#            print os.path.join( self.prefix.bin, 'nest-config')
+	        nest_lib_dir = subprocess.check_output([ os.path.join( self.prefix.bin, 'nest-config'), '--libdir'])
+#            print os.path.join(self.prefix, nest_lib_dir, py_version_string, 'site-packages')
+                nest_package_py_path = os.path.join(self.prefix, nest_lib_dir, py_version_string, 'site-packages')
+                run_env.prepend_path('PYTHONPATH', nest_package_py_path)
+            except OSError, e:
+                pass
