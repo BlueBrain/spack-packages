@@ -94,6 +94,12 @@ class Nest(Package):
             semicolon_separated_optflag = optflag.translate(string.maketrans(' ', ';'))
             cmake_options.append('-Dwith-optimize=%s' % semicolon_separated_optflag)
 
+            if 'bgq' in spec.architecture:
+                cmake_options.append('-Denable-bluegene=Q')
+                # sli exe link line needs qnostatic when +shared
+                if spec.satisfies('+shared'):
+                    cmake_options.append('-DCMAKE_EXE_LINKER_FLAGS=-qnostaticlink')
+
             if spec.satisfies('+python'):
                 cmake_options.extend(['-Dwith-python=ON',
                                       '-Dcythonize-pynest=%s' % spec['py-cython'].prefix])
