@@ -65,7 +65,11 @@ packages:
         version: [1.2.8]
 
     tau:
+        version: [2.25.2]
         variants: ~openmp ~comm ~phase
+
+    pdt:
+        version: [3.22.1]
 
     coreneuron:
         variants: ~openmp
