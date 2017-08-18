@@ -36,31 +36,32 @@ class Lengine(Package):
     variant('sandbox',      default=True,  description="Build the main (sandbox)")
     variant('draft',        default=True,  description="Build first draft")
     variant('tests',        default=True,  description="Build the regression tests")
-    variant('cuda',         default=False, description="Enable CUDA")
     variant('mpi',          default=True, description="Enable MPI")
     variant('graph',        default=True, description="Enable boost graph")
     variant('benchmark',    default=True, description="Enable benchmarks")
     variant('gsl',          default=True,  description="Enable GSL")
     variant('pybinding',    default=True, description="Enable Python Binding")
+    variant('cuda',         default=False, description="Enable CUDA")
     variant('slurm',        default=False, description="Enable Slurm")
     variant('docs',         default=False, description="Enable Python Docs")
     variant('syn2',         default=False, description="Enable Syn2 reader")
     variant('knl',          default=False, description="Build for KNL")
     variant('profile',      default=False, description="Build with TAU")
+
     variant('threading',    default='tbb', values=('tbb', 'omp', 'seq'),
             multi=False, description="Threading backends"
     )
-    variant('random',       default='mkl', values=('mkl', 'standard'),
+    variant('random',       default='standard', values=('mkl', 'standard'),
             multi=False, description="Random number generators"
     )
 
+    depends_on('cmake@3.1:', type='build')
     depends_on('mpi', when='+mpi')
     depends_on('gsl', when='+gsl')
     depends_on('gsl', when='+draft')
-    depends_on('cmake@3.1:', type='build')
     depends_on('python@2.7:', when='+pybinding')
     depends_on('py-cython', when='+pybinding')
-    depends_on("tbb", when='threading=tbb')
+    depends_on("intel-tbb", when='threading=tbb')
     depends_on("slurm", type='build', when='+slurm')
     depends_on("cuda", when='+cuda')
     depends_on("boost@1.52:+graph+test+system+program_options")
@@ -68,6 +69,13 @@ class Lengine(Package):
     depends_on('highfive', when='+syn2')
     depends_on('py-sphinx', when='+docs')
     depends_on('tau', when='+profile')
+
+    conflicts('%gcc', when='random=mkl')
+    conflicts('%clang', when='random=mkl')
+
+    def profiling_wrapper_on(self):
+        if self.spec.satisfies('+profile'):
+            os.environ["USE_PROFILER_WRAPPER"] = "1"
 
     def get_optimization_flags(self):
         flags = "-g -O2"
@@ -81,7 +89,6 @@ class Lengine(Package):
         return flags
 
     def install(self, spec, prefix):
-        return
 
         build_dir = "spack-build-%s" % spec.version
 
@@ -99,8 +106,89 @@ class Lengine(Package):
                     c_compiler = self.spec['mpi'].mpicc
                     cxx_compiler = self.spec['mpi'].mpicxx
 
-            cmake_options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                             '-DCMAKE_C_FLAGS=%s' % optflag,
-                             '-DCMAKE_CXX_FLAGS=%s' % optflag,
-                             '-DCMAKE_C_COMPILER=%s' % c_compiler,
-                             '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler]
+            args = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+                    '-DCMAKE_C_FLAGS=%s' % optflag,
+                    '-DCMAKE_CXX_FLAGS=%s' % optflag,
+                    '-DCMAKE_C_COMPILER=%s' % c_compiler,
+                    '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler]
+
+            """ TODO: we should use short versions but they exceeed 80 column limit
+	    args.extend['-DLEARNING_ENGINE_SANDBOX=%s' % ('ON' if spec.satisfies('+sandbox') else 'OFF'),
+            """
+
+            if spec.satisfies('+sandbox'):
+                args.append('-DLEARNING_ENGINE_SANDBOX=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_SANDBOX=OFF')
+
+            if spec.satisfies('+draft'):
+                args.append('-DLEARNING_ENGINE_DRAFT=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_DRAFT=OFF')
+
+            if spec.satisfies('+tests'):
+                args.append('-DLEARNING_ENGINE_TESTS=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_TESTS=OFF')
+
+            if spec.satisfies('+cuda'):
+                args.append('-DLEARNING_ENGINE_CUDA=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_CUDA=OFF')
+
+            if spec.satisfies('+mpi'):
+                args.append('-DLEARNING_ENGINE_MPI=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_MPI=OFF')
+
+            if spec.satisfies('+graph'):
+                args.append('-DLEARNING_ENGINE_GRAPH=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_GRAPH=OFF')
+
+            if spec.satisfies('+benchmark'):
+                args.append('-DLEARNING_ENGINE_BENCHMARK=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_BENCHMARK=OFF')
+
+            if spec.satisfies('+gsl'):
+                args.append('-DLEARNING_ENGINE_GSL=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_GSL=OFF')
+
+            if spec.satisfies('+pybinding'):
+                args.append('-DLEARNING_ENGINE_PYTHON_BINDING=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_PYTHON_BINDING=OFF')
+
+            if spec.satisfies('+slurm'):
+                args.append('-DLEARNING_ENGINE_SLURM=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_SLURM=OFF')
+
+            if spec.satisfies('+docs'):
+                args.append('-DLEARNING_ENGINE_SPHINX=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_SPHINX=OFF')
+
+            if spec.satisfies('+syn2'):
+                args.append('-DLEARNING_ENGINE_SYN2=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_SYN2=OFF')
+
+            if spec.satisfies('+syn2'):
+                args.append('-DLEARNING_ENGINE_SYN2=ON')
+            else:
+                args.append('-DLEARNING_ENGINE_SYN2=OFF')
+
+            args.append('-DOPT_THREAD=%s' % spec.variants['threading'].value)
+            args.append('-DOPT_RANDOM=%s' % spec.variants['random'].value)
+
+            cmake('..', *args)
+            self.profiling_wrapper_on()
+            make()
+            make('install')
+
+    def setup_environment(self, spack_env, run_env):
+        exe = '%s/bench_brunel' % self.prefix.bin
+        run_env.set('BENCH_BRUNEL', exe)
