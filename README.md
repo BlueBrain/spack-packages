@@ -2,42 +2,55 @@
 
 If you are first time here and never used Spack then may be you are interested in:
 
-* [Spack tutorial (SperComputing 2016) ](http://spack.readthedocs.io/en/latest/tutorial.html)
+* [Spack tutorial (SuperComputing 2016) ](http://spack.readthedocs.io/en/latest/tutorial.html)
 * [Spack Documentation](http://spack.readthedocs.io/en/latest/#)
 * [Spack Google Group Discussion](https://groups.google.com/forum/#!forum/spack)
 * And [Spack Slack Channel](https://spackpm.slack.com/messages/C5W7NKZJT/)
 
 Otherwise,
 
-This document describes basic steps required to start development environment with Spack. Even though Spack can build entire software stack from scratch, for the developers it is more convenient to bootstrap from the existing packages provided by system which could be your personal laptop or HPC cluster. Hence, following instructions are divided into  platform `independnet` and platform `specific` settings.
+This document describes basic steps required to start development environment with Spack. Even though Spack can build entire software stack from scratch, for the developers it is more convenient to bootstrap from the existing packages provided by system which could be your personal laptop or HPC cluster. Hence, following instructions are divided into  platform `independent` and platform `specific` settings.
 
 ## Platform Independent Settings ##
 
-These steps are independent of any platform i.e. you have to do this if you want start from scratch or bootstrap from exisiting packages.
+These steps are independent of any platform i.e. you have to do this if you want start from scratch or bootstrap from existing packages.
 
 #### Prefix ####
 We will use following prefix throughout the scripts. Set those according to your convenience:
 
 ```bash
-export SOURCE_HOME_DIR=$HOME/workarena/software/sources
+SOURCE_HOME_DIR=$HOME/workarena/software/sources
 ```
 
 
-#### Clone Reository ####
-Clone spack repository from Github. You can use [official repository](https://github.com/LLNL/spack) from LLNL but I am adding few modifications / workarounds for exisiting bugs and other systems like Lugano bg-q / vizcluster.
+#### Clone Repository ####
+Clone spack repository from GitHub. You can use [official repository](https://github.com/LLNL/spack) from LLNL but I am adding few modifications / workarounds for existing bugs and other systems like Lugano bg-q / vizcluster.
 
 ```bash
 cd $SOURCE_HOME_DIR
 git clone https://github.com/pramodskumbhar/spack.git
 
-# if you want to track upstream development branch
 cd spack
+git checkout upstream
+
+# if you want to track upstream development branch
 git remote add llnl https://github.com/llnl/spack.git
+git fetch llnl
 ```
+
+#### Update .bashrc or .bash_profile ####
+In order to access spack shell support, add following in your `.bashrc` (linux) or `.bash_profile` (OS X): 
+
+```bash
+export SPACK_ROOT=$HOME/workarena/software/sources/spack
+source $SPACK_ROOT/share/spack/setup-env.sh
+```
+
+We assume that [Environment Modules](http://modules.sourceforge.net/) is properly installed and `module` command is available on the `PATH` environment variable. Check [Spack documentation](https://spack.readthedocs.io/en/latest/getting_started.html#installenvironmentmodules) if this is not the case.
 
 #### Additional Packages ####
 
-NEURON and CoreNEURON related packages are maintained in separate repository. In order to build those packages with Spack, add bellow github repository as Spack repository:
+NEURON and CoreNEURON related packages are maintained in separate repository. In order to build those packages with Spack, add bellow GitHub repository as Spack repository:
 
 ```bash
 cd $SOURCE_HOME_DIR
@@ -47,23 +60,11 @@ spack repo add --scope site `pwd`/spack-packages
 
 Make sure to update / pull both repositories if there are any upstream changes.
 
-
-#### Update .bashrc or .bash_profile ####
-In order to access spack shell support, add following in your `.bashrc` (linux) or `.bash_profile` (OS X) : 
-
-```bash
-export SPACK_ROOT=$HOME/workarena/software/sources/spack
-export PATH=$SPACK_ROOT/bin:$PATH
-source $SPACK_ROOT/share/spack/setup-env.sh
-```
-
-We assume that the `module` command is already installed/avaialble on the system. Check Spack documentation if this is not the case.
-
 ## Platform Specific Configuration ##
 
 Here are the instructions to get started on Mac, Linux, Lugano VizCluster and Lugano BG-Q System. Instructions for Cray system (like BlueWater, TITAN and Theta) will be added later.
 
-The configurations are present in `spack-configs` repository in btbucket:
+The configurations are present in `spack-configs` repository in GitHub:
 
 ```bash
 cd $SOURCE_HOME_DIR
@@ -77,7 +78,7 @@ mkdir -p $HOME/.spack/linux/
 cp -r spack-configs/bbpviz/* ~/.spack/linux/
 ```
 
-The `config.yaml` (`$HOME/.spack/linux/config.yaml` here) file typically looks like :
+The `config.yaml` (`$HOME/.spack/linux/config.yaml` here) file typically looks like:
 
 ```
 config:
@@ -97,7 +98,7 @@ export MODULEPATH=/gpfs/bbp.cscs.ch/project/proj16/kumbhar/SPACK_INSTALL/viz/sim
 
 
 #### Mac OS X ###
-We can build entire software stack including `CMake`, `GCC`, `LLVM`, `MPI` (`MPICH` or `OpenMPI`) with Spack on our laptop. But for the development purpose, most of the time, we don't want to build these packages from source as they take long time to build. In this case it is goood idea to use `Homebrew` or `Macport` to install these pakages. Note that you can skip installing packages from `Homebrew` if you want to install everything from source with Spack. But then you will end up building lots of dependencies.
+We can build entire software stack including `CMake`, `GCC`, `LLVM`, `MPI` (`MPICH` or `OpenMPI`) with Spack on our laptop. But for the development purpose, most of the time, we don't want to build these packages from source as they take long time to build. In this case it is good idea to use `Homebrew` or `Macport` to install these packages. Note that you can skip installing packages from `Homebrew` if you want to install everything from source with Spack. But then you will end up building lots of dependencies.
 
 So lets start installing common packages that we need:
 
@@ -128,16 +129,17 @@ brew tap homebrew/dupes
 brew install zlib
 ```
 
-We commonly need MPI library, we can install it using `Homebrewa`. The `openmpi` library installed using `Homebrew` can be used with other compilers (gcc/clang):
+We commonly need MPI library, we can install it using `Homebrew`. The `openmpi` library installed using `Homebrew` can be used with other compilers (gcc/clang):
 
 ```
 brew install openmpi
 ```
 
-Spack uses `environment-module` i.e. `Modules` and `Lmod` packages to load / unload modules. You can install those using Spack or from `Homebrew` :
+Spack uses `environment-module` i.e. `Modules` and `Lmod` packages to load / unload modules. You can install those using Spack or from `Homebrew`:
 
 ```bash
-brew install modules lmod
+brew install modules
+brew install homebrew/science/lmod
 ```
 
 If you are using parallel HDF5, install it using:
@@ -153,16 +155,22 @@ MODULES_HOME=`brew --prefix modules`
 source ${MODULES_HOME}/Modules/init/bash
 ```
 
-Or, if you want to use more advanced hierarchical module environemnt based on `Lmod` then:
+Or, if you want to use more advanced hierarchical module environment based on `Lmod` then:
 
 ```bash
 LMOD_HOME=`brew --prefix lmod`
 source $LMOD_HOME/lmod/init/bash
 ```
 
+Building Qt by hand is quite complex. Let's use the one kindly provided by brew:
+
+```bash
+brew install qt55
+```
+
 Lets start with Spack now!
 
-#### Compielr Configuration ####
+#### Compiler Configuration ####
 
 First step with Spack is to find compilers available on system. We can do this with following command:
 
@@ -179,7 +187,7 @@ This will find common compilers available in `$PATH` and print out the list:
     /Users/kumbhar/.spack/darwin/compilers.yaml
 ```
 
-Note that new file `.spack/darwin/compilers.yaml` is created in `$HOME` which stores all compiler configuration. This file looks like :
+Note that new file `.spack/darwin/compilers.yaml` is created in `$HOME` which stores all compiler configuration. This file looks like:
 
 ``` bash
 compilers:
@@ -213,7 +221,7 @@ compilers:
 
 The `compilers.yaml` file has configuration for every compiler. Note that fortran compilers are *not* provided by `Clang` compiler and hence building any package requiring fortran compiler will fail with `Clang` (for example, `hdf5` package). It's safe to use `gfortran` with `clang` compilers (until we get `flang` releases in near future).
 
-You can litst the compilers using `spack compilers` :
+You can list the compilers using `spack compilers`:
 
 ``` bash
 spack compilers
@@ -233,7 +241,7 @@ spack compiler find
 ==> Found no new compilers
 ```
 
-Often compilers are installed in non-standard directories which are not in $PATH. You can provide path searc compilers as:
+Often compilers are installed in non-standard directories which are not in $PATH. You can provide path search compilers as:
 
 ```bash
 spack compiler find /usr/local/Cellar/llvm/3.9.0/
@@ -245,9 +253,9 @@ spack compiler find /usr/local/Cellar/llvm/3.9.0/
 
 #### Package Configuration ####
 
-Second important step is to tell spack about `existing` packages. Spack can build most of the environment for you but we want to use packages like `MPI`, `CMake`, `autotools` etc. provided by the system. This is more important on HPC facilities where packages like `MPI` are tuned for hardware and provided by speromputing centre/vendors. We don't want to install those ourself from source. This is where `packages.yaml` file in `$HOME/.spack/darwin/` comes into action (`darwin` here is platform name). The `packages.yaml` tells spack which existing packages to use, their versions, compiler preferences etc. For example, if you try to build package which need `CMake`, Spack will try to build `CMake` and all its dependencies from source. But we have previously installed `CMake` with `brew` and we can tell spack to use it using below `packages.yaml` :
+Second important step is to tell spack about `existing` packages. Spack can build most of the environment for you but we want to use packages like `MPI`, `CMake`, `autotools` etc. provided by the system. This is more important on HPC facilities where packages like `MPI` are tuned for hardware and provided by supercomputing center/vendors. We don't want to install those ourselves from source. This is where `packages.yaml` file in `$HOME/.spack/darwin/` comes into action (`darwin` here is platform name). The `packages.yaml` tells spack which existing packages to use, their versions, compiler preferences etc. For example, if you try to build package which need `CMake`, Spack will try to build `CMake` and all its dependencies from source. But we have previously installed `CMake` with `brew` and we can tell spack to use it using below `packages.yaml`:
 
-```bash
+```yaml
 packages:
     cmake:
         paths:
@@ -256,24 +264,25 @@ packages:
         version: [3.8.2]
 ```
 
-In the above configuration we told Spack to use `CMake` from `/usr/local` (installed by `Homebrew`). Finally `buildable: False` tells Spack to not build this package from source. So Spack will never try to build this package explicitly and if constraints are not satisfied, it give error like :
+In the above configuration we told Spack to use `CMake` from `/usr/local` (installed by `Homebrew`). Finally `buildable: False` tells Spack to not build this package from source. So Spack will never try to build this package explicitly and if constraints are not satisfied, the following error is reaised:
 
 ```bash
 ==> Error: The spec 'cmake' is configured as not buildable, and no matching external installs were found
 ```
 
-When we specify dependency like `depends_on('cmake', type='build')`, Spack will match any cmake version available. But many packages specify version constraints in the dependency like `depends_on('cmake@2.8.12:', type='build')`. This indicate that `CMake` version should be  `>=2.8.12`. To satisfiy this constraint you have to make sure to provide appropriate version. Otherwise you can remove `buildable: False` option.
+When we specify dependency like `depends_on('cmake', type='build')`, Spack will match any CMake version available. But many packages specify version constraints in the dependency like `depends_on('cmake@2.8.12:', type='build')`. This indicates that `CMake` version should be  `>=2.8.12`. To satisfy this constraint you have to make sure to provide appropriate version. Otherwise you can remove `buildable: False` option.
 
 We can provide preferences for all packages in `packages.yaml`. For example, in the below configuration we specified compiler preferences for building any package. Also, we specify `mpich` as `MPI` provider.
 
-```bash
+```yaml
+packages:
    all:
-       compiler: [gcc@4.9.3, clang@7.3.0-apple]
+       compiler: [gcc@4.9.4, clang@8.1.0-apple]
        providers:
            mpi: [mpich]
 ```
 
-Another important aspect is `variants`. The `packages.yaml` allows us to specify `variant` preferences. This is important aspect while building packages on different platforms or by different members of the team. For example, consider the example of `HDF5` package. If you look at `HDF5` package using `spack info`, it shows different variants including `fortran` :
+Another important aspect is `variants`. The `packages.yaml` allows us to specify `variant` preferences. This is important aspect while building packages on different platforms or by different members of the team. For example, consider the example of `HDF5` package. If you look at `HDF5` package using `spack info`, it shows different variants including `fortran`:
 
 ```bash
 spack info hdf5
@@ -289,14 +298,15 @@ Variants:
 ....
 ```
 
-On OS X if you dont have fortran compilers with `llvm` toolchain, you can disable fortran variant in `packages.yaml` as:
+On OS X if you don't have fortran compilers with `llvm` toolchain, you can disable fortran variant in `packages.yaml` as:
 
-```bash
+```yaml
+packages:
    hdf5:
        variants: ~fortran
 ```
 
-With the above configuration we tell spack to not build fortan bindings of `HDF5` package. Now `HDF5` will be built by `Clang` compiler without any errors. Similarly we can specify version preferences. For example, latest `Boost` version takes long time to build. We need `Boost` for testing purpose and old version is sufficient for us:
+With the above configuration we tell spack to not build fortran bindings of `HDF5` package. Now `HDF5` will be built by `Clang` compiler without any errors. Similarly we can specify version preferences. For example, latest `Boost` version takes long time to build. We need `Boost` for testing purpose and old version is sufficient for us:
 
 ```bash
    boost:
@@ -323,9 +333,9 @@ packages:
 
     cmake:
         paths:
-            cmake@3.8.2: /usr/local
+            cmake@3.9.1: /usr/local
         buildable: False
-        version: [3.8.2]
+        version: [3.9.1]
 
     autoconf:
         paths:
@@ -368,7 +378,7 @@ packages:
             pkg-config@0.29.2%clang@8.1.0-apple: /usr/local
             pkg-config@0.29.2%gcc@4.9.4: /usr/local
         buildable: False
-        version: [0.29.1]
+        version: [0.29.2]
 
     environment-modules:
         paths:
@@ -384,16 +394,16 @@ packages:
 
     hdf5:
         paths:
-            hdf5@1.8.17: /usr/local
+            hdf5@1.10.1: /usr/local
         buildable: False
         variants: ~fortran
-        version: [1.8.17]
+        version: [1.10.1]
 
     zlib:
         paths:
-            zlib@1.2.8: /usr/local
+            zlib@1.2.11: /usr/local
         buildable: False
-        version: [1.2.8]
+        version: [1.2.11]
 
     qt:
         paths:
@@ -419,7 +429,7 @@ packages:
         variants: ~openmp
 
     all:
-        compiler: [gcc@4.9.3, clang@8.1.0-apple]
+        compiler: [gcc@4.9.4, clang@8.1.0-apple]
         providers:
             mpi: [mpich]
 ```
@@ -430,10 +440,10 @@ With above configuration we tell Spack to find various packages under `/usr/loca
 
 You can find spack configurations for different systems [here](https://github.com/pramodskumbhar/spack-configs).
 
-#### Spack in Action : Installing Packages ####
+#### Spack in Action: Installing Packages ####
 
 Now we have setup everything we needed to start installing our development packages!
-We have added `spack-packages` package repository in the beginning. You can see which `package` repository we have added using :
+We have added `spack-packages` package repository in the beginning. You can see which `package` repository we have added using:
 
 ```bash
 $ spack repo list
@@ -443,13 +453,13 @@ spack-packages        /Users/kumbhar/workarena/software/sources/spack-packages
 builtin    /Users/kumbhar/workarena/software/sources/spack/var/spack/repos/builtin
 ```
 
-Now you can list available packages using `spack list` command :
+Now you can list available packages using `spack list` command:
 
 ```bash
-$ spack list *neuron*
+$ spack list neuron
 
-==> 3 packages.
-coreneuron  neuron  neuron-nmodl
+==> 4 packages.
+coreneuron  neuron  neuron-nmodl neuronperfmodels
 
 $ spack list mod2c
 
@@ -476,7 +486,7 @@ mod2c@develop%clang@8.1.0-apple arch=darwin-sierra-x86_64
     ^cmake@3.8.2%clang@8.1.0-apple~doc+ncurses+openssl+ownlibs~qt arch=darwin-sierra-x86_64
 ```
 
-The `Concretized ` section gives final dependency list. Before actual installing package, we can use `-I` option to see which components are already installed :
+The `Concretized ` section gives final dependency list. Before actual installing package, we can use `-I` option to see which components are already installed:
 
 ```bash
 $spack spec -I petsc
@@ -541,19 +551,19 @@ You can use different compiler or version of the package during installation:
 $ spack install mod2c %clang           #use clang
 ```
 
-You can find installed packages usinf `spack find` as:
+You can find installed packages using `spack find` as:
 
 ```bash
 $ spack find mod2c
 
-==> 3 installed packages.
--- darwin-elcapitan-x86_64 / clang@7.3.0-apple ------------------
-mod2c@github
--- darwin-elcapitan-x86_64 / gcc@4.9.3 --------------------------
-mod2c@github  mod2c@develop
+==> 2 installed packages.
+-- darwin-sierra-x86_64 / clang@8.1.0-apple ------------------
+mod2c@develop
+-- darwin-sierra-x86_64 / gcc@7.2.0 --------------------------
+mod2c@develop
 ```
 
-You can now install required packages one by one or write some script to install packages with different combinations. Here example of installing all stack with `Clang` and `GNU` compiler :
+You can now install required packages one by one or write some script to install packages with different combinations. Here example of installing all stack with `Clang` and `GNU` compiler:
 
 ```bash
 #!/bin/bash
@@ -587,7 +597,7 @@ spack reindex
 # uninstall all packages
 uninstall_package
 
-# stop if iany package installation fails
+# stop if any package installation fails
 set -e
 
 # TAU profiler options
@@ -601,19 +611,18 @@ do
         spack install $package $compiler
     done
 done
-
 ```
 
 
 #### Lugano Vizcluster ###
 
-All above instructions for OS X platform will be useful to setup development environment on Lugano Vizcluster, read those first. We list few important exceptions that we must have to consider :
+All above instructions for OS X platform will be useful to setup development environment on Lugano Vizcluster, read those first. We list few important exceptions that must be considered:
 
-* On HPC cluster system like `Lugano Vizcluster`, we dont want to / should not install compilers, MPI libraries etc.
+* On HPC cluster system like `Lugano Vizcluster`, we don't want to / should not install compilers, MPI libraries etc.
 * We should use existing modules as much as possible.
 * Spack discourage use of `LD_LIBRARY_PATH` from user space. Many existing modules on HPC systems set `LD_LIBRARY_PATH`. In order to use these modules, we have to use `--dirty` flag during installation (related issue has been reported upstream).
 * All `MPI` packages are externally installed. The actual libraries are `mvapich2`, `mpich3`, `intelmpi` etc. Many times we have to specify these `MPI` libraries explicitly on command line with `install` or `spec` command like `spack spec neuron +mpi ^mvapich2` otherwise we get `list out of index` error. (this is likely a bug and has been reported upstream).
-* I have used packages like `autotools`, `pkg-config` from `/usr/bin/` which is discouraged! As these are only used for building, I have never seen any issues (if versions are properly specified). I am using those in `packages.yaml` to quickly bootstrap without building too many packages. But it's may not be good idake sure to copy up to date version from `bbpviz` directory as:
+* I have used packages like `autotools`, `pkg-config` from `/usr/bin/` which is discouraged! As these are only used for building, I have never seen any issues (if versions are properly specified). I am using those in `packages.yaml` to quickly bootstrap without building too many packages. But it's may not be good idea to copy up to date version from `bbpviz` directory as:
 
 Make sure to copy up to date version from `bbpviz` directory as:
 
@@ -703,7 +712,7 @@ packages:
             mpi: [mvapich2, intelmpi, mpich]
 ```
 
-And build script for `Intel`, `PGI` and `GNU` compiler looks like : 
+And build script for `Intel`, `PGI` and `GNU` compiler looks like:
 
 ```bash
 
@@ -841,7 +850,7 @@ Assuming you have proper `modules.yaml`, we can generate `lmod` modules with Spa
 spack module refresh --delete-tree -y -m lmod
 ```
 
-Make sure to set `MODULEPATH` to the `Core` directory :
+Make sure to set `MODULEPATH` to the `Core` directory:
 
 ```bash
 export MODULEPATH=/Users/kumbhar/workarena/software/sources/spack/share/spack/lmod/darwin-sierra-x86_64/Core/
@@ -859,7 +868,7 @@ $ module av
    L:  Module is loaded
 ```
 
-Loading one of the compiler will show the modules built with that compiler :
+Loading one of the compiler will show the modules built with that compiler:
 
 ```
 $ module av
@@ -902,7 +911,7 @@ $ module av
 
 ```
 
-We can now load modules :
+We can now load modules:
 
 ```
 $ module load neurodamus/develop mod2c/develop
@@ -911,7 +920,7 @@ Currently Loaded Modules:
   1) gcc/4.9.4   2) mpich/3.2   3) neurodamus/develop   4) mod2c/develop
 ```
 
-If we swap compilers then previously modules should be swapped automaticaly:
+If we swap compilers then previously modules should be swapped automatically:
 
 ```
 $ module swap gcc llvm
@@ -920,7 +929,7 @@ Due to MODULEPATH changes, the following have been reloaded:
   1) mod2c/develop     2) mpich/3.2     3) neurodamus/develop
 ```
 
-Similarly the instructions for modules :
+Similarly the instructions for modules:
 
 ```
 MODULES_HOME=`brew --prefix modules`
