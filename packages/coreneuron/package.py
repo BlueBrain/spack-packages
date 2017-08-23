@@ -16,7 +16,7 @@ from spack import *
 import os
 
 
-class Coreneuron(Package):
+class Coreneuron(CMakePackage):
 
     """CoreNEURON is a simplified engine for the NEURON simulator
     optimised for both memory usage and computational speed. Its goal
@@ -84,8 +84,9 @@ class Coreneuron(Package):
 
         return flags 
 
-    def install(self, spec, prefix):
-
+    def configure_args(self):
+        spec   = self.spec
+        prefix = self.prefix
         build_dir = "spack-build-%s" % spec.version
 
         with working_dir(build_dir, create=True):
@@ -173,12 +174,13 @@ class Coreneuron(Package):
 
             if mech_set:
                 options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
-
-            cmake('..', *options)
             self.profiling_wrapper_on()
-            make()
-            make('install')
-            self.profiling_wrapper_off()
+        return options
+#            cmake('..', *options)
+#            self.profiling_wrapper_on()
+#            make()
+#            make('install')
+#            self.profiling_wrapper_off()
 
     def setup_environment(self, spack_env, run_env):
         exe = '%s/coreneuron_exec' % self.prefix.bin
