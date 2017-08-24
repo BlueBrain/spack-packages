@@ -41,6 +41,7 @@ class Nest(Package):
     version('2.10.0', 'e97371d8b802818c4a7de35276470c0c')
     version('2.8.0',  '3df9d39dfce8a85ee104c7c1d8e5b337')
     version('develop', git=giturl)
+    version('alberto', git='/gpfs/bbp.cscs.ch/scratch/gss/bgq/schumann/alberto/nest-simulator')
 
     variant('mpi',      default=True,  description="Enable MPI support")
     variant('openmp',   default=True,  description="Enable OpenMP support")
@@ -49,6 +50,7 @@ class Nest(Package):
     variant('profile',  default=False, description="Enable profiling using Tau")
     variant('knl',      default=False, description="Enable KNL specific flags")
     variant('shared',   default=True,  description="Build shared libraries")
+    variant('debug',    default=False,  description="Build type debug")
 
     depends_on('mpi', when='+mpi')
     depends_on('gsl', when='+gsl')
@@ -91,8 +93,13 @@ class Nest(Package):
                              '-Dwith-ltdl=OFF',
                              '-Dwith-readline=OFF']
 
-            semicolon_separated_optflag = optflag.translate(string.maketrans(' ', ';'))
-            cmake_options.append('-Dwith-optimize=%s' % semicolon_separated_optflag)
+
+            if spec.satisfies('+debug'):
+                cmake_options.extend(['-Dwith-optimize=OFF',
+                                      '-DCMAKE_BUILD_TYPE=Debug'])
+            else:
+                semicolon_separated_optflag = optflag.translate(string.maketrans(' ', ';'))
+                cmake_options.append('-Dwith-optimize=%s' % semicolon_separated_optflag)
 
             if 'bgq' in spec.architecture:
                 cmake_options.append('-Denable-bluegene=Q')
@@ -101,7 +108,7 @@ class Nest(Package):
                     cmake_options.append('-DCMAKE_EXE_LINKER_FLAGS=-qnostaticlink')
 
             if spec.satisfies('+python'):
-                cmake_options.extend(['-Dwith-python=ON',
+                cmake_options.extend(['-Dwith-python=%s/hostpython' %  spec['python'].prefix,
                                       '-Dcythonize-pynest=%s' % spec['py-cython'].prefix])
             else:
                 cmake_options.extend(['-Dwith-python=OFF',
