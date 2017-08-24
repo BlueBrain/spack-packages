@@ -294,6 +294,22 @@ class Neuron(Package):
             make('install')
             self.profiling_wrapper_off()
 
+    @run_after('install')
+    def filter_compilers(self):
+        """run after install to avoid spack compiler wrappers
+        getting embded into nrnivmodl script"""
+
+        arch = self.get_neuron_arch_dir()
+        nrnmakefile = join_path(self.prefix, arch, 'bin/nrniv_makefile')
+
+        kwargs = {
+            'backup': False,
+            'string': True
+        }
+
+        filter_file(env['CC'],  self.compiler.cc, nrnmakefile, **kwargs)
+        filter_file(env['CXX'], self.compiler.cxx, nrnmakefile, **kwargs)
+
     def setup_environment(self, spack_env, run_env):
         arch = self.get_neuron_arch_dir()
         run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
