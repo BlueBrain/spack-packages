@@ -58,7 +58,7 @@ class Nrnh5(Package):
             make()
             make('install')
 
-    # As NEURON is using autotools, set include paths and library to link.
+    # As NEURON is using autotools, set include paths and library for linking
     def setup_dependent_package(self, module, dspec):
 
         inc_path = '-I%s/nrnh5 -I%s' % (self.spec.prefix.include, self.spec['hdf5'].prefix.include)
@@ -66,5 +66,5 @@ class Nrnh5(Package):
                     self.spec.prefix.lib, self.spec['hdf5'].prefix.lib,
                     self.spec['zlib'].prefix.lib)
 
-        self.spec.include_path =  inc_path
+        self.spec.include_path = inc_path
         self.spec.link_library = link_lib

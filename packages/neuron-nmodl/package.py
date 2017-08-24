@@ -19,7 +19,8 @@ from spack.pkg.bbp.neuron import Neuron
 
 class NeuronNmodl(Neuron):
 
-    """NEURON's nocmodl for cross compiling environment"""
+    """NEURON package used in cross compiling environment
+    where we want nocmodl to be beuilt for front-end arch"""
 
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
@@ -32,6 +33,9 @@ class NeuronNmodl(Neuron):
         build = Executable('./build.sh')
         build()
 
+        # we are not setting specific CC, CXX compilers
+        # but typically most of the system will have gcc/g++
+        # which are for front-end arch
         options = ['--prefix=%s' % prefix,
                    '--with-nmodl-only',
                    '--without-x']

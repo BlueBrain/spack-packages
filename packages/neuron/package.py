@@ -15,6 +15,7 @@
 from spack import *
 import os
 import sys
+import glob
 
 
 class Neuron(Package):
@@ -22,11 +23,15 @@ class Neuron(Package):
     """NEURON simulation environment"""
 
     homepage = "https://www.neuron.yale.edu/"
+    url      = "https://github.com/nrnhines/nrn"
 
-    version('develop', git='https://github.com/pramodk/nrn.git', preferred=True)
-    version('master', git='https://github.com/nrnhines/nrn.git')
-    version('hdf', git='ssh://bbpcode.epfl.ch/user/kumbhar/neuron', branch='bbpcode_trunk')
-    version('oldplasticity', git='ssh://bbpcode.epfl.ch/sim/bluron/bbp', branch='sstate_to_bluron')
+    # TODO: extra urls from development
+    devurl   = "https://github.com/pramodk/nrn.git"
+    bbpurl   = "ssh://bbpcode.epfl.ch/user/kumbhar/neuron"
+
+    version('master', git=url, preferred=True)
+    version('develop', git=devurl)
+    version('hdf', git=bbpurl, branch='bbpcode_trunk')
 
     variant('mpi', default=True, description='Enable MPI parallelism')
     variant('python', default=True, description='Enable python')
@@ -129,6 +134,7 @@ class Neuron(Package):
 
                 py_lib = spec['python'].prefix.lib
                 py_lib_64 = spec['python'].prefix.lib64
+                py_inc_dir = '%s/include/%s' % (py_prefix, py_version_string)
                 extra_libs = ''
 
                 if not os.path.isdir(py_lib):
@@ -140,8 +146,18 @@ class Neuron(Package):
                 import socket
                 if 'alcf.anl.gov' in socket.getfqdn():
                     extra_libs = '-lz -lssl -lcrypto -lutil'
+                elif 'thetalog' in socket.getfqdn():
+                    # another hack for theta until sysadmins fix the permissions! :(
+                    # need to cleanup this soon!
+                    if spec.satisfies('^python@3.5'):
+                        py_version_string = 'python3.5m'
 
-                options.extend(['PYINCDIR=%s/include/%s' % (py_prefix, py_version_string),
+                    # on platform like theta cray, intel python has extra directory include/python3.5m/
+                    # find directory of Python.h
+                    python_h_file = [y for x in os.walk(py_prefix) for y in glob.glob(os.path.join(x[0], 'Python.h'))][0]
+                    py_inc_dir = os.path.dirname(python_h_file)
+
+                options.extend(['PYINCDIR=%s' % (py_inc_dir),
                                 'PYLIB=-L%s -l%s %s' % (py_lib, py_version_string, extra_libs),
                                 'PYLIBDIR=%s' % py_lib,
                                 'PYLIBLINK=-L%s -L%s -l%s %s' % (py_lib, py_lib_64, py_version_string, extra_libs)])
@@ -277,6 +293,22 @@ class Neuron(Package):
             make()
             make('install')
             self.profiling_wrapper_off()
+
+    @run_after('install')
+    def filter_compilers(self):
+        """run after install to avoid spack compiler wrappers
+        getting embded into nrnivmodl script"""
+
+        arch = self.get_neuron_arch_dir()
+        nrnmakefile = join_path(self.prefix, arch, 'bin/nrniv_makefile')
+
+        kwargs = {
+            'backup': False,
+            'string': True
+        }
+
+        filter_file(env['CC'],  self.compiler.cc, nrnmakefile, **kwargs)
+        filter_file(env['CXX'], self.compiler.cxx, nrnmakefile, **kwargs)
 
     def setup_environment(self, spack_env, run_env):
         arch = self.get_neuron_arch_dir()

@@ -24,38 +24,45 @@ class Neurodamus(Package):
     homepage = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
 
-    version('master',  git=url)
-    version('develop', git=url, branch='coreneuronsetup')
-    version('developopt', git=url, branch='sandbox/kumbhar/coreneuronsetupopt')
-    version('hdf',     git=url, branch='sandbox/kumbhar/corebluron_h5')
-    version('gpu',     git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
-    version('plasticity', git=url, branch='sandbox/chindemi/glusynapse-master')
-    version('oldplasticity', git=url, branch='sandbox/kumbhar/savestate_devel')
-    version('saveupdate', git=url, branch='sandbox/king/saveupdate')
+    version('master',       git=url)
+    version('develop',      git=url, branch='coreneuronsetup')
+    version('saveupdate',   git=url, branch='sandbox/king/saveupdate')
+
+    # version being tested for incite
     version('saveupdateIO', git=url, branch='sandbox/king/saveupdate')
-    version('saveupdateEuler', git=url, branch='sandbox/kumbhar/saveupdateEuler')
-    version('saveupdateClearModel', git=url, branch='sandbox/kumbhar/saveupdate_clearmodel')
-    version('saveupdateprofile', git=url, branch='sandbox/kumbhar/saveupdate')
+
+    # versions for development of coreneuron
+    version('devopt',       git=url, branch='sandbox/kumbhar/coreneuronsetupopt')
+    version('hdf',          git=url, branch='sandbox/kumbhar/corebluron_h5')
+    version('gpu',          git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
+    version('simplification', git=url, branch='sandbox/roessert/MegaPaperCompatibility_simplification')
+    version('parspike',     git=url, branch='sandbox/kumbhar/parspike')
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
     variant('profile', default=False, description="Enable profiling using Tau")
     variant('debug',   default=False, description="Build debug version")
 
+    # basic dependencies
     depends_on("hdf5", when='+compile')
     depends_on("zlib", when='+compile')
     depends_on("neuron", when='+compile')
+    depends_on("mpi", when='+compile')
+    depends_on('reportinglib', when='+compile')
+
+    # when we want to profile
     depends_on('tau', when='+profile')
+
+    # additional neuron version selections
     depends_on("neuron+debug", when='+compile+debug')
     depends_on("neuron+profile", when='+compile+profile')
     depends_on("neuron@hdf", when='@hdf+compile')
-    depends_on("neuron@oldplasticity", when='@oldplasticity+compile')
-    depends_on('reportinglib', when='+compile')
-    depends_on('reportinglib@memleakfix', when='@saveupdateClearModel+compile')
+
+    # additional reportinglib selections
     depends_on('reportinglib@gather', when='@saveupdateIO+compile')
     depends_on('reportinglib+debug', when='+compile+debug')
     depends_on('reportinglib+profile', when='+compile+profile')
-    depends_on("mpi", when='+compile')
 
+    # develop version is for coreneuron which needs neuron compiled with python
     conflicts('^neuron~python', when='@develop+compile')
 
     def profiling_wrapper_on(self):
@@ -68,6 +75,7 @@ class Neurodamus(Package):
 
     def install(self, spec, prefix):
 
+        # install neurodamus by copying lib (modlib+hoclib)
         shutil.copytree('lib', '%s/lib' % (prefix), symlinks=False)
 
         if spec.satisfies('+compile'):
@@ -75,8 +83,6 @@ class Neurodamus(Package):
             with working_dir(prefix):
 
                 modlib = 'lib/modlib'
-                nrnivmodl = which('nrnivmodl')
-
                 extra_flags = ''
 
                 if spec.satisfies('+profile'):
@@ -92,13 +98,17 @@ class Neurodamus(Package):
                              spec['zlib'].prefix.lib)
 
                 self.profiling_wrapper_on()
+
+                # invoke nrnivmodl
+                nrnivmodl = which('nrnivmodl')
                 nrnivmodl('-incflags', compile_flags,
                           '-loadflags', link_flags, modlib)
-                self.profiling_wrapper_off()
 
+                self.profiling_wrapper_off()
                 self.check_install(spec)
 
     def check_install(self, spec):
+        # after install check if special is created
         special = '%s/special' % join_path(self.prefix, self.archdir)
         if not os.path.isfile(special):
             raise RuntimeError("Neurodamus installion check failed!")

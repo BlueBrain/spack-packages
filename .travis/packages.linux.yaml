@@ -1,0 +1,56 @@
+packages:
+
+    mpich:
+        paths:
+            mpich@3.0.4: /usr
+        version: [3.0.4]
+        buildable: False
+    cmake:
+        paths:
+            cmake@3.2.2: /usr
+        version: [3.2.2]
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@0.29.1: /usr
+        buildable: False
+        version: [0.29.1]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    python:
+        paths:
+            python@2.7: /usr
+        version: [2.7]
+        buildable: False
+    gsl:
+        paths:
+            gsl@1.16: /usr
+        buildable: False
+        version: [1.16]
+    py-cython:
+        paths:
+            py-cython@0.20.1: /usr
+        buildable: False
+        version: [0.20.1]
+    tau:
+        variants: ~openmp ~comm ~phase
+    coreneuron:
+        variants: ~openmp
+
+    all:
+        compiler: [gcc]
+        providers:
+            mpi: [mpich]
