@@ -93,12 +93,12 @@ class Coreneuron(CMakePackage):
 
         return flags
 
-    def configure_args(self):
+    def cmake_args(self):
         spec   = self.spec
         build_dir = "spack-build-%s" % spec.version
 
         with working_dir(build_dir, create=True):
-            optflag = self.get_optimization_level()
+            optflag = self.get_opt_flags()
 
             if spec.satisfies('+profile'):
                 env['CC']  = 'tau_cc'
