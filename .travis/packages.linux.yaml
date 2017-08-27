@@ -37,9 +37,9 @@ packages:
         version: [system]
     python:
         paths:
-            python@2.7: /usr
-            python@3.4.0: /usr
-        version: [2.7, 3.4.0]
+            python@2.7.13: /opt/python/2.7.13
+            python@3.5.3: /opt/python/3.5.3
+        version: [2.7.13, 3.5.3]
         buildable: False
     gsl:
         paths:

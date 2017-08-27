@@ -6,8 +6,8 @@ set -e
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     packages=(
-        'neuron +python ^python@3.4.0'
-        'neuron +python ^python@2.7'
+        'neuron +python ^python@3.5.3'
+        'neuron +python ^python@2.7.13'
         #'mod2c'
         #'coreneuron ~neurodamusmod ~report'
         #'nest'
@@ -19,7 +19,7 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 else
     packages=(
         'neuron +python ^python@3.6.2'
-        'neuron +python ^python@2.7'
+        'neuron +python ^python@2.7.12'
         #'mod2c'
         #'coreneuron ~neurodamusmod ~report'
         #'nest'
