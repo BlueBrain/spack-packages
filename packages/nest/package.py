@@ -36,12 +36,13 @@ class Nest(Package):
     homepage = "http://www.nest-simulator.org/"
     url      = "https://github.com/nest/nest-simulator/archive/v2.12.0.tar.gz"
     giturl   = "https://github.com/nest/nest-simulator"
+    alburl   = "https://github.com/alberto-antonietti/nest-simulator"
 
     version('2.12.0', '57e6f3f5fc888113dd07e896b695297b')
     version('2.10.0', 'e97371d8b802818c4a7de35276470c0c')
     version('2.8.0',  '3df9d39dfce8a85ee104c7c1d8e5b337')
     version('develop', git=giturl)
-    version('alberto', git='/gpfs/bbp.cscs.ch/scratch/gss/bgq/schumann/alberto/nest-simulator')
+    version('alberto', git=alburl, branch='newtrasmitter')
 
     variant('mpi',      default=True,  description="Enable MPI support")
     variant('openmp',   default=True,  description="Enable OpenMP support")
@@ -64,11 +65,16 @@ class Nest(Package):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
 
     def get_optimization_level(self):
-        flags = "-g -O3"
+        flags = "-g -O2"
 
         if self.spec.satisfies('+knl') and self.spec.satisfies('%intel'):
             flags = '-xmic-avx512'
         return flags
+
+    def patch(self):
+        filter_file(r'EXACT', r'', 'cmake/ProcessOptions.cmake')
+        filter_file(r'FATAL_ERROR "Your Cy', r'WARNING "Your Cy', 'cmake/ProcessOptions.cmake')
+        filter_file(r'require_reg =.*$', r'return', 'extras/help_generator/helpers.py')
 
     def install(self, spec, prefix):
         build_dir = "spack-build-%s" % spec.version
@@ -108,8 +114,8 @@ class Nest(Package):
                     cmake_options.append('-DCMAKE_EXE_LINKER_FLAGS=-qnostaticlink')
 
             if spec.satisfies('+python'):
-                cmake_options.extend(['-Dwith-python=%s/hostpython' %  spec['python'].prefix,
-                                      '-Dcythonize-pynest=%s' % spec['py-cython'].prefix])
+                cmake_options.extend(['-Dwith-python=ON',
+                                      '-Dcythonize-pynest=ON'])
             else:
                 cmake_options.extend(['-Dwith-python=OFF',
                                       '-Dcythonize-pynest=OFF'])
@@ -139,7 +145,7 @@ class Nest(Package):
 
             cmake('..', *cmake_options)
             self.profiling_wrapper_on()
-            make()
+            make('VERBOSE=1')
             make('install')
 
     def setup_environment(self, spack_env, run_env):
