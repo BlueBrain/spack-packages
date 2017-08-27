@@ -12,7 +12,7 @@ case "$TRAVIS_OS_NAME" in
         brew install gsl
         brew tap homebrew/science
         brew install lmod
-        brew install python3
+        #brew install python3
 
         ls /usr/bin/python* /usr/local/bin/python*
 
