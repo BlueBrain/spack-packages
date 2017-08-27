@@ -14,11 +14,6 @@ case "$TRAVIS_OS_NAME" in
         brew install lmod
         brew install python3
 
-        ls /usr/bin/python* /usr/local/bin/python*
-
-        python -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
-        python3 -c "import sysconfig; print (sysconfig.get_config_var('LIBDIR'))"
-
         case "$MPI_LIB_NAME" in
             mpich|mpich3)
                 brew install mpich
@@ -37,6 +32,7 @@ case "$TRAVIS_OS_NAME" in
         sudo apt-get update -q
         sudo apt-get install -y libgsl0-dev
         sudo apt-get install -y cython
+        sudo apt-get install -y libpython3-dev
 
         # TODO: workaround for bug in Ubuntu 14.04
         # check https://bugs.launchpad.net/ubuntu/+source/python2.7/+bug/1115466
@@ -61,3 +57,8 @@ case "$TRAVIS_OS_NAME" in
         exit 1
         ;;
 esac
+
+ls /usr/bin/python* /usr/local/bin/python*
+
+python -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
+python3 -c "import sysconfig; print (sysconfig.get_config_var('LIBDIR'))"

@@ -38,7 +38,8 @@ packages:
     python:
         paths:
             python@2.7: /usr
-        version: [2.7]
+            python@3.4.0: /usr
+        version: [2.7, 3.4.0]
         buildable: False
     gsl:
         paths:
