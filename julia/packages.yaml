@@ -1,8 +1,13 @@
 packages:
     intelmpi:
         modules:
-            intelmpi@develop: intel-impi/2017.1.132
-        version: [develop]
+            intelmpi@5.1.3: intel-impi/5.1.3
+        version: [5.1.3]
+        buildable: False
+    mvapich2:
+        modules:
+            mvapich2@2.2: mvapich2_ics/2.2rc1
+        version: [2.2]
         buildable: False
     cmake:
         paths:
@@ -30,8 +35,8 @@ packages:
         buildable: False
         version: [system]
     python:
-        paths:
-            python@2.7.12: /global/opt/jsc/Python-2.7.12
+        modules:
+            python@2.7.12: intel-python/2.7.12_2017.0.028
         version: [2.7.12]
         buildable: False
     hdf5:
