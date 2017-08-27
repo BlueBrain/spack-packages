@@ -5,6 +5,11 @@ packages:
             mpich@3.0.4: /usr
         version: [3.0.4]
         buildable: False
+    openmpi:
+        paths:
+            openmpi@2.1.1: /usr
+        buildable: False
+        version: [2.1.1]
     cmake:
         paths:
             cmake@3.2.2: /usr
@@ -32,8 +37,9 @@ packages:
         version: [system]
     python:
         paths:
-            python@2.7: /usr
-        version: [2.7]
+            python@2.7.13: /opt/python/2.7.13
+            python@3.5.3: /opt/python/3.5.3
+        version: [2.7.13, 3.5.3]
         buildable: False
     gsl:
         paths:

@@ -13,6 +13,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
+from llnl.util import tty
 import os
 import sys
 import glob
@@ -49,9 +50,7 @@ class Neuron(Package):
     depends_on('tau', when='+profile')
     depends_on('mpi', when='+mpi')
 
-    # on osx platform, pkg-config can't be built without clang
-    depends_on('pkg-config', type='build', when=sys.platform != 'darwin')
-    depends_on('pkg-config%clang', type='build', when=sys.platform == 'darwin')
+    depends_on('pkg-config', type='build')
 
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
@@ -126,43 +125,60 @@ class Neuron(Package):
         options = []
 
         if spec.satisfies('+python'):
-            py_prefix = spec['python'].prefix
-            py_version_string = 'python{0}'.format(spec['python'].version.up_to(2))
-            python_exec = '%s/bin/%s' % (py_prefix, py_version_string)
+
+            # we could use spec['python'].prefix as install prefix
+            # but then external python installations (e.g. brew) have
+            # completely different installation hierarchy and hence result in build
+            # failure. We have to test below approach in cross compiling
+            # environment where we can't execute compute node python on
+            # front-end (see #5112 )
+            #py_prefix = spec['python'].prefix
+            py_prefix = spec['python'].home
+            python_exec = spec['python'].command.path
+
+            py_lib = 'python{0}'.format(spec['python'].version.up_to(2))
+            py_lib_dir = spec['python'].prefix.lib
+            extra_libs = ''
+
+            # todo : bit of hack for argonne bgq system as they have extra
+            #        libraries to link. May be adding variant would be better?
+            import socket
+            if 'bgq' in spec.architecture and 'alcf.anl.gov' in socket.getfqdn():
+                extra_libs = '-lz -lssl -lcrypto -lutil'
+
+            # on platform like theta cray, intel python has extra directory include/python3.5m/
+            # and hence we need to find directory of Python.h
+            files = [y for x in os.walk(py_prefix) for y in glob.glob(os.path.join(x[0], 'Python.h'))]
+            if files:
+                py_inc_dir = os.path.dirname(files[0])
+            else:
+                tty.warn('Could not find Python.h in the specified the python prefix'
+                         'Make sure to install relevant python dev packages')
+
+            # spack has a method to return python libraries but we need to wait for
+            # PR to be merged upstream : https://github.com/LLNL/spack/pull/5118
+            files = [y for x in os.walk(py_prefix) for y in glob.glob(os.path.join(x[0], 'libpython*'))]
+            if files:
+                py_lib_dir = os.path.dirname(files[0])
+                # depending on pymalloc enabled or not, python library name might be different
+                # check if library name is like libpython2.7m or libpython3.5m etc
+                if [libname for libname in files if py_lib+'m' in libname]:
+                    py_lib += 'm'
+            else:
+                tty.warn('Could not find libpython in the specified the python prefix'
+                         'Make sure to install relevant python dev packages')
 
             options.extend(['--with-nrnpython=%s' % python_exec, '--disable-pysetup'])
+            options.extend(['PYINCDIR=%s' % (py_inc_dir),
+                    'PYLIB=-L%s -l%s %s' % (py_lib_dir, py_lib, extra_libs),
+                    'PYLIBDIR=%s' % py_lib_dir,
+                    'PYLIBLINK=-L%s -l%s %s' % (py_lib_dir, py_lib, extra_libs)])
 
-            if spec.satisfies('+cross-compile'):
-
-                py_lib = spec['python'].prefix.lib
-                py_lib_64 = spec['python'].prefix.lib64
-                py_inc_dir = '%s/include/%s' % (py_prefix, py_version_string)
-                extra_libs = ''
-
-                if not os.path.isdir(py_lib):
-                    py_lib = spec['python'].prefix.lib
-
-                # todo : bit of hack for argonne systems because they have differnt
-                #        installation structure compared to other systems. Doing
-                #        this temporarily to get production runs going.
-                import socket
-                if 'alcf.anl.gov' in socket.getfqdn():
-                    extra_libs = '-lz -lssl -lcrypto -lutil'
-                elif 'thetalog' in socket.getfqdn():
-                    # another hack for theta until sysadmins fix the permissions! :(
-                    # need to cleanup this soon!
-                    if spec.satisfies('^python@3.5'):
-                        py_version_string = 'python3.5m'
-
-                    # on platform like theta cray, intel python has extra directory include/python3.5m/
-                    # find directory of Python.h
-                    python_h_file = [y for x in os.walk(py_prefix) for y in glob.glob(os.path.join(x[0], 'Python.h'))][0]
-                    py_inc_dir = os.path.dirname(python_h_file)
-
-                options.extend(['PYINCDIR=%s' % (py_inc_dir),
-                                'PYLIB=-L%s -l%s %s' % (py_lib, py_version_string, extra_libs),
-                                'PYLIBDIR=%s' % py_lib,
-                                'PYLIBLINK=-L%s -L%s -l%s %s' % (py_lib, py_lib_64, py_version_string, extra_libs)])
+            # TODO : neuron has depdendency with backend python as well as front-end
+            # while building for python3 we see issue because neuron use python from
+            # /usr/bin where PYTHONPATH is for python3 resulting in import errors
+            if spec.satisfies('~cross-compile'):
+                options.append('PYTHON_BLD=%s' % python_exec)
         else:
             options.extend(['--without-nrnpython'])
         return options
