@@ -6,11 +6,11 @@ set -e
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     packages=(
-        'nest -python'
         'mod2c'
         'coreneuron ~neurodamusmod ~report'
         'neuron +python ^python@3.5.3'
         'neuron +python ^python@2.7.13'
+        'nest -python'
     )
 
     # for module support on linux
@@ -18,11 +18,11 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 
 else
     packages=(
-        'nest -python'
         'mod2c'
         'coreneuron ~neurodamusmod ~report'
         'neuron +python ^python@3.6.2'
         'neuron +python ^python@2.7.12'
+        'nest -python'
     )
 
     # for module support on osx
