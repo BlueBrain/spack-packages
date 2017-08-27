@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+#set -e
 
 # the list of packages for linux and osx could be different
 
@@ -32,6 +32,8 @@ fi
 for package in "${packages[@]}"
 do
     spack install -v $package
+
+    find /tmp/travis/spack-stage -name 'config.log' -exec cat {} \;
 
     # check if package installed properly
     if [[ `spack find $package` == *"No package matches"* ]];  then
