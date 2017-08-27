@@ -103,6 +103,8 @@ class Neuron(Package):
             arch = 'powerpc64'
         if 'cray' in self.spec.architecture:
             arch = 'x86_64'
+        if 'ppc64le' in self.spec.architecture:
+            arch = 'powerpc64le'
         return arch
 
     # options for hdf5 branch
