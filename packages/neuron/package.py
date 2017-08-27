@@ -140,11 +140,10 @@ class Neuron(Package):
             py_lib_dir = spec['python'].prefix.lib
             extra_libs = ''
 
-            # todo : bit of hack for argonne systems because they have differnt
-            #        installation structure compared to other systems. Doing
-            #        this temporarily to get production runs going.
+            # todo : bit of hack for argonne bgq system as they have extra
+            #        libraries to link. May be adding variant would be better?
             import socket
-            if 'alcf.anl.gov' in socket.getfqdn():
+            if 'bgq' in spec.architecture and 'alcf.anl.gov' in socket.getfqdn():
                 extra_libs = '-lz -lssl -lcrypto -lutil'
 
             # on platform like theta cray, intel python has extra directory include/python3.5m/

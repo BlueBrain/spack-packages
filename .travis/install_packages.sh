@@ -1,16 +1,16 @@
 #!/bin/bash
 
-#set -e
+set -e
 
 # the list of packages for linux and osx could be different
 
 if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
     packages=(
+        'mod2c'
+        'coreneuron ~neurodamusmod ~report'
         'neuron +python ^python@3.5.3'
         'neuron +python ^python@2.7.13'
-        #'mod2c'
-        #'coreneuron ~neurodamusmod ~report'
-        #'nest'
+        'nest'
     )
 
     # for module support on linux
@@ -18,22 +18,22 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 
 else
     packages=(
+        'mod2c'
+        'coreneuron ~neurodamusmod ~report'
         'neuron +python ^python@3.6.2'
         'neuron +python ^python@2.7.12'
-        #'mod2c'
-        #'coreneuron ~neurodamusmod ~report'
-        #'nest'
+        'nest'
     )
 
     # for module support on osx
     source /usr/local/opt/modules/Modules/init/bash;
 fi
 
+# NOTE : if configure fails we have to get use something like below to print log
+#           find /tmp/travis/spack-stage -name 'config.log' -exec cat {} \;
 for package in "${packages[@]}"
 do
     spack install -v $package
-
-    find /tmp/travis/spack-stage -name 'config.log' -exec cat {} \;
 
     # check if package installed properly
     if [[ `spack find $package` == *"No package matches"* ]];  then
@@ -46,6 +46,12 @@ do
 done
 
 source $SPACK_ROOT/share/spack/setup-env.sh
+# show available modules
 module av
-spack load mod2c
+
+# show all dependency
+spack find -d
+
+# load one of the module
+spack load neuron
 module list

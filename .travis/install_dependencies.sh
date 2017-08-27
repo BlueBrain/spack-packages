@@ -61,4 +61,3 @@ esac
 # print python paths in case we need for debugging
 python -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
 python3 -c "import sysconfig; print (sysconfig.get_config_var('LIBDIR'))"
-ls -l /opt/python/3.5.3/lib/* || ls
