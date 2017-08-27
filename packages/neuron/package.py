@@ -125,20 +125,20 @@ class Neuron(Package):
         options = []
 
         if spec.satisfies('+python'):
-            py_prefix = spec['python'].prefix
-            py_inc_dir = spec['python'].prefix.include
 
-            py_version_string = 'python{0}'.format(spec['python'].version.up_to(2))
+            # we could use spec['python'].prefix as install prefix
+            # but then external python installations (e.g. brew) have
+            # completely different installation hierarchy and hence result in build
+            # failure. We have to test below approach in cross compiling
+            # environment where we can't execute compute node python on
+            # front-end (see #5112 )
+            #py_prefix = spec['python'].prefix
+            py_prefix = spec['python'].home
             python_exec = spec['python'].command.path
 
-            options.extend(['--with-nrnpython=%s' % python_exec, '--disable-pysetup'])
-
-            py_lib = spec['python'].prefix.lib
-            py_lib_64 = spec['python'].prefix.lib64
+            py_version_string = 'python{0}'.format(spec['python'].version.up_to(2))
+            pylib_dir = spec['python'].prefix.lib
             extra_libs = ''
-
-            if not os.path.isdir(py_lib):
-                py_lib = py_lib_64
 
             # todo : bit of hack for argonne systems because they have differnt
             #        installation structure compared to other systems. Doing
@@ -161,10 +161,26 @@ class Neuron(Package):
                 tty.warn('Could not find Python.h in the specified the python prefix'
                          'Make sure to install relevant python dev packages')
 
+            # spack has a method to return python libraries but we need to wait for
+            # PR to be merged upstream : https://github.com/LLNL/spack/pull/5118
+            files = [y for x in os.walk(py_prefix) for y in glob.glob(os.path.join(x[0], 'libpython*'))]
+            if files:
+                pylib_dir = os.path.dirname(files[0])
+            else:
+                tty.warn('Could not find libpython in the specified the python prefix'
+                         'Make sure to install relevant python dev packages')
+
+            options.extend(['--with-nrnpython=%s' % python_exec, '--disable-pysetup'])
             options.extend(['PYINCDIR=%s' % (py_inc_dir),
-                    'PYLIB=-L%s -l%s %s' % (py_lib, py_version_string, extra_libs),
-                    'PYLIBDIR=%s' % py_lib,
-                    'PYLIBLINK=-L%s -L%s -l%s %s' % (py_lib, py_lib_64, py_version_string, extra_libs)])
+                    'PYLIB=-L%s -l%s %s' % (pylib_dir, py_version_string, extra_libs),
+                    'PYLIBDIR=%s' % pylib_dir,
+                    'PYLIBLINK=-L%s -l%s %s' % (pylib_dir, py_version_string, extra_libs)])
+
+            # TODO : neuron has depdendency with backend python as well as front-end
+            # while building for python3 we see issue because neuron use python from
+            # /usr/bin where PYTHONPATH is for python3 resulting in import errors
+            if spec.satisfies('~cross-compile'):
+                options.append('PYTHON_BLD=%s' % python_exec)
         else:
             options.extend(['--without-nrnpython'])
         return options

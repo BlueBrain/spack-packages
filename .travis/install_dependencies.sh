@@ -12,8 +12,12 @@ case "$TRAVIS_OS_NAME" in
         brew install gsl
         brew tap homebrew/science
         brew install lmod
+        brew install python3
+
+        ls /usr/bin/python* /usr/local/bin/python*
 
         python -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
+        python3 -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
 
         case "$MPI_LIB_NAME" in
             mpich|mpich3)
