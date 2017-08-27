@@ -16,7 +16,7 @@ from spack import *
 import os
 
 
-class Coreneuron(Package):
+class Coreneuron(CMakePackage):
 
     """CoreNEURON is a simplified engine for the NEURON simulator
     optimised for both memory usage and computational speed. Its goal
@@ -72,10 +72,12 @@ class Coreneuron(Package):
     depends_on('tau', when='+profile')
     depends_on('reportinglib+profile', when='+report+profile')
 
+    @run_before('install')
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
-
+    
+    @run_after ('install')
     def profiling_wrapper_off(self):
         if self.spec.satisfies('+profile'):
             del os.environ["USE_PROFILER_WRAPPER"]
@@ -91,32 +93,26 @@ class Coreneuron(Package):
 
         return flags
 
-    def install(self, spec, prefix):
-
+    def cmake_args(self):
+        spec   = self.spec
         build_dir = "spack-build-%s" % spec.version
 
         with working_dir(build_dir, create=True):
-
-            c_compiler = spack_cc
-            cxx_compiler = spack_cxx
-
             optflag = self.get_opt_flags()
 
             if spec.satisfies('+profile'):
-                c_compiler = 'tau_cc'
-                cxx_compiler = 'tau_cxx'
+                env['CC']  = 'tau_cc'
+                env['CXX'] = 'tau_cxx'
+            # for bg-q, our cmake is not setup properly
             elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
-                # for bg-q, our cmake is not setup properly
-                c_compiler = spec['mpi'].mpicc
-                cxx_compiler = spec['mpi'].mpicxx
+                    env['CC']  = spec['mpi'].mpicc
+                    env['CXX'] = spec['mpi'].mpicxx
 
-            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
+            options = [
                        '-DCOMPILE_LIBRARY_TYPE=STATIC',
                        '-DCMAKE_C_FLAGS=%s' % optflag,
                        '-DCMAKE_CXX_FLAGS=%s' % optflag,
                        '-DCMAKE_BUILD_TYPE=CUSTOM',
-                       '-DCMAKE_C_COMPILER=%s' % c_compiler,
-                       '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler
                        ]
 
             if spec.satisfies('+tests'):
@@ -180,13 +176,9 @@ class Coreneuron(Package):
 
             if mech_dir_set:
                 options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
-
-            cmake('..', *options)
             self.profiling_wrapper_on()
-            make()
-            make('install')
-            self.profiling_wrapper_off()
-
+        return options
+    
     def setup_environment(self, spack_env, run_env):
         exe = '%s/coreneuron_exec' % self.prefix.bin
         run_env.set('CORENEURON_EXE', exe)
