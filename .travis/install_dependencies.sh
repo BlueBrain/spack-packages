@@ -13,6 +13,8 @@ case "$TRAVIS_OS_NAME" in
         brew tap homebrew/science
         brew install lmod
 
+        python -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
+
         case "$MPI_LIB_NAME" in
             mpich|mpich3)
                 brew install mpich

@@ -5,6 +5,11 @@ packages:
             mpich@3.0.4: /usr/local
         version: [3.0.4]
         buildable: False
+    openmpi:
+        paths:
+            openmpi@2.1.1: /usr/local
+        buildable: False
+        version: [2.1.1]
     cmake:
         paths:
             cmake@3.6.2: /usr/local
@@ -32,7 +37,7 @@ packages:
         version: [system]
     python:
         paths:
-            python@2.7: /usr/local
+            python@2.7: /System/Library/Frameworks/Python.framework/Versions/2.7
         version: [2.7]
         buildable: False
     gsl:
