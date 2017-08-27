@@ -17,7 +17,8 @@ if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
 
 else
     packages=(
-        'neuron'
+        'neuron +python ^python@3.6.2'
+        'neuron +python ^python@2.7'
         'mod2c'
         'coreneuron ~neurodamusmod ~report'
         'nest'

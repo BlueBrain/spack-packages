@@ -17,7 +17,7 @@ case "$TRAVIS_OS_NAME" in
         ls /usr/bin/python* /usr/local/bin/python*
 
         python -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
-        python3 -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
+        python3 -c "import sysconfig; print (sysconfig.get_config_var('LIBDIR'))"
 
         case "$MPI_LIB_NAME" in
             mpich|mpich3)
