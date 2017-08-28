@@ -16,7 +16,7 @@ from spack import *
 import os
 
 
-class Reportinglib(Package):
+class Reportinglib(CMakePackage):
 
     """Soma and full compartment report library developed at BBP"""
 
@@ -30,51 +30,39 @@ class Reportinglib(Package):
 
     variant('profile', default=False, description="Enable profiling using Tau")
     variant('static',  default=False, description="Build static library")
-    variant('debug',   default=False, description="Build debug version")
 
     depends_on('cmake@2.8.12:', type='build')
     depends_on('mpi')
     depends_on('tau', when='+profile')
 
+    @run_before('install')
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
 
+    @run_after ('install')
     def profiling_wrapper_off(self):
         if self.spec.satisfies('+profile'):
             del os.environ["USE_PROFILER_WRAPPER"]
 
-    def install(self, spec, prefix):
+    def cmake_args(self):
 
-        build_dir = "spack-build-%s" % spec.version
+        spec   = self.spec
 
-        with working_dir(build_dir, create=True):
+        # reportinglib tests are not running actual tests
+        # and on osx we don't want to build boost from gcc
+        options = ['-DUNIT_TESTS=OFF']
 
-            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix]
+        if spec.satisfies('+profile'):
+            env['CC']  = 'tau_cc'
+            env['CXX'] = 'tau_cxx'
+        # for bg-q, our cmake needs mpi compilers as c, cxx compiler
+        elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
+            env['CC']  = spec['mpi'].mpicc
+            env['CXX'] = spec['mpi'].mpicxx
 
-            c_compiler = spec['mpi'].mpicc
-            cxx_compiler = spec['mpi'].mpicxx
+        # while building with tau, coreneuron needed static version
+        if spec.satisfies('+static'):
+            options.append('-DCOMPILE_LIBRARY_TYPE=STATIC')
 
-            if spec.satisfies('+profile'):
-                c_compiler = 'tau_cc'
-                cxx_compiler = 'tau_cxx'
-                # on darwin, boost is not always linked from gcc
-                options.extend(['-DUNIT_TESTS=OFF'])
-
-            # while building with tau, coreneuron needed static version
-            if spec.satisfies('+static'):
-                options.extend(['-DCOMPILE_LIBRARY_TYPE=STATIC'])
-
-            # build debug version
-            if spec.satisfies('+debug'):
-                options.extend(['-DCMAKE_BUILD_TYPE=Debug'])
-
-            # especially for bg-q where we don't use cmake to find mpi libs
-            options.extend(['-DCMAKE_C_COMPILER=%s' % c_compiler,
-                            '-DCMAKE_CXX_COMPILER=%s' % cxx_compiler])
-
-            cmake('..', *options)
-            self.profiling_wrapper_on()
-            make()
-            make('install')
-            self.profiling_wrapper_off()
+        return options

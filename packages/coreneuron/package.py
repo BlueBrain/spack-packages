@@ -76,7 +76,7 @@ class Coreneuron(CMakePackage):
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
-    
+
     @run_after ('install')
     def profiling_wrapper_off(self):
         if self.spec.satisfies('+profile'):
@@ -95,90 +95,92 @@ class Coreneuron(CMakePackage):
 
     def cmake_args(self):
         spec   = self.spec
-        build_dir = "spack-build-%s" % spec.version
+        optflag = self.get_opt_flags()
 
-        with working_dir(build_dir, create=True):
-            optflag = self.get_opt_flags()
+        if spec.satisfies('+profile'):
+            env['CC']  = 'tau_cc'
+            env['CXX'] = 'tau_cxx'
+        # for bg-q, our cmake needs mpi compilers as c, cxx compiler
+        elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
+            env['CC']  = spec['mpi'].mpicc
+            env['CXX'] = spec['mpi'].mpicxx
 
-            if spec.satisfies('+profile'):
-                env['CC']  = 'tau_cc'
-                env['CXX'] = 'tau_cxx'
-            # for bg-q, our cmake is not setup properly
-            elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
-                    env['CC']  = spec['mpi'].mpicc
-                    env['CXX'] = spec['mpi'].mpicxx
+        options = ['-DCOMPILE_LIBRARY_TYPE=STATIC',
+                   '-DCMAKE_C_FLAGS=%s' % optflag,
+                   '-DCMAKE_CXX_FLAGS=%s' % optflag,
+                   '-DCMAKE_BUILD_TYPE=CUSTOM']
 
-            options = [
-                       '-DCOMPILE_LIBRARY_TYPE=STATIC',
-                       '-DCMAKE_C_FLAGS=%s' % optflag,
-                       '-DCMAKE_CXX_FLAGS=%s' % optflag,
-                       '-DCMAKE_BUILD_TYPE=CUSTOM',
-                       ]
+        if spec.satisfies('+tests'):
+            options.extend(['-DUNIT_TESTS=ON',
+                            '-DFUNCTIONAL_TESTS=ON'])
+        else:
+            options.extend(['-DUNIT_TESTS=OFF',
+                            '-DFUNCTIONAL_TESTS=OFF'])
 
-            if spec.satisfies('+tests'):
-                options.extend(['-DUNIT_TESTS:BOOL=ON',
-                                '-DFUNCTIONAL_TESTS:BOOL=ON'])
-            else:
-                options.extend(['-DUNIT_TESTS:BOOL=OFF',
-                                '-DFUNCTIONAL_TESTS:BOOL=OFF'])
+        if spec.satisfies('+report'):
+            options.append('-DENABLE_REPORTINGLIB=ON')
+        else:
+            options.append('-DENABLE_REPORTINGLIB=OFF')
 
-            if spec.satisfies('+report'):
-                options.extend(['-DENABLE_REPORTINGLIB:BOOL=ON'])
+        if spec.satisfies('@hdf'):
+            options.extend(['-DENABLE_HDF5=ON',
+                            '-DZLIB_ROOT=%s' % spec['zlib'].prefix,
+                            '-DENABLE_ZLIB_LINK=ON'])
+        else:
+            options.append('-DENABLE_HDF5=OFF')
 
-            if spec.satisfies('@hdf'):
-                options.extend(['-DENABLE_HDF5:BOOL=ON',
-                                '-DZLIB_ROOT=%s' % spec['zlib'].prefix,
-                                '-DENABLE_ZLIB_LINK:BOOL=ON'])
-            else:
-                options.extend(['-DENABLE_HDF5:BOOL=OFF'])
+        if spec.satisfies('+mpi'):
+            options.append('-DENABLE_MPI=ON')
+        else:
+            options.append('-DENABLE_MPI=OFF')
 
-            if spec.satisfies('~mpi'):
-                options.extend(['-DENABLE_MPI:BOOL=OFF'])
 
-            if spec.satisfies('~openmp'):
-                options.extend(['-DCORENEURON_OPENMP:BOOL=OFF'])
+        if spec.satisfies('+openmp'):
+            options.append('-DCORENEURON_OPENMP=ON')
+        else:
+            options.append('-DCORENEURON_OPENMP=OFF')
 
-            if spec.satisfies('+gpu'):
-                gcc = which("gcc")
-                options.extend(['-DCUDA_HOST_COMPILER=%s' % gcc,
-                                '-DCUDA_PROPAGATE_HOST_FLAGS=OFF',
-                                '-DENABLE_SELECTIVE_GPU_PROFILING=ON',
-                                '-DENABLE_OPENACC=ON',
-                                '-DENABLE_OPENACC_INFO=ON'])
-                # PGI compiler not able to compile nrnreport.cpp when enabled
-                # OpenMP, OpenACC and Reporting. Disable ReportingLib for GPU
-                options.extend(['-DENABLE_REPORTINGLIB:BOOL=OFF'])
+        if spec.satisfies('+gpu'):
+            gcc = which("gcc")
+            options.extend(['-DCUDA_HOST_COMPILER=%s' % gcc,
+                            '-DCUDA_PROPAGATE_HOST_FLAGS=OFF',
+                            '-DENABLE_SELECTIVE_GPU_PROFILING=ON',
+                            '-DENABLE_OPENACC=ON',
+                            '-DENABLE_OPENACC_INFO=ON'])
+            # PGI compiler not able to compile nrnreport.cpp when enabled
+            # OpenMP, OpenACC and Reporting. Disable ReportingLib for GPU
+            options.append('-DENABLE_REPORTINGLIB=OFF')
 
-            # tqperf test in perfmodels use net_move functionality which
-            # requires use of splay tree instead of default priority queue.
-            if spec.satisfies('@perfmodels'):
-                options.extend(['-DENABLE_SPLAYTREE_QUEUING=ON'])
+        # tqperf test in perfmodels use net_move functionality which
+        # requires use of splay tree instead of default priority queue.
+        if spec.satisfies('@perfmodels'):
+            options.append('-DENABLE_SPLAYTREE_QUEUING=ON')
 
-            mech_dir_set = False
-            modlib_dir = ''
+        mech_dir_set = False
+        modlib_dir = ''
 
-            if 'MOD_FILE_DIR' in os.environ:
-                modlib_dir = os.environ['MOD_FILE_DIR']
-                mech_dir_set = True
-                if not os.path.isdir(modlib_dir):
-                    raise RuntimeError("MOD_FILE_DIR environment variable set but directory doesn't exist!")
+        if 'MOD_FILE_DIR' in os.environ:
+            modlib_dir = os.environ['MOD_FILE_DIR']
+            mech_dir_set = True
+            if not os.path.isdir(modlib_dir):
+                raise RuntimeError("MOD_FILE_DIR environment variable set but directory doesn't exist!")
 
-            if spec.satisfies('@perfmodels'):
-                modlib_dir = self.nrnperf_modfiles
-                mech_dir_set = True
-            elif spec.satisfies('+neurodamusmod'):
-                neurodamus_dir = self.spec['neurodamus'].prefix
-                modlib_dir = '%s;%s/lib/modlib' % (modlib_dir, neurodamus_dir)
-                modfile_list = '%s/lib/modlib/coreneuron_modlist.txt' % (neurodamus_dir)
+        if spec.satisfies('@perfmodels'):
+            modlib_dir = self.nrnperf_modfiles
+            mech_dir_set = True
+        elif spec.satisfies('+neurodamusmod'):
+            neurodamus_dir = self.spec['neurodamus'].prefix
+            modlib_dir = '%s;%s/lib/modlib' % (modlib_dir, neurodamus_dir)
+            modfile_list = '%s/lib/modlib/coreneuron_modlist.txt' % (neurodamus_dir)
 
-                options.extend(['-DADDITIONAL_MECHS=%s' % (modfile_list)])
-                mech_dir_set = True
+            options.append('-DADDITIONAL_MECHS=%s' % modfile_list)
+            mech_dir_set = True
 
-            if mech_dir_set:
-                options.extend(['-DADDITIONAL_MECHPATH=%s' % (modlib_dir)])
-            self.profiling_wrapper_on()
+        if mech_dir_set:
+            options.append('-DADDITIONAL_MECHPATH=%s' % modlib_dir)
+
         return options
-    
+
     def setup_environment(self, spack_env, run_env):
         exe = '%s/coreneuron_exec' % self.prefix.bin
         run_env.set('CORENEURON_EXE', exe)

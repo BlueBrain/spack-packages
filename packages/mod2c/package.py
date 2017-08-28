@@ -15,7 +15,7 @@
 from spack import *
 
 
-class Mod2c(Package):
+class Mod2c(CMakePackage):
 
     """MOD2C is NMODL to C converter adapted for CoreNEURON simulator.
     More information about NMODL can be found NEURON simulator
@@ -33,16 +33,8 @@ class Mod2c(Package):
 
     depends_on('cmake@2.8.12:', type='build')
 
-    def install(self, spec, prefix):
-
-        build_dir = "spack-build-%s" % spec.version
-
-        with working_dir(build_dir, create=True):
-
-            options = ['-DCMAKE_INSTALL_PREFIX:PATH=%s' % prefix,
-                       '-DCMAKE_C_COMPILER=%s' % spack_cc,
-                       '-DCMAKE_CXX_COMPILER=%s' % spack_cxx]
-
-            cmake('..', *options)
-            make()
-            make('install')
+    def cmake_args(self):
+        # todo: unnecessary method, check on cray though
+        options = ['-DCMAKE_C_COMPILER=%s' % spack_cc,
+                   '-DCMAKE_CXX_COMPILER=%s' % spack_cxx]
+        return options
