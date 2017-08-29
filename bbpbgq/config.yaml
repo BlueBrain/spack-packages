@@ -1,4 +1,7 @@
 config:
-  install_tree: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/bgq/simulation/install
+  install_tree: ~/spack_install/bgq/
   module_roots:
-    tcl: /gpfs/bbp.cscs.ch/project/proj16/$user/SPACK_INSTALL/bgq/simulation/modules
+    tcl: ~/spack_modules/bgq/tcl/
+    lmod: ~/spack_modules/bgq/lmod/
+  build_stage:
+    - $spack/var/spack/stage
