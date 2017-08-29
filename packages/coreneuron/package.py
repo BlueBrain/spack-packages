@@ -27,7 +27,7 @@ class Coreneuron(CMakePackage):
     url      = "https://github.com/BlueBrain/CoreNeuron"
     bbpurl   = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop', git=url, branch='fix_bgq', preferred=True)
+    version('develop', git=url, preferred=True)
 
     # TODO: same as develop but for legacy reasons
     version('perfmodels', git=url)
