@@ -27,7 +27,7 @@ class Coreneuron(CMakePackage):
     url      = "https://github.com/BlueBrain/CoreNeuron"
     bbpurl   = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop', git=url, preferred=True)
+    version('develop', git=url, branch='fix_bgq', preferred=True)
 
     # TODO: same as develop but for legacy reasons
     version('perfmodels', git=url)
@@ -101,7 +101,7 @@ class Coreneuron(CMakePackage):
             env['CC']  = 'tau_cc'
             env['CXX'] = 'tau_cxx'
         # for bg-q, our cmake needs mpi compilers as c, cxx compiler
-        elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
+        elif 'bgq' in spec.architecture and spec.satisfies('+mpi'):
             env['CC']  = spec['mpi'].mpicc
             env['CXX'] = spec['mpi'].mpicxx
 
@@ -109,6 +109,9 @@ class Coreneuron(CMakePackage):
                    '-DCMAKE_C_FLAGS=%s' % optflag,
                    '-DCMAKE_CXX_FLAGS=%s' % optflag,
                    '-DCMAKE_BUILD_TYPE=CUSTOM']
+
+        if 'bgq' in spec.architecture and '%xl' in spec:
+            options.append('-DCMAKE_BUILD_WITH_INSTALL_RPATH=1')
 
         if spec.satisfies('+tests'):
             options.extend(['-DUNIT_TESTS=ON',
