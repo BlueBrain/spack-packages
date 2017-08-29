@@ -40,7 +40,6 @@ class Neurodamus(Package):
 
     variant('compile', default=True, description='Compile and create executable using nrnivmodl')
     variant('profile', default=False, description="Enable profiling using Tau")
-    variant('debug',   default=False, description="Build debug version")
 
     # basic dependencies
     depends_on("hdf5", when='+compile')
@@ -53,13 +52,11 @@ class Neurodamus(Package):
     depends_on('tau', when='+profile')
 
     # additional neuron version selections
-    depends_on("neuron+debug", when='+compile+debug')
     depends_on("neuron+profile", when='+compile+profile')
     depends_on("neuron@hdf", when='@hdf+compile')
 
     # additional reportinglib selections
     depends_on('reportinglib@gather', when='@saveupdateIO+compile')
-    depends_on('reportinglib+debug', when='+compile+debug')
     depends_on('reportinglib+profile', when='+compile+profile')
 
     # develop version is for coreneuron which needs neuron compiled with python
