@@ -57,7 +57,7 @@ class Reportinglib(CMakePackage):
             env['CC']  = 'tau_cc'
             env['CXX'] = 'tau_cxx'
         # for bg-q, our cmake needs mpi compilers as c, cxx compiler
-        elif 'bgq' in self.spec.architecture and spec.satisfies('+mpi'):
+        elif 'bgq' in self.spec.architecture:
             env['CC']  = spec['mpi'].mpicc
             env['CXX'] = spec['mpi'].mpicxx
 

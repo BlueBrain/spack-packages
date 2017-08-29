@@ -34,7 +34,9 @@ class Mod2c(CMakePackage):
     depends_on('cmake@2.8.12:', type='build')
 
     def cmake_args(self):
-        # todo: unnecessary method, check on cray though
-        options = ['-DCMAKE_C_COMPILER=%s' % spack_cc,
-                   '-DCMAKE_CXX_COMPILER=%s' % spack_cxx]
+        spec = self.spec
+        options = []
+        if 'bgq' in spec.architecture and '%xl' in spec:
+            options.append('-DCMAKE_BUILD_WITH_INSTALL_RPATH=1')
+
         return options
