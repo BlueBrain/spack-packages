@@ -947,6 +947,8 @@ As indicated by message *"Due to MODULEPATH changes, the following have been rel
 
 The same will be the case if we have different mpi and switch to that. Lmod offers rich functionality to make entire workflow easy. You can find more information [here](http://lmod.readthedocs.io/en/latest/).
 
+<details>
+  <summary>TODO/WIP</summary>
 
 ### Bootstrapping Spack on BBP IV Lugano VizCluster ###
 
@@ -1159,3 +1161,5 @@ cp theta/* $HOME/.spack/cray/
 ```
 
 The instructions / scrit to install NEURON/CoreNEURON is provided under `theta/bbp.sh`.
+
+</details>
