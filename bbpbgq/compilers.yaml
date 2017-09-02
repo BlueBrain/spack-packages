@@ -49,4 +49,4 @@ compilers:
       f77: /usr/bin/gfortran
       fc: /usr/bin/gfortran
     spec: gcc@4.4.7
-    target: ppc64
+    target: power7
