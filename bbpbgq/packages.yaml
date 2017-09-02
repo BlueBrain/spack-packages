@@ -54,8 +54,7 @@ packages:
     cmake:
         paths:
             cmake@2.8.12: /gpfs/bbp.cscs.ch/apps/bgq/tools/cmake/cmake-2.8.12/install
-        modules:
-            cmake@3.3.2: nix/bgq/cmake/3.3.2
+            cmake@3.3.2: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/636l7bvg95fvdyffddw8g94cxwsrb1v8-generated-env-module-cmake
         buildable: False
         version: [2.8.12, 3.3.2]
     hdf5:
