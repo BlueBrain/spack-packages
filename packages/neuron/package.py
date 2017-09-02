@@ -116,18 +116,27 @@ class Neuron(Package):
         options = []
 
         if spec.satisfies('+python'):
-            options.append('--with-nrnpython=%s' % spec['python'].command.path)
-            options.append('--disable-pysetup')
-
-            # provide PYINCDIR and PYLIBDIR
+            python_exec = spec['python'].command.path
             py_inc = spec['python'].headers.directories[0]
             py_lib = spec['python'].prefix.lib
 
             if not os.path.isdir(py_lib):
                 py_lib = spec['python'].prefix.lib64
 
-            options.extend(['PYINCDIR=%s' % py_inc,
+            options.extend(['--with-nrnpython=%s' % python_exec,
+                            '--disable-pysetup',
+                            'PYINCDIR=%s' % py_inc,
                             'PYLIBDIR=%s' % py_lib])
+
+            if spec.satisfies('~cross-compile'):
+                options.append('PYTHON_BLD=%s' % python_exec)
+
+            # TODO : neuron has depdendency with backend python as well as front-end
+            # while building for python3 we see issue because neuron use python from
+            # /usr/bin where PYTHONPATH is for python3 resulting in import errors
+            if spec.satisfies('~cross-compile'):
+                options.append('PYTHON_BLD=%s' % python_exec)
+
         else:
             options.append('--without-nrnpython')
 
