@@ -45,6 +45,7 @@ class Neuron(Package):
     depends_on('automake', type='build')
     depends_on('autoconf', type='build')
     depends_on('libtool', type='build')
+    depends_on('ncurses')
     depends_on("nrnh5", when='@hdf')
     depends_on('python@2.6:', when='+python')
     depends_on('tau', when='+profile')
