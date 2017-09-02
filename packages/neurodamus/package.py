@@ -106,7 +106,7 @@ class Neurodamus(Package):
 
     def check_install(self, spec):
         # after install check if special is created
-        special = '%s/special' % join_path(self.prefix, self.archdir)
+        special = '%s/special' % join_path(self.prefix, self.nrnarchdir)
         if not os.path.isfile(special):
             raise RuntimeError("Neurodamus installion check failed!")
 
