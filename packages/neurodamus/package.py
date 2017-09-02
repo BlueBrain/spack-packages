@@ -33,7 +33,6 @@ class Neurodamus(Package):
 
     # versions for development of coreneuron
     version('devopt',       git=url, branch='sandbox/kumbhar/coreneuronsetupopt')
-    version('hdf',          git=url, branch='sandbox/kumbhar/corebluron_h5')
     version('gpu',          git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
     version('simplification', git=url, branch='sandbox/roessert/MegaPaperCompatibility_simplification')
     version('parspike',     git=url, branch='sandbox/kumbhar/parspike')
@@ -53,8 +52,6 @@ class Neurodamus(Package):
 
     # additional neuron version selections
     depends_on("neuron+profile", when='+compile+profile')
-    depends_on("neuron@hdf", when='@hdf+compile')
-
     # additional reportinglib selections
     depends_on('reportinglib@gather', when='@saveupdateIO+compile')
     depends_on('reportinglib+profile', when='+compile+profile')
@@ -71,14 +68,11 @@ class Neurodamus(Package):
             del os.environ["USE_PROFILER_WRAPPER"]
 
     def install(self, spec, prefix):
-
-        # install neurodamus by copying lib (modlib+hoclib)
+        # copy lib directory containing modlib and hoclib
         shutil.copytree('lib', '%s/lib' % (prefix), symlinks=False)
 
         if spec.satisfies('+compile'):
-
             with working_dir(prefix):
-
                 modlib = 'lib/modlib'
                 extra_flags = ''
 
@@ -95,16 +89,13 @@ class Neurodamus(Package):
                              spec['zlib'].prefix.lib)
 
                 self.profiling_wrapper_on()
-
-                # invoke nrnivmodl
                 nrnivmodl = which('nrnivmodl')
                 nrnivmodl('-incflags', compile_flags,
                           '-loadflags', link_flags, modlib)
-
                 self.profiling_wrapper_off()
-                self.check_install(spec)
 
-    def check_install(self, spec):
+    @run_after('install')
+    def check_install(self):
         # after install check if special is created
         special = '%s/special' % join_path(self.prefix, self.nrnarchdir)
         if not os.path.isfile(special):
