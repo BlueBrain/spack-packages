@@ -520,7 +520,7 @@ With above configuration we tell Spack to find various packages under `/usr/loca
 
 * Why some packages are specified as `autoconf@system`?
 
-	Older version of Spack allowed to specify version as `system`. This meant software specified is system installed and hence use it without checking version requirements (A way to say "don't worry, just use it!"). This practice is discouraged now and we should specify exact version number in `packages.yaml` to avoid incompatible version issues. When packages specify strict version requirements then often you have to provide version specification instead of just `@system`.
+	Older version of Spack allowed to specify version as `system`. This meant software specified is system installed and hence use it without checking version requirements (A way to say "don't worry, just use it!"). This practice is discouraged now and we should specify exact version number in `packages.yaml` to avoid incompatible version issues. When packages specify `explicit` version requirements then often you have to provide version specification instead of just `@system`.
 
 * Why some packages are specified with compiler specification and without `buildable: False`?
 
@@ -534,6 +534,10 @@ With above configuration we tell Spack to find various packages under `/usr/loca
 	```
 
 	When we install boost using `brew`, the installed boost libraries can not be linked with gcc compiled application. In this case we want to use pre-installed boost if we are compiling application with clang. But if are building with gcc then we want Spack to allow to build Boost from source and hence we don't specify `buildable: False`.
+
+* I am getting `Error: The spec 'xxx' is configured as not buildable, and no matching external installs were found`.  What should I do?
+
+	Suppose we have specified `A@system` in `packages.yaml` as system installed package. If there is another package `B` explicitly asking for specific version say `A@2.2`, Spack can't build `B` because suitable version of `A` is not available and Spack can't build it from source. In this case we can change `system` to `actual version` of `A` or remove `buildable: False` to let Spack build from source.
 
 * Why have we specified `gcc` / `llvm` compilers as built by gcc version 4.4?
 
