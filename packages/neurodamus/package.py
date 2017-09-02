@@ -112,5 +112,5 @@ class Neurodamus(Package):
 
     def setup_environment(self, spack_env, run_env):
         if self.spec.satisfies('+compile'):
-            run_env.prepend_path('PATH', join_path(self.prefix, self.archdir))
+            run_env.prepend_path('PATH', join_path(self.prefix, self.nrnarchdir))
             run_env.set('HOC_LIBRARY_PATH', join_path(self.prefix, 'lib/hoclib'))
