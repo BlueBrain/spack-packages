@@ -19,6 +19,21 @@ packages:
             pkg-config@0.29.1: /usr
         buildable: False
         version: [0.29.1]
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
     libtool:
         paths:
             libtool@system: /usr

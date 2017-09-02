@@ -29,6 +29,21 @@ packages:
             pkg-config@0.29.1: /usr
         buildable: False
         version: [0.29.1]
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
     m4:
         paths:
             m4@1.4.16: /usr
@@ -47,11 +62,6 @@ packages:
         version: [1.8.18]
     zlib:
         version: [1.2.8]
-    ncurses:
-        paths:
-            ncurses@system: /usr
-        version: [system]
-        buildable: False
 
     tau:
         variants: ~openmp ~comm ~phase

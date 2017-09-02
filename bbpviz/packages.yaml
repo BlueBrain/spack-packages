@@ -33,6 +33,21 @@ packages:
             libtool@system: /usr
         buildable: False
         version: [system]
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
     python:
         paths:
             python@2.6.6: /usr

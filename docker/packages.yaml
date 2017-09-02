@@ -17,6 +17,24 @@ packages:
         version: [system]
         buildable: False
 
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
+
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
+
     cube:
         variants: +gui
 

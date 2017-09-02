@@ -54,6 +54,12 @@ packages:
         buildable: False
         version: [system]
 
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
+
     pkg-config:
         paths:
             pkg-config@0.29.2%clang@8.1.0-apple: /usr/local

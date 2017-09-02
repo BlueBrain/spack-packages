@@ -30,6 +30,11 @@ packages:
             bison@system: /usr
         buildable: False
         version: [system]
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
     libtool:
         paths:
             libtool@system: /usr
