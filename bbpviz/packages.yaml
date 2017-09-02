@@ -13,6 +13,10 @@ packages:
         modules:
             mvapich2@2.0.1%gcc@4.9.0: mvapich2/2.0.1-nocuda
         buildable: False
+    openmpi:
+        modules:
+            openmpi@1.8.7: openmpi/1.8.7
+        buildable: False
     autoconf:
         paths:
             autoconf@system: /usr
@@ -53,6 +57,12 @@ packages:
             python@2.6.6: /usr
         version: [2.6.6]
         buildable: False
+    qt:
+        modules:
+            qt@4.8.5: qt/4.8.5
+            qt@5.4.1: qt/5.4.1
+        version: [4.8.5, 5.4.1]
+        buildable: False
     cuda:
         modules:
             cuda@6.0: cuda/6.0
@@ -68,6 +78,7 @@ packages:
             hdf5@1.10.0%gcc@4.9.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-gcc
             hdf5@1.10.0%intel@17.0.0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-icc
             hdf5@1.8.5%pgi@16.5-0: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-pgi
+            hdf5@1.10.0%gcc@6.2.0: /gpfs/bbp.cscs.ch/apps/viz/tools/hdf5/hdf5-1.10.0-parallel-gcc-4.9.0
         variants: ~fortran ~shared ~cxx
         buildable: False
         version: [1.10.0]
@@ -80,11 +91,8 @@ packages:
         version: [1.2.8]
 
     tau:
-        version: [2.25.2]
         variants: ~openmp ~comm ~phase
-
-    pdt:
-        version: [3.22.1]
+        version: [2.26.2]
 
     coreneuron:
         variants: ~openmp
