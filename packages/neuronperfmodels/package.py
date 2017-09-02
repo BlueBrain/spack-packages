@@ -61,7 +61,7 @@ class Neuronperfmodels(Package):
         return incflags, ldflags
 
     def check_install(self):
-        special = '%s/special' % self.archdir
+        special = '%s/special' % self.nrnarchdir
         if not os.path.isfile(special):
             raise RuntimeError("Installation check failed (%s)!" % special)
 
@@ -172,7 +172,7 @@ class Neuronperfmodels(Package):
         run_env.set('NRNPERF_HOME', prefix)
 
         if self.spec.satisfies('@neuron'):
-            archdir = os.environ['NEURON_ARCH_DIR']
+            archdir = self.nrnarchdir
             blueconfig = '%s/simtestdata/BlueConfig' % prefix
             neurodamus_exe = '%s/neurodamus/lib/%s/special' % (prefix, archdir)
             nrntraub_exe = '%s/nrntraub/%s/special' % (prefix, archdir)
