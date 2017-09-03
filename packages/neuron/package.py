@@ -44,7 +44,7 @@ class Neuron(Package):
     version('7.4', '2c0bbee8a9e55d60fa26336f4ab7acbf')
     version('7.3', '993e539cb8bf102ca52e9fefd644ab61')
     version('7.2', '5486709b6366add932e3a6d141c4f7ad')
-    version('develop', git=github)
+    version('develop', git=github, preferred=True)
 
     variant('mpi',           default=True,  description='Enable MPI parallelism')
     variant('python',        default=True,  description='Enable python')
@@ -66,9 +66,6 @@ class Neuron(Package):
     depends_on('python@2.6:', when='+python')
     depends_on('ncurses',     when='~cross-compile')
     depends_on('tau',         when='+profile')
-
-    conflicts('~mpi', when='platform=bgq')
-    conflicts('%pgi', when='~shared')
 
     def patch(self):
         # aclocal need complete include path (especially on os x)
@@ -147,6 +144,9 @@ class Neuron(Package):
 
         if 'bgq' in self.spec.architecture:
             flags = '-O3 -qtune=qp -qarch=qp -q64 -qstrict -qnohot -g'
+
+        if self.spec.satisfies('%pgi'):
+            flags += ' ' + self.compiler.pic_flag
 
         return ['CFLAGS=%s' % flags,
                 'CXXFLAGS=%s' % flags]
