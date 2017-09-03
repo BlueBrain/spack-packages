@@ -67,8 +67,6 @@ class Neuron(Package):
     depends_on('ncurses',     when='~cross-compile')
     depends_on('tau',         when='+profile')
 
-    conflicts('~mpi', when='platform=bgq')
-
     def patch(self):
         # aclocal need complete include path (especially on os x)
         pkgconf_inc = '-I %s/share/aclocal/' % (self.spec['pkg-config'].prefix)
