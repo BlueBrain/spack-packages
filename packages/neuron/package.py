@@ -68,7 +68,6 @@ class Neuron(Package):
     depends_on('tau',         when='+profile')
 
     conflicts('~mpi', when='platform=bgq')
-    conflicts('%pgi', when='~shared')
 
     def patch(self):
         # aclocal need complete include path (especially on os x)
