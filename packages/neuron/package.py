@@ -148,6 +148,9 @@ class Neuron(Package):
         if 'bgq' in self.spec.architecture:
             flags = '-O3 -qtune=qp -qarch=qp -q64 -qstrict -qnohot -g'
 
+        if self.spec.satisfies('%pgi'):
+            flags += ' ' + self.compiler.pic_flag
+
         return ['CFLAGS=%s' % flags,
                 'CXXFLAGS=%s' % flags]
 
