@@ -574,6 +574,11 @@ With above configuration we tell Spack to find various packages under `/usr/loca
 
 	Spack packages are being developed by system engineers, package developers, domain scientists and others. Not every package is tested for every possible compiler version and OS distribution. Some packages can't be build on specific platform or specific compilers (e.g. Cray or Pathscale compiler?). Such packages are being improved so that the [conflicts](http://spack.readthedocs.io/en/latest/packaging_guide.html#conflicts) are being added. And hence sometime you have to check some more details about compatibility / build failure.
 
+* I am getting `spack.config.ConfigFileError: Error parsing yaml ...`. What to do?
+
+	Spack configurations are written in YAML format and above error indicates invalid YAML. Make sure to add valid YAML configurations (especially while copy/paste from tutorials). You can use `-d` debug options to get more information about the error.
+
+---
 
 ##### Spack in Action: Installing Packages #####
 
@@ -608,6 +613,23 @@ Consider `spack spec -I` output for OSU benchmark that we typically use for MPI 
 We have specified `openmpi` in `packages.yaml` but still it's status is not shown as `installed` using `[+]` symbol. As previously discussed, openmpi is still not registered into database. So how can we know if the package is going to be installed or not? If you look at the output of previous two screenshots you will see importance different where `openmpi` was showing all it's dependency tree including `hwloc->libxml2->pkg-config` etc. Lack of this dependency in last output gives an indication that the package is not going to be installed. If you try to install openmpi and then check spec you will see `openmpi` status as installed:
 
 ![spack spec osu](.images/spec_osu_after.png)
+
+Better way to avoid this confusion is pre-registering all external packages into Spack database. For example, if we have added packages like `flex`, `bison`, `autoconf` etc. into the `packages.yaml` (with `buildable: False`) then we can invoke `install` command at the begining and Spack will register them into the database without installation:
+
+```
+$ spack install flex bison autoconf
+==> flex@system : externally installed in /usr/local
+==> flex@system : generating module file
+==> flex@system : registering into DB
+==> bison@system : externally installed in /usr/local
+==> bison@system : generating module file
+==> bison@system : registering into DB
+==> autoconf@system : externally installed in /usr/local
+==> autoconf@system : generating module file
+==> autoconf@system : registering into DB
+```
+
+---
 
 Once we are sure about the packages going to be installed, we can install package using `spack install` command as:
 
@@ -903,6 +925,26 @@ $ spack install llvm
 ==> llvm@8.1.0-apple : generating module file
 ==> llvm@8.1.0-apple : registering into DB
 ```
+
+###### FAQ : During above `spack install gcc` I am getting `Error: No compilers with spec gcc@4.4 found`. What to do? ######
+
+As explained previously, in order to use Lmod with compiler hierarchies we need to set one `core compiler`. This should be a different version of the compiler from those we have used for packages installation (i.e. `gcc@4.9.4` and `llvm@8.1.0-apple`). You can check the output of `spack compilers` and choose one as a core compiler. If you don't have extra compiler and don't want to build one, you can `cheat` by adding dummy entry into `compilers.yaml` as:
+
+```
+- compiler:
+    operating_system: sierra
+    paths:
+      cc: /usr/some/bin/gcc4.4
+      cxx: /usr/some/bin/g++4.4
+      f77: /usr/some/bin/gfortran-4.4
+      fc: /usr/some/bin/gfortran-4.4
+    spec: gcc@4.4
+    target: x86_64
+```
+
+Note that this is a workaround (`hack`) and you must consider using actual compiler. We have used `non-existent` path in the above configuration. If Spack try to use that compiler for actual installation of the package then there will be obvious build failures.
+
+---
 
 With the updated `modules.yaml` for LMod, we can re-generate `lmod` modules using `module refresh` command as:
 
