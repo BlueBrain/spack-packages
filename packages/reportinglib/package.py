@@ -35,7 +35,7 @@ class Reportinglib(CMakePackage):
     depends_on('mpi')
     depends_on('tau', when='+profile')
 
-    @run_before('install')
+    @run_before('build')
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"

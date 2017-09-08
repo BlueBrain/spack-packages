@@ -72,7 +72,7 @@ class Coreneuron(CMakePackage):
     depends_on('tau', when='+profile')
     depends_on('reportinglib+profile', when='+report+profile')
 
-    @run_before('install')
+    @run_before('build')
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
             os.environ["USE_PROFILER_WRAPPER"] = "1"
