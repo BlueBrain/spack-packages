@@ -53,14 +53,14 @@ class Learningengine(CMakePackage):
             multi=False, description="Floating Point Precision"
     )
 
-    depends_on('python@2.7:',         when='+pybinding')
-    depends_on('py-cython',           when='+pybinding')
-    depends_on("intel-tbb",           when='threading=tbb')
-    depends_on("cuda",                when='+cuda')
     depends_on("boost@1.52:")
+    depends_on("cuda",                when='+cuda')
     depends_on('syntool',             when='+syn2')
-    depends_on('highfive@master~mpi', when='+syn2')
+    depends_on("intel-tbb",           when='threading=tbb')
     depends_on('py-sphinx',           when='+docs')
+    depends_on('py-cython',           when='+pybinding')
+    depends_on('python@2.7:',         when='+pybinding')
+    depends_on('highfive@master~mpi', when='+syn2')
 
     conflicts('%gcc', when='random=mkl')
     conflicts('%clang', when='random=mkl')
@@ -71,7 +71,6 @@ class Learningengine(CMakePackage):
             flags += ' -qopt-report=5'
         if self.spec.satisfies('+knl'):
             flags = ' -xmic-avx512'
-
         return flags
 
     def cmake_args(self):
@@ -80,11 +79,6 @@ class Learningengine(CMakePackage):
 
         args = ['-DCMAKE_C_FLAGS=%s' % optflag,
                 '-DCMAKE_CXX_FLAGS=%s' % optflag]
-
-        if spec.satisfies('+tests'):
-            args.append('-DLEARNING_ENGINE_TESTS=ON')
-        else:
-            args.append('-DLEARNING_ENGINE_TESTS=OFF')
 
         if spec.satisfies('+cuda'):
             args.append('-DLEARNING_ENGINE_CUDA=ON')
@@ -110,6 +104,11 @@ class Learningengine(CMakePackage):
             args.append('-DLEARNING_ENGINE_SYN2=ON')
         else:
             args.append('-DLEARNING_ENGINE_SYN2=OFF')
+
+        if spec.satisfies('+tests'):
+            args.append('-DLEARNING_ENGINE_TESTS=ON')
+        else:
+            args.append('-DLEARNING_ENGINE_TESTS=OFF')
 
         args.append('-DOPT_THREAD=%s' % spec.variants['threading'].value)
         args.append('-DOPT_RANDOM=%s' % spec.variants['random'].value)
