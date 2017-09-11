@@ -40,18 +40,27 @@
 from spack import *
 
 
-class SynapseTool(CMakePackage):
-    """FIXME: Put a proper description of your package here."""
+class Syntool(CMakePackage):
+    """SYN-TOOL provides a C++ and a python API to read / write neuron
+       connectivity informations. SYN-TOOL is designed to support large
+       connecitivy data with Billions of connections."""
 
-    # FIXME: Add a proper url for your package's homepage here.
-    homepage = "http://www.example.com"
-    url      = "https://bbpcode.epfl.ch/code/a/hpc/synapse-tool"
+    homepage = "https://bbpcode.epfl.ch/browse/code/hpc/synapse-tool"
+    url      = "ssh://bbpcode.epfl.ch/hpc/synapse-tool"
 
-    # FIXME: Add proper versions and checksums here.
     version('master', git=url, submodules=True)
+    variant('mpi', default=False, description="Enable MPI backend")
 
-    depends_on('cmake@3:', type='build')
+    depends_on('hdf5')
+    depends_on('boost@1.60:')
+    depends_on('python')
+    depends_on('cmake@2.8:', type='build')
 
-    def patch(self):
-        filter_file(r'static result_type min', r'constexpr static result_type min', 'deps/hadoken/include/hadoken/random/counter_engine.hpp')
-        filter_file(r'static result_type max', r'constexpr static result_type max', 'deps/hadoken/include/hadoken/random/counter_engine.hpp')
+    # TODO: submodule update pending
+    patch('hadoken.patch')
+
+    def cmake_args(self):
+        args = []
+        if self.spec.satisfies('+mpi'):
+            args.append('-DSYNTOOL_WITH_MPI=ON')
+        return args

@@ -25,7 +25,7 @@
 from spack import *
 
 
-class Lengine(CMakePackage):
+class Learningengine(CMakePackage):
     """Testing framework for LE"""
 
     homepage = "ssh://bbpcode.epfl.ch/hpc/learning_engine"
@@ -53,73 +53,66 @@ class Lengine(CMakePackage):
             multi=False, description="Floating Point Precision"
     )
 
-    depends_on('python@2.7:', when='+pybinding')
-    depends_on('py-cython', when='+pybinding')
-    #depends_on('py-numpy', when='+pybinding')
-    depends_on("intel-tbb", when='threading=tbb')
-    depends_on("cuda", when='+cuda')
+    depends_on('python@2.7:',         when='+pybinding')
+    depends_on('py-cython',           when='+pybinding')
+    depends_on("intel-tbb",           when='threading=tbb')
+    depends_on("cuda",                when='+cuda')
     depends_on("boost@1.52:")
-    depends_on('synapse-tool', when='+syn2')
-    depends_on('highfive@master', when='+syn2')
-    depends_on('py-sphinx', when='+docs')
+    depends_on('syntool',             when='+syn2')
+    depends_on('highfive@master~mpi', when='+syn2')
+    depends_on('py-sphinx',           when='+docs')
 
     conflicts('%gcc', when='random=mkl')
     conflicts('%clang', when='random=mkl')
 
     def get_optimization_flags(self):
         flags = "-g -O2"
-
         if self.spec.satisfies('%intel'):
             flags += ' -qopt-report=5'
-
         if self.spec.satisfies('+knl'):
             flags = ' -xmic-avx512'
 
         return flags
 
     def cmake_args(self):
-
         spec = self.spec
+        optflag = self.get_optimization_flags()
 
-        with working_dir("build", create=True):
+        args = ['-DCMAKE_C_FLAGS=%s' % optflag,
+                '-DCMAKE_CXX_FLAGS=%s' % optflag]
 
-            optflag = self.get_optimization_flags()
+        if spec.satisfies('+tests'):
+            args.append('-DLEARNING_ENGINE_TESTS=ON')
+        else:
+            args.append('-DLEARNING_ENGINE_TESTS=OFF')
 
-            args = ['-DCMAKE_C_FLAGS=%s' % optflag,
-                    '-DCMAKE_CXX_FLAGS=%s' % optflag]
+        if spec.satisfies('+cuda'):
+            args.append('-DLEARNING_ENGINE_CUDA=ON')
+        else:
+            args.append('-DLEARNING_ENGINE_CUDA=OFF')
 
-            if spec.satisfies('+tests'):
-                args.append('-DLEARNING_ENGINE_TESTS=ON')
-            else:
-                args.append('-DLEARNING_ENGINE_TESTS=OFF')
+        if spec.satisfies('+benchmark'):
+            args.append('-DLEARNING_ENGINE_BENCHMARK=ON')
+        else:
+            args.append('-DLEARNING_ENGINE_BENCHMARK=OFF')
 
-            if spec.satisfies('+cuda'):
-                args.append('-DLEARNING_ENGINE_CUDA=ON')
-            else:
-                args.append('-DLEARNING_ENGINE_CUDA=OFF')
+        if spec.satisfies('+pybinding'):
+            args.append('-DLEARNING_ENGINE_PYTHON_BINDING=ON')
+        else:
+            args.append('-DLEARNING_ENGINE_PYTHON_BINDING=OFF')
 
-            if spec.satisfies('+benchmark'):
-                args.append('-DLEARNING_ENGINE_BENCHMARK=ON')
-            else:
-                args.append('-DLEARNING_ENGINE_BENCHMARK=OFF')
+        if spec.satisfies('+docs'):
+            args.append('-DLEARNING_ENGINE_SPHINX=ON')
+        else:
+            args.append('-DLEARNING_ENGINE_SPHINX=OFF')
 
-            if spec.satisfies('+pybinding'):
-                args.append('-DLEARNING_ENGINE_PYTHON_BINDING=ON')
-            else:
-                args.append('-DLEARNING_ENGINE_PYTHON_BINDING=OFF')
+        if spec.satisfies('+syn2'):
+            args.append('-DLEARNING_ENGINE_SYN2=ON')
+        else:
+            args.append('-DLEARNING_ENGINE_SYN2=OFF')
 
-            if spec.satisfies('+docs'):
-                args.append('-DLEARNING_ENGINE_SPHINX=ON')
-            else:
-                args.append('-DLEARNING_ENGINE_SPHINX=OFF')
+        args.append('-DOPT_THREAD=%s' % spec.variants['threading'].value)
+        args.append('-DOPT_RANDOM=%s' % spec.variants['random'].value)
+        args.append('-DOPT_PRECISION=%s' % spec.variants['precision'].value)
 
-            if spec.satisfies('+syn2'):
-                args.append('-DLEARNING_ENGINE_SYN2=ON')
-            else:
-                args.append('-DLEARNING_ENGINE_SYN2=OFF')
-
-            args.append('-DOPT_THREAD=%s' % spec.variants['threading'].value)
-            args.append('-DOPT_RANDOM=%s' % spec.variants['random'].value)
-            args.append('-DOPT_PRECISION=%s' % spec.variants['precision'].value)
-
-            return args
+        return args

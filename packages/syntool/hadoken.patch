@@ -1,0 +1,15 @@
+diff --git a/include/hadoken/random/counter_engine.hpp b/include/hadoken/random/counter_engine.hpp
+index e63eb5d..474df4d 100644
+--- a/deps/hadoken/include/hadoken/random/counter_engine.hpp
++++ b/deps/hadoken/include/hadoken/random/counter_engine.hpp
+@@ -124,8 +124,8 @@ public:
+     const static result_type _min = 0;
+     const static result_type _max = ~((result_type)0);
+ 
+-    static result_type min () { return _min; }
+-    static result_type max () { return _max; }
++    constexpr static result_type min () { return _min; }
++    constexpr static result_type max () { return _max; }
+ 
+     result_type operator()(){
+         if( elem == 0 ){
