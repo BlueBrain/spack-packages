@@ -96,10 +96,11 @@ class Neurodamus(Package):
 
     @run_after('install')
     def check_install(self):
-        # after install check if special is created
-        special = '%s/special' % join_path(self.prefix, self.nrnarchdir)
-        if not os.path.isfile(special):
-            raise RuntimeError("Neurodamus installion check failed!")
+        if self.spec.satisfies('+compile'):
+            # after install check if special is created
+            special = '%s/special' % join_path(self.prefix, self.nrnarchdir)
+            if not os.path.isfile(special):
+                raise RuntimeError("Neurodamus installion check failed!")
 
     def setup_environment(self, spack_env, run_env):
         if self.spec.satisfies('+compile'):
