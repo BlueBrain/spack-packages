@@ -1,0 +1,76 @@
+packages:
+    mpich:
+        paths:
+            mpich@3.2%xl@12.1 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/xl
+        buildable: False
+        version: [3.2]
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@0.23: /usr
+        buildable: False
+        version: [0.23]
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    cmake:
+        paths:
+            cmake@3.5.2: /soft/buildtools/cmake/current
+        buildable: False
+        version: [3.5.2]
+    hdf5:
+        paths:
+            hdf5@1.8.14%xl@12.1 arch=bgq-cnk-ppc64: /soft/libraries/hdf5/1.8.14/cnk-xl/current/
+        buildable: False
+        version: [1.8.14]
+    zlib:
+        paths:
+            zlib@1.2.3%xl@12.1 arch=bgq-cnk-ppc64: /soft/libraries/alcf/current/xl/ZLIB/
+        buildable: False
+        version: [1.2.3]
+    python:
+        paths:
+            python@2.7.9 arch=bgq-cnk-ppc64: /soft/interpreters/python-2.7.9/powerpc64-bgq-linux/
+        version: [2.7.9]
+        buildable: False
+    tau:
+        paths:
+            tau@2.25.2%xl@12.1 arch=bgq-cnk-ppc64: /gpfs/mira-fs0/projects/BrainTissue_tesp/kumbhar/softwares/manual/install/profilers/tau-2.25/bgq/
+        version: [2.25]
+        buildable: False
+    #BBP Packages
+    nrnh5:
+        variants: +zlib
+    neuron:
+        variants: +mpi +cross-compile
+
+    all:
+        compiler: [xl,gcc]
+        providers:
+            mpi: [mpich]

@@ -1,0 +1,584 @@
+BEGIN_FILE_INCLUDE_LIST
+
+# Reportinglib source files
+
+AllReports.cpp
+CellData.cpp
+CellDataHolder.cpp
+Records.cpp
+Report.cpp
+TimerPerf.cpp
+
+# neuron source files
+
+nrnbbcore_write.cpp
+fadvance.c
+nrnh5datasets.cpp
+nrnh5wrapper.cpp
+netpar.cpp
+mpispike.c
+nrnmpi.c
+solve.c
+Report.cpp
+treeset.c
+netcvode.cpp
+
+
+# from coreneuron
+
+balance.cpp
+cellorder.cpp
+cellorder1.cpp
+cellorder2.cpp
+coreneuron_main.cpp
+cuda_profile.cu
+cvodestb.cpp
+global_vars.cpp
+ivocvect.cpp
+lpt.cpp
+main1.cpp
+mk_mech.cpp
+netcvode.cpp
+netpar.cpp
+node_permute.cpp
+nrn_acc_manager.cpp
+nrn_datareader.cpp
+nrn_setup.cpp
+nrn_stats.cpp
+nrnoptarg.cpp
+output_spikes.cpp
+partrans.cpp
+partrans_setup.cpp
+patternstim.cpp
+prcellstate.cpp
+profiler_interface.cpp
+tqueue.cpp
+vrecord.cpp
+mpispike.c
+nrnmpi.c
+capac.c
+eion.c
+eion.c.orig
+fadvance_core.c
+finitialize.c
+multicore.c
+nrnoc_aux.c
+nrntimeout.c
+register_mech.c
+solve_core.c
+treeset_core.c
+nrnomp.c
+abort.c
+crout_thread.c
+dimplic.c
+newton_thread.c
+sparse_thread.c
+ssimplic_thread.c
+memory_utils.cpp
+nrnreport.cpp
+sdprintf.cpp
+bgpdma.cpp
+bgpdmasetup.cpp
+bgpmeminfo.c
+# for now we have to give a list
+
+hh.c
+pattern.c
+netstim.c
+expsyn.c
+exp2syn.c
+_calcium.c
+_calcium2.c
+_calciumc_concentration.c
+_CSA.c
+_CSK.c
+_GNoise.c
+_iAHP.c
+_iM.c
+_outside_calcium_concentration.c
+ALU.c
+ASCIIrecord.c
+BinReportHelper.c
+BinReports.c
+BK.c
+Ca.c
+Ca_HVA.c
+Ca_LVA.c
+Ca_LVAs.c
+Ca_LVAst.c
+cacum_hip.c
+CaDynamics_DC0_hip.c
+CaDynamics_DC1.c
+CaDynamics_DC2.c
+CaDynamics_DC_hip.c
+CaDynamics_E.c
+CaDynamics_E2.c
+cagk_hip.c
+cahva_hip.c
+cal_hip.c
+calcium_dynamics.c
+calcium_shaul.c
+calva_hip.c
+can_hip.c
+cat_hip.c
+DetAMPANMDA.c
+DetGABAAB.c
+epsp.c
+gap.c
+GluSynapse.c
+h_hip.c
+HCN1_0061.c
+HCN2_0062.c
+hcn3.c
+HCN3_0063.c
+HCN4_0064.c
+hd2_hip.c
+hd_hip.c
+hdf5.c
+hdf5new.c
+HDF5reader.c
+HDF5record.c
+HHK.c
+HHK1.c
+HHK2.c
+HHK3.c
+HHK_MC.c
+Ih.c
+Im.c
+ISynAMPAEx.c
+ISynNMDAEx.c
+K_P.c
+K_Ps.c
+K_Pst.c
+K_T.c
+K_Ts.c
+K_Tst.c
+kad2_hip.c
+kad_hip.c
+KahpM95_hip.c
+kap2_hip.c
+kap_hip.c
+KCa1.c
+KCa2.c
+KCa3.c
+Kd.c
+kdr2_hip.c
+kdr_hip.c
+KdShu2007.c
+Kfast.c
+Kfast10oct07.c
+Kfast_E.c
+Kfast_S.c
+km1.c
+km2_hip.c
+km_hip.c
+Kslow.c
+Kslow10oct07.c
+Kslow_E.c
+Kslow_S.c
+Kv1_1.c
+Kv1_2.c
+Kv1_3.c
+Kv1_4.c
+Kv1_5.c
+Kv1_6.c
+Kv2_1.c
+Kv2_2.c
+Kv3_1.c
+Kv3_3.c
+Kv3_4.c
+VirtualElectrode.c
+lookupTableV2.c
+memoryaccess.c
+MemUsage.c
+Na.c
+Na10oct07.c
+na2.c
+na3_hip.c
+na4_hip.c
+Na_E.c
+na_hip.c
+Na_S.c
+Nap.c
+Nap_E.c
+Nap_Et2.c
+NaTa_t.c
+NaTaxon.c
+NaTg.c
+NaTs.c
+NaTs2_t.c
+Nav1_6.c
+nax_hip.c
+netstim_inhpoisson.c
+new_calcium_channels.c
+ProbAMPA.c
+ProbAMPANMDA.c
+ProbAMPANMDA_EMS.c
+ProbGABAA.c
+ProbGABAA_EMS.c
+ProbGABAAB_EMS.c
+ProbNMDA.c
+pump.c
+sk2_hip.c
+SK_E.c
+SK_E2.c
+sk_hip.c
+SK_S.c
+SKv3_1.c
+SKv3_1t.c
+StdpWADoublet.c
+StdpWATriplet.c
+StochKv.c
+tmgExSyn.c
+tmgInhSyn.c
+traub.c
+TTXDynamicsSwitch.c
+utility.c
+VecStim.c
+xtra.c
+_calcium.c
+_calcium2.c
+_calciumc_concentration.c
+_CSA.c
+_CSK.c
+_GNoise.c
+_iAHP.c
+_iM.c
+_outside_calcium_concentration.c
+ALU.c
+ASCIIrecord.c
+BinReportHelper.c
+BinReports.c
+BK.c
+Ca.c
+Ca_HVA.c
+Ca_LVA.c
+Ca_LVAs.c
+Ca_LVAst.c
+cacum_hip.c
+CaDynamics_DC0_hip.c
+CaDynamics_DC1.c
+CaDynamics_DC2.c
+CaDynamics_DC_hip.c
+CaDynamics_E.c
+CaDynamics_E2.c
+cagk_hip.c
+cahva_hip.c
+cal_hip.c
+calcium_dynamics.c
+calcium_shaul.c
+calva_hip.c
+can_hip.c
+cat_hip.c
+DetAMPANMDA.c
+DetGABAAB.c
+epsp.c
+gap.c
+GluSynapse.c
+h_hip.c
+HCN1_0061.c
+HCN2_0062.c
+hcn3.c
+HCN3_0063.c
+HCN4_0064.c
+hd2_hip.c
+hd_hip.c
+hdf5.c
+hdf5new.c
+HDF5reader.c
+HDF5record.c
+HHK.c
+HHK1.c
+HHK2.c
+HHK3.c
+HHK_MC.c
+Ih.c
+Im.c
+ISynAMPAEx.c
+ISynNMDAEx.c
+K_P.c
+K_Ps.c
+K_Pst.c
+K_T.c
+K_Ts.c
+K_Tst.c
+kad2_hip.c
+kad_hip.c
+KahpM95_hip.c
+kap2_hip.c
+kap_hip.c
+KCa1.c
+KCa2.c
+KCa3.c
+Kd.c
+kdr2_hip.c
+kdr_hip.c
+KdShu2007.c
+Kfast.c
+Kfast10oct07.c
+Kfast_E.c
+Kfast_S.c
+km1.c
+km2_hip.c
+km_hip.c
+Kslow.c
+Kslow10oct07.c
+Kslow_E.c
+Kslow_S.c
+Kv1_1.c
+Kv1_2.c
+Kv1_3.c
+Kv1_4.c
+Kv1_5.c
+Kv1_6.c
+Kv2_1.c
+Kv2_2.c
+Kv3_1.c
+Kv3_3.c
+Kv3_4.c
+lookupTableV2.c
+memoryaccess.c
+MemUsage.c
+Na.c
+Na10oct07.c
+na2.c
+na3_hip.c
+na4_hip.c
+Na_E.c
+na_hip.c
+Na_S.c
+Nap.c
+Nap_E.c
+Nap_Et2.c
+NaTa_t.c
+NaTaxon.c
+NaTg.c
+NaTs.c
+NaTs2_t.c
+Nav1_6.c
+nax_hip.c
+netstim_inhpoisson.c
+new_calcium_channels.c
+ProbAMPA.c
+ProbAMPANMDA.c
+ProbAMPANMDA_EMS.c
+ProbGABAA.c
+ProbGABAA_EMS.c
+ProbGABAAB_EMS.c
+ProbNMDA.c
+pump.c
+sk2_hip.c
+SK_E.c
+SK_E2.c
+sk_hip.c
+SK_S.c
+SKv3_1.c
+SKv3_1t.c
+StdpWADoublet.c
+StdpWATriplet.c
+StochKv.c
+tmgExSyn.c
+tmgInhSyn.c
+traub.c
+TTXDynamicsSwitch.c
+utility.c
+VecStim.c
+xtra.c
+exp2syn.c
+alphasyndiffeq.c
+ampa.c
+ar.c
+cad.c
+cal.c
+cat.c
+cat_a.c
+gabaa.c
+iclamp_const.c
+k2.c
+ka.c
+ka_ib.c
+kahp.c
+kahp_deeppyr.c
+kahp_slower.c
+kc.c
+kc_fast.c
+kdr.c
+kdr_fs.c
+km.c
+naf.c
+naf2.c
+naf_tcr.c
+nap.c
+napf.c
+napf_spinstell.c
+napf_tcr.c
+par_ggap.c
+pulsesyn.c
+rampsyn.c
+ri.c
+traub_nmda.c
+Aradi_Ca.c
+Aradi_CadepK.c
+Aradi_KA.c
+Aradi_KDRf.c
+Aradi_KDRs.c
+Aradi_Na.c
+bgka.c
+CaBK.c
+ccanl.c
+DGC_M.c
+DGC_sAHP.c
+DGC_UK.c
+Gfluct3.c
+ggap.c
+gskch.c
+holdingi.c
+hyperde3.c
+ichan2.c
+iconc_Ca.c
+LcaMig.c
+na3n.c
+nca.c
+SH_KIn.c
+SH_na8st.c
+spines.c
+tca.c
+vecevent.c
+Aradi_Ca.c
+Aradi_CadepK.c
+Aradi_KA.c
+Aradi_KDRf.c
+Aradi_KDRs.c
+Aradi_Na.c
+bgka.c
+CaBK.c
+ccanl.c
+DGC_M.c
+DGC_sAHP.c
+DGC_UK.c
+exp2syn.c
+Gfluct3.c
+ggap.c
+gskch.c
+holdingi.c
+hyperde3.c
+ichan2.c
+iconc_Ca.c
+LcaMig.c
+na3n.c
+nca.c
+SH_KIn.c
+SH_na8st.c
+spines.c
+tca.c
+vecevent.c
+Aradi_Ca.c
+Aradi_CadepK.c
+Aradi_KA.c
+Aradi_KDRf.c
+Aradi_KDRs.c
+Aradi_Na.c
+bgka.c
+CaBK.c
+ccanl.c
+DGC_M.c
+DGC_sAHP.c
+DGC_UK.c
+Gfluct3.c
+ggap.c
+gskch.c
+holdingi.c
+hyperde3.c
+ichan2.c
+iconc_Ca.c
+LcaMig.c
+na3n.c
+nca.c
+SH_KIn.c
+SH_na8st.c
+spines.c
+tca.c
+vecevent.c
+halfgap.c
+invlfire.c
+ProfileHelper.c
+END_FILE_INCLUDE_LIST
+
+BEGIN_INCLUDE_LIST
+ void BBS::netpar_solve(double)
+ void nrn_fixed_step_group(int) C
+ void *nrn_fixed_step_group_thread(NrnThread *) C
+ void *nrn_fixed_step_thread(NrnThread *) C
+ void *nrn_fixed_step_lastpart(NrnThread *) C
+ void nonvint(NrnThread *) C
+ void NetParEvent::deliver(double, NetCvode *, NrnThread *)
+ void nrn_spike_exchange(NrnThread *) C
+ void nrnmpi_barrier() C
+ void update(NrnThread *) C
+ int nrnmpi_spike_exchange() C
+ size_t nrnbbcore_write() C
+ void write_nrnthread(const char *, NrnThread &, nrncore_CellGroup &) C
+ double nrnmpi_dbl_allreduce(double, int) C
+ void write_nrnthread_task(const char *, nrncore_CellGroup *) C
+ void nrnmpi_int_gather(int *, int *, int, int) C
+ void nrn2ncs_outputevent(int, double) C
+ void nrn_cleanup_presyn(PreSyn *) C
+ void make_spike_type()
+ void nrnmpi_int_gatherv(int *, int, int *, int *, int *, int) C
+ void *nrn_ms_bksub_through_triang(NrnThread *) C
+ void *setup_tree_matrix(NrnThread *) C
+ void nonvint(NrnThread *) C
+ void nrn_rhs(NrnThread *) C
+ void *nrn_ms_bksub(NrnThread *) C
+ int nrnmpi_bgp_conserve(int, int) C
+ void *nrn_ms_treeset_through_triang(NrnThread *) C
+ void *nrn_ms_reduce_solve(NrnThread *) C
+ void nrnmpi_wait(void **) C
+ void nrn_lhs(NrnThread *) C
+ void nrn_solve(NrnThread *) C
+ void triang(NrnThread *) C
+ void update(NrnThread *) C
+ void bksub(NrnThread *) C
+ int nrnmpi_bgp_single_advance(NRNMPI_Spike *) C
+ void nrnmpi_send_doubles(double *, int, int, int) C
+ void nrnmpi_postrecv_doubles(double *, int, int, int, void **) C
+ void NetParEvent::send(double, NetCvode *, NrnThread *)
+ void nrn_promote() C
+ void nrnmpi_bgp_multisend(NRNMPI_Spike *, int, int *) C
+
+# directly copied from coreneuron
+int main(int, char **, char **)
+void nrn_multithread_job(void *(*)(NrnThread *)) C
+void BBS_netpar_solve(double) C
+void ncs2nrn_integrate(double) C
+void nrn_fixed_step_group_minimal(int) C
+void *nrn_fixed_step_group_thread(NrnThread *) C
+void *nrn_fixed_step_thread(NrnThread *) C
+void nonvint(NrnThread *) C
+void nrn_setup(const char *, const char *, int, int) C
+void *setup_tree_matrix_minimal(NrnThread *) C
+void nrn_rhs(NrnThread *) C
+void nrn_solve_minimal(NrnThread *) C
+void output_spikes(const char *)
+void deliver_net_events(NrnThread *) C
+void nrn_deliver_events(NrnThread *) C
+void nrn_spike_exchange(NrnThread *) C
+int nrnmpi_spike_exchange() C
+
+# for reporting in neurodamus
+int flush__BinReportHelper() C
+int savestate__BinReportHelper() C
+int restorestate__BinReportHelper() C
+void _net_receive__BinReportHelper(Point_process*, double*, double) C
+
+# for ReportingLib
+int AllReports::flush(double)
+int Report::flush(double)
+int AllReports::recData(double)
+int Report::recData(double)
+bool Report::isDueToReport(double)
+bool Report::isDueToReport(double)
+bool AllReports::isEmpty()
+int CellData::fillMapping(float *, int)
+
+END_INCLUDE_LIST

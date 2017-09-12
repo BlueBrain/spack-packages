@@ -1,0 +1,121 @@
+packages:
+
+    gcc:
+        paths:
+            gcc@4.9.4%gcc@4.4: /usr/local
+        buildable: False
+        version: [4.9.4]
+
+    llvm:
+        paths:
+            llvm@8.1.0-apple%gcc@4.4: /usr/local
+        buildable: False
+        version: [8.1.0-apple]
+
+    cmake:
+        paths:
+            cmake@3.8.2: /usr/local
+        buildable: False
+        version: [3.8.2]
+
+    autoconf:
+        paths:
+            autoconf@system: /usr/local
+        buildable: False
+        version: [system]
+
+    automake:
+        paths:
+            automake@system: /usr/local
+        buildable: False
+        version: [system]
+
+    libtool:
+        paths:
+            libtool@system: /usr/local
+        buildable: False
+        version: [system]
+
+    openssl:
+        paths:
+            openssl@system: /usr/local
+        buildable: False
+        version: [system]
+
+    flex:
+        paths:
+            flex@system: /usr/local
+        buildable: False
+        version: [system]
+
+    bison:
+        paths:
+            bison@system: /usr/local
+        buildable: False
+        version: [system]
+
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
+
+    pkg-config:
+        paths:
+            pkg-config@system: /usr/local
+        buildable: False
+        version: [system]
+
+    environment-modules:
+        paths:
+            environment-modules@system: /usr/local
+        buildable: False
+        version: [system]
+
+    python:
+        paths:
+            python@2.7.10: /System/Library/Frameworks/Python.framework/Versions/2.7
+            python@3.6.2: /usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6
+        buildable: False
+        version: [2.7.10, 3.6.2]
+
+    hdf5:
+        paths:
+            hdf5@1.8.17: /usr/local
+        buildable: False
+        variants: ~fortran
+        version: [1.8.17]
+
+    zlib:
+        paths:
+            zlib@1.2.8: /usr/local
+        buildable: False
+        version: [1.2.8]
+
+    qt:
+        paths:
+            qt@5.5.1: /usr/local/Cellar/qt55/5.5.1
+        buildable: False
+        version: [5.5.1]
+
+    openmpi:
+        paths:
+            openmpi@2.1.1: /usr/local
+        buildable: False
+        version: [2.1.1]
+
+    boost:
+        paths:
+            boost@1.55.0%clang@8.1.0-apple: /usr/local
+        version: [1.55.0]
+
+    tau:
+        variants: ~phase ~openmp
+
+    coreneuron:
+        variants: ~openmp
+
+    all:
+        compiler: [gcc@4.9.4, clang@8.1.0-apple]
+        providers:
+            mpi: [openmpi]

@@ -1,0 +1,7 @@
+config:
+  install_tree: ~/spack_install/viz/
+  module_roots:
+    tcl: ~/spack_modules/viz/tcl/
+    lmod: ~/spack_modules/viz/lmod/
+  build_stage:
+    - $spack/var/spack/stage
