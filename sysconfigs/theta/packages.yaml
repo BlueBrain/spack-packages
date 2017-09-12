@@ -1,0 +1,75 @@
+packages:
+    mpich:
+        paths:
+            mpich@7.6.0%cce@8.6.0 arch=cray-CNL-mic_knl: /opt/cray/pe/mpt/7.6.0/gni/mpich-intel/16.0
+            mpich@7.6.0%intel@17.0.0.098 arch=cray-CNL-mic_knl: /opt/cray/pe/mpt/7.6.0/gni/mpich-intel/16.0
+        buildable: False
+        version: [3.2]
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@0.23: /usr
+        buildable: False
+        version: [0.23]
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    cmake:
+        paths:
+            cmake@3.5.2: /usr
+        buildable: False
+        version: [3.5.2]
+    hdf5:
+        #modules:
+        #    hdf5@1.10.0%cce@8.6.0 arch=cray-CNL-mic_knl: cray-hdf5/1.10.0
+        #    hdf5@1.10.0%intel@17.0.0.098 arch=cray-CNL-mic_knl: cray-hdf5/1.10.0
+        paths:
+            hdf5@1.8.10%cce@8.6.0 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/1.10.0/CRAY/8.6/
+            hdf5@1.8.10%intel@17.0.0.098 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/1.10.0/INTEL/16.0/
+        buildable: False
+        version: [1.10.0]
+    zlib:
+        version: [1.2.8]
+    python:
+        paths:
+            python@3.5.2 arch=cray-CNL-mic_knl: /opt/intel/python/2017.0.035/intelpython35
+        version: [3.5.2]
+        buildable: False
+
+    #BBP Packages
+    neuron:
+        variants: +mpi +cross-compile
+
+    reportinglib:
+        variants: +static
+
+    all:
+        compiler: [intel@17.0.0.098, cce@8.6.0]
+        providers:
+            mpi: [mpich@7.6.0]

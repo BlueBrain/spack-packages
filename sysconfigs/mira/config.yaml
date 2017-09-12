@@ -1,0 +1,4 @@
+config:
+  install_tree: /projects/PlasticNeocortex/$user/softwares/bgq/install
+  module_roots:
+    tcl: /projects/PlasticNeocortex/$user/softwares/bgq/modules
