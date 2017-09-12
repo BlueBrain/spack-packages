@@ -62,7 +62,6 @@ eion.c.orig
 fadvance_core.c
 finitialize.c
 multicore.c
-multicore.c.159r.combine
 nrnoc_aux.c
 nrntimeout.c
 register_mech.c

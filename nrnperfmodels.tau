@@ -62,7 +62,6 @@ eion.c.orig
 fadvance_core.c
 finitialize.c
 multicore.c
-multicore.c.159r.combine
 nrnoc_aux.c
 nrntimeout.c
 register_mech.c
@@ -612,11 +611,5 @@ int CellData::fillMapping(float *, int)
 int neurox::Branch::backwardEuler_handler(int const*, unsigned long)
 void neurox::Branch::backwardEulerStep()
 void neurox::Branch::setupTreeMatrix()
-
-Branch.cpp
-main.cpp
-Mechanism.cpp
-neurox.cpp
-Neuron.cpp
 
 END_INCLUDE_LIST
