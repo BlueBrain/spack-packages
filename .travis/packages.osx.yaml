@@ -61,6 +61,16 @@ packages:
             gsl@2.4: /usr/local
         buildable: False
         version: [2.4]
+    boost:
+        paths:
+            boost@1.65%clang: /usr/local/opt/boost
+        buildable: False
+        version: [1.65]
+    qt:
+        paths:
+            qt@5.9.1: /usr/local/opt/qt
+        buildable: False
+        version: [5.9.1]
     tau:
         variants: ~openmp ~comm ~phase
     coreneuron:
