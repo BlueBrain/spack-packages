@@ -1,4 +1,10 @@
-# Getting Started With Spack #
+[![Build Status](https://travis-ci.org/pramodskumbhar/spack-packages.svg?branch=master)](https://travis-ci.org/pramodskumbhar/spack-packages)
+
+# Repository Of Spack Packages And System Configurations
+
+This repository contains Spack packages that are actively being developed for software components for neuroscience simulation and visualisation. Also, external package configurations (`packages.yaml`) are provided for different HPC systems in the world.
+
+## Getting Started With Spack ##
 
 If you are first time here and never used Spack then may be you are interested in:
 
@@ -109,18 +115,13 @@ The hierarchical output shows that the `hdf5` package depends on `openmpi` (for 
 
 Some users might want to install everything from scratch (e.g. system engineers or developer needing latest `trunk` of LLVM!). But often we want to use existing softwares as much as possible and then concentrate on our own software stack and dependencies.
 
-As a user of BBP-IV Lugano VizCluster, Lugano BG-Q, MIRA BG-Q, Theta (Cray KNL), JURON (Cray KNL), JULIA (IBM Power 8), Piz Daint (Cray x86_64 + GPU) systems, we have created configurations of existing softwares that can be used with Spack. The configurations are present in [spack-configs](https://github.com/pramodskumbhar/spack-configs) repository on GitHub and you can clone that locally:
-
-```bash
-cd $SOURCE_HOME_DIR
-git clone https://github.com/pramodskumbhar/spack-configs.git
-```
+As a user of BBP-IV Lugano VizCluster, Lugano BG-Q, MIRA BG-Q, Theta (Cray KNL), JURON (Cray KNL), JULIA (IBM Power 8), Piz Daint (Cray x86_64 + GPU) systems, we have created configurations of existing softwares that can be used with Spack. The configurations are present in `sysconfigs` directory.
 
 Typically we create platform specific configurations in `$HOME/.spack/arch` directory where `arch` could be `linux`, `bgq`, `cray` etc. For example, on Lugano BBP IV VizCluster we can use existing configurations as :
 
 ```
 mkdir -p $HOME/.spack/linux/
-cp -r $SOURCE_HOME_DIR/spack-configs/bbpviz/* ~/.spack/linux/
+cp -r $SOURCE_HOME_DIR/spack-packages/sysconfigs/bbpviz/* ~/.spack/linux/
 ```
 
 > Note that the configurations in `bbplinuxdesktop`, `mac`, `docker` are from local development environment and you may have different software versions / stack.
@@ -152,7 +153,7 @@ source $SPACK_ROOT/share/spack/setup-env.sh
 
 If you don't have `config.yaml` file then Spack will install softwares in `$SPACK_ROOT/opt/spack/linux-arch-xxx/gcc-xxx` (platform, architecture and compiler names will be different). More detailed information about Spack configuration files is [here](http://spack.readthedocs.io/en/latest/configuration.html).
 
-The provided configurations in [spack-configs](https://github.com/pramodskumbhar/spack-configs) are for specific system that we are using. But how to create such configurations? What if we want to build software stack on completely new Power-X supercomputer?
+The provided configurations in `sysconfigs` directory are for specific system that we are using. But how to create such configurations? What if we want to build software stack on completely new Power-X supercomputer?
 
 In order to understand the complete workflow, we will go through step-by-step tutorial for OS X and Linux cluster platform. Once you are familiar with this workflow, you can use same workflow for any platform.
 
