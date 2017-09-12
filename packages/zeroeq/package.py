@@ -24,6 +24,8 @@ class Zeroeq(CMakePackage):
     url      = "https://github.com/HBPVIS/ZeroEQ.git"
 
     version('master', git=url, submodules=True)
+    version('0.8.0', git=url, tag='0.8.0', submodules=True)
+    version('0.7.0', git=url, tag='0.7.0', submodules=True)
 
     depends_on('boost@1.58:')
     depends_on('zeromq@4:')

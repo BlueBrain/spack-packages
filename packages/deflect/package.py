@@ -24,6 +24,8 @@ class Deflect(CMakePackage):
     url      = "https://github.com/BlueBrain/Deflect.git"
 
     version('master', git=url, submodules=True)
+    version('0.13.0', git=url, tag=' 0.13.0', submodules=True)
+    version('0.12.1', git=url, tag=' 0.12.1', submodules=True)
 
     depends_on('qt@5.4:')
     depends_on('boost@1.54:')
