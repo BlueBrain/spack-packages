@@ -53,6 +53,7 @@ class Neuron(Package):
     variant('multisend',     default=True,  description="Enable multi-send spike exchange")
     variant('rx3d',          default=False, description="Enable cython translated 3-d rxd")
     variant('profile',       default=False, description="Enable Tau profiling")
+    variant('music',         default=False, description="Enable MUSIC interface")
 
     depends_on('flex',       type='build')
     depends_on('bison',      type='build')
@@ -66,6 +67,8 @@ class Neuron(Package):
     depends_on('python@2.6:', when='+python')
     depends_on('ncurses',     when='~cross-compile')
     depends_on('tau',         when='+profile')
+    depends_on('music',       when='+music')
+    #depends_on('py-cython',   when='+music')
 
     def patch(self):
         # aclocal need complete include path (especially on os x)
@@ -121,7 +124,7 @@ class Neuron(Package):
                 py_lib = spec['python'].prefix.lib64
 
             options.extend(['--with-nrnpython=%s' % python_exec,
-                            '--disable-pysetup',
+                            #'--disable-pysetup',
                             'PYINCDIR=%s' % py_inc,
                             'PYLIBDIR=%s' % py_lib])
 
@@ -193,6 +196,9 @@ class Neuron(Package):
         if spec.satisfies('~rx3d'):
             options.append('--disable-rx3d')
 
+        if spec.satisfies('+music'):
+            options.append('--with-music=%s' % spec['music'].prefix)
+
         if spec.satisfies('+mpi'):
             options.append('--with-paranrn')
             if spec.satisfies('+profile'):
@@ -229,6 +235,9 @@ class Neuron(Package):
             configure(*options)
             self.profiling_wrapper_on()
             make()
+            #os.chdir('src/neuronmusic')
+            #setup_py('install', '--prefix=' + prefix)
+            #os.chdir('../../')
             make('install')
             self.profiling_wrapper_off()
 
