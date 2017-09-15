@@ -52,12 +52,9 @@ class Syntool(CMakePackage):
     variant('mpi', default=False, description="Enable MPI backend")
 
     depends_on('hdf5')
-    depends_on('boost@1.60:')
+    depends_on('boost@1.55:')
     depends_on('python')
     depends_on('cmake@2.8:', type='build')
-
-    # TODO: submodule update pending
-    patch('hadoken.patch')
 
     def cmake_args(self):
         args = []

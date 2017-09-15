@@ -25,7 +25,7 @@
 from spack import *
 
 
-class Learningengine(CMakePackage):
+class Lengine(CMakePackage):
     """Testing framework for LE"""
 
     homepage = "ssh://bbpcode.epfl.ch/hpc/learning_engine"
@@ -66,11 +66,11 @@ class Learningengine(CMakePackage):
     conflicts('%clang', when='random=mkl')
 
     def get_optimization_flags(self):
-        flags = "-g -O2"
+        flags = ''
         if self.spec.satisfies('%intel'):
             flags += ' -qopt-report=5'
         if self.spec.satisfies('+knl'):
-            flags = ' -xmic-avx512'
+            flags = ' -xMIC-AVX512'
         return flags
 
     def cmake_args(self):
@@ -115,3 +115,7 @@ class Learningengine(CMakePackage):
         args.append('-DOPT_PRECISION=%s' % spec.variants['precision'].value)
 
         return args
+
+    def setup_environment(self, spack_env, run_env):
+        docs = '%s/docs'% self.prefix
+        run_env.set('LE_DOCS', docs)
