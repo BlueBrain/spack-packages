@@ -66,6 +66,7 @@ class Learningengine(CMakePackage):
     conflicts('%clang', when='random=mkl')
 
     def get_optimization_flags(self):
+        flags = ''
         if self.spec.satisfies('%intel'):
             flags += ' -qopt-report=5'
         if self.spec.satisfies('+knl'):
