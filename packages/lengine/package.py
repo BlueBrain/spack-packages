@@ -25,7 +25,7 @@
 from spack import *
 
 
-class Learningengine(CMakePackage):
+class Lengine(CMakePackage):
     """Testing framework for LE"""
 
     homepage = "ssh://bbpcode.epfl.ch/hpc/learning_engine"
@@ -115,3 +115,7 @@ class Learningengine(CMakePackage):
         args.append('-DOPT_PRECISION=%s' % spec.variants['precision'].value)
 
         return args
+
+    def setup_environment(self, spack_env, run_env):
+        docs = '%s/docs'% self.prefix
+        run_env.set('LE_DOCS', docs)
