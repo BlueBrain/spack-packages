@@ -66,11 +66,10 @@ class Learningengine(CMakePackage):
     conflicts('%clang', when='random=mkl')
 
     def get_optimization_flags(self):
-        flags = "-g -O2"
         if self.spec.satisfies('%intel'):
             flags += ' -qopt-report=5'
         if self.spec.satisfies('+knl'):
-            flags = ' -xmic-avx512'
+            flags = ' -xMIC-AVX512'
         return flags
 
     def cmake_args(self):
