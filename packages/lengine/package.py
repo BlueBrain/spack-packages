@@ -31,7 +31,10 @@ class Lengine(CMakePackage):
     homepage = "ssh://bbpcode.epfl.ch/hpc/learning_engine"
     url      = "ssh://bbpcode.epfl.ch/hpc/learning_engine"
 
-    version('develop', git=url)
+    version('develop', git=url, preferred=True)
+
+    # NOTE added to use system python 2.6
+    version('python26', git=url, branch='sandbox/kumbhar/master')
 
     variant('tests',        default=True,  description="Build the regression tests")
     variant('benchmark',    default=True, description="Enable benchmarks")
@@ -59,7 +62,7 @@ class Lengine(CMakePackage):
     depends_on("intel-tbb",           when='threading=tbb')
     depends_on('py-sphinx',           when='+docs')
     depends_on('py-cython',           when='+pybinding')
-    depends_on('python@2.7:',         when='+pybinding')
+    depends_on('python@2.6:',         when='+pybinding')
     depends_on('highfive@master~mpi', when='+syn2')
 
     conflicts('%gcc', when='random=mkl')
