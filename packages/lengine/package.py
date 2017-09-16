@@ -63,7 +63,7 @@ class Lengine(CMakePackage):
     depends_on('py-sphinx',           when='+docs')
     depends_on('py-cython',           when='+pybinding')
     depends_on('python@2.6:',         when='+pybinding')
-    depends_on('highfive@master~mpi', when='+syn2')
+    depends_on('highfive@develop~mpi', when='+syn2')
 
     conflicts('%gcc', when='random=mkl')
     conflicts('%clang', when='random=mkl')
