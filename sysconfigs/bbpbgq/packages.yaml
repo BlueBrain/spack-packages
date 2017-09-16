@@ -84,6 +84,11 @@ packages:
             gsl@1.13: /gpfs/bbp.cscs.ch/apps/bgq/external/gsl/gsl-1.13/install
         buildable: False
         version: [1.13]
+    boost:
+        modules:
+            boost@1.54.0: boost/1.54.0-bgqpatch
+        version: [1.54.0]
+        buildable: False
     tau:
         variants: ~comm ~phase
 
