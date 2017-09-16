@@ -1,6 +1,6 @@
 #!/bin/bash
 
-################################ PARSE ARGUMENTS ################################
+########################################### PARSE ARGUMENTS ################################################
 if [ $# -ne 1 ]; then
     echo $0: USAGE: .install.sh platform
     exit 1
@@ -9,7 +9,7 @@ fi
 sysname="$1"
 
 
-################################ COMMON CHECKS ################################
+################################################## COMMON CHECKS ###########################################
 viz_cluster=false
 
 if [ $sysname == 'cscsviz' ];
@@ -20,7 +20,7 @@ fi
 echo "SYSTEM NAME : $sysname VIZ CLUSTER : $viz_cluster"
 
 
-################################ PRE-INSTALLED PACKAGES ################################
+############################################ PRE-INSTALLED PACKAGES ########################################
 pre_installed_packages=('boost' 'zlib' 'cmake' 'python' 'hdf5' 'automake' 'python')
 pre_installed_packages+=('libtool' 'ncurses' 'pkg-config' 'autoconf' 'm4' 'flex' 'bison')
 
@@ -29,17 +29,17 @@ if $viz_cluster; then
 fi
 
 
-################################ OPTIONS FOR TAU PROFILER ################################
+########################################## OPTIONS FOR TAU PROFILER #######################################
 export TAU_OPTIONS="-optPDTInst -optNoCompInst -optRevert -optVerbose -optTauSelectFile=`pwd`/perfconfigs/nrnperfmodels.min.tau"
 
 
-################################ GLOBAL VARIABLES ################################
+############################################## GLOBAL VARIABLES ###########################################
 compilers=()
 packages=()
 declare -A mpis
 
 
-################################ FUNCTION TO INSTALL & VERIFY PACKAGES ################################
+##################################### FUNCTION TO INSTALL & VERIFY PACKAGES ###############################
 function install_packages {
     extra_spec="$1"
 
@@ -74,7 +74,7 @@ function install_packages {
 }
 
 
-################################ CELLULAR SIMULATION PACKAHES ################################
+######################################## CELLULAR SIMULATION PACKAHES ####################################
 gcc_package_group=(
   'neuron ~shared ~python ~mpi'
   'neuron +shared +python +mpi'
@@ -103,11 +103,8 @@ xl_package_group=(
   'coreneuron@perfmodels +profile +mpi'
 )
 
-xl_package_group=(
-  'coreneuron'
-)
 
-################################ REGISTER PACKAGES ################################
+########################################### REGISTER PACKAGES ###########################################
 echo " == > INSTALLING (REGISTERING) PACKAGE $package "
 
 if $viz_cluster; then
@@ -120,11 +117,11 @@ packages=( "${pre_installed_packages[@]}" )
 install_packages
 
 
-################################ SPACK INSTALL OPTIONS ################################
+########################################## SPACK INSTALL OPTIONS ########################################
 install_options='--dirty --log-format=junit'
 
 
-################################ REGISTER PACKAGES ################################
+############################################ REGISTER PACKAGES ###########################################
 if $viz_cluster; then
     mpis['gcc']='mvapich2'
     mpis['intel']='intelmpi'
@@ -132,11 +129,11 @@ if $viz_cluster; then
 
     compilers=('gcc')
     packages=( "${gcc_package_group[@]}" )
-    #install_packages
+    install_packages
 
     compilers=('gcc' 'intel' 'pgi')
     packages=( "${gcc_intel_pgi_package_group[@]}" )
-    #install_packages
+    install_packages
 
     compilers=('pgi')
     packages=( "${pgi_gpu_package_group[@]}" )
@@ -150,6 +147,6 @@ else
 fi
 
 
-################################ SHOW INSTALLED PACKAGES ################################
+######################################### SHOW INSTALLED PACKAGES #######################################
 echo "-------** LIST OF ALL INSTALLED PACKAGES **-------"
 spack find -v

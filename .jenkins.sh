@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -x
-
 ################################ SETUP BUILD ENVIRONMENT ################################
 cd $WORKSPACE
 mkdir -p $WORKSPACE/BUILD_HOME
@@ -12,23 +10,28 @@ export HOME=$WORKSPACE/BUILD_HOME
 rm -rf spack $HOME/.spack
 
 
-########################## CLONE REPOSITORIES ############################
+##################################### CLONE REPOSITORIES #################################
 git clone https://github.com/pramodskumbhar/spack.git -b $ghprbTargetBranch
 export SPACK_ROOT=`pwd`/spack
 export PATH=$SPACK_ROOT/bin:$PATH
 source $SPACK_ROOT/share/spack/setup-env.sh
 
 
-######################### ARCH & DEFAULT COMPILERS ##########################
+###################################### SOME INFO #########################################
+echo "TARGET BRANCH : $ghprbTargetBranch"
+echo "SOURCE BRANCH : $ghprbSourceBranch"
+
+
+################################# ARCH & DEFAULT COMPILERS ###############################
 spack arch
 spack compiler find
 
 
-################################ ADD PACKAGES REPO ################################
+################################### ADD PACKAGES REPO ####################################
 spack repo add --scope site .
 
 
-################################ SET SPACK CONFIG ################################
+##################################### SET SPACK CONFIG ####################################
 if [ $platform == 'cscsviz' ]
 then
     mkdir -p  $SPACK_ROOT/etc/spack/defaults/linux/
@@ -40,9 +43,6 @@ else
     cp sysconfigs/bbpbgq/compilers.yaml $SPACK_ROOT/etc/spack/defaults/bgq/
 fi
 
-ls $HOME/.spack/
-tree $HOME/.spack/
 
-
-############################# START PACKAGE INSTALLATION #########################
+################################# START PACKAGE INSTALLATION ##############################
 ./.install.sh $platform
