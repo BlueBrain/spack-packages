@@ -1,26 +1,17 @@
 #!/bin/bash
 
 
-# for nightly/weekly builds we can test multiple compilers and build options
-if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
-        packages=(
-                'mod2c'
-                'coreneuron ~neurodamusmod ~report'
-                'coreneuron ~neurodamusmod ~report ~mpi'
-                'neuron@develop +python ^python@3'
-                'neuron@develop +python ^python@2.7'
-                'neuron@develop -python'
-                'neuron@develop +shared -mpi'
-        )
-# for PRs do minumum builds
-else
-        packages=(
-                'coreneuron ~neurodamusmod ~report'
-                'coreneuron ~neurodamusmod ~report ~mpi'
-                'neuron@develop +shared ~mpi'
-                'neuron@develop +python ^python@2.7'
-        )
-fi
+# for stable branch we always build all packages
+packages=(
+        'mod2c'
+        'coreneuron ~neurodamusmod ~report'
+        'coreneuron ~neurodamusmod ~report ~mpi'
+        'coreneuron ~neurodamusmod ~report ~openmp ~mpi'
+        'neuron@develop +python ^python@3'
+        'neuron@develop +python ^python@2.7'
+        'neuron@develop ~python'
+        'neuron@develop +shared ~mpi'
+)
 
 
 # module support
