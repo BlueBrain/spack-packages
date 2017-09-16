@@ -47,6 +47,5 @@ modules:
       - 'mpich'
       - 'openmpi'
       - 'cmake'
-      - 'python'
       - 'py-cython'
       - 'gsl'
