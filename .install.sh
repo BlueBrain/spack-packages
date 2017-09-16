@@ -132,7 +132,6 @@ if $viz_cluster; then
     install_packages
 
     compilers=('gcc' 'intel' 'pgi')
-    compilers=('pgi')
     packages=( "${gcc_intel_pgi_package_group[@]}" )
     install_packages
 

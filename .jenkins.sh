@@ -6,7 +6,7 @@ rm -rf  $HOME/.spack spack
 
 
 ########################## CLONE REPOSITORIES ############################
-git clone https://github.com/pramodskumbhar/spack.git -b develop
+git clone https://github.com/pramodskumbhar/spack.git -b $ghprbTargetBranch
 export SPACK_ROOT=`pwd`/spack
 export PATH=$SPACK_ROOT/bin:$PATH
 source $SPACK_ROOT/share/spack/setup-env.sh
