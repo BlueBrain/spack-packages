@@ -29,7 +29,16 @@ matrix:
       sudo: false
       env: [ MPI=mpich]
 
+#=============================================================================
+# Cache Spack downloaded tarballs
+#=============================================================================
+cache:
+  directories:
+  - $SPACK_ROOT/var/spack/cache
+
+#=============================================================================
 # Common packages for devlopment build
+#=============================================================================
 addons:
   apt:
     packages:
@@ -45,7 +54,9 @@ addons:
       - libncurses-dev
       - environment-modules
 
+#=============================================================================
 # Install software dependencies
+#=============================================================================
 install:
   - .travis/install_dependencies.sh $MPI
   - .travis/setup_spack.sh
