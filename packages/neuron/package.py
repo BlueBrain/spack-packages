@@ -50,7 +50,6 @@ class Neuron(Package):
     variant('python',        default=True,  description='Enable python')
     variant('shared',        default=False, description='Build shared libraries')
     variant('cross-compile', default=False, description='Build for cross-compile environment')
-    variant('multisend',     default=True,  description="Enable multi-send spike exchange")
     variant('rx3d',          default=False, description="Enable cython translated 3-d rxd")
     variant('profile',       default=False, description="Enable Tau profiling")
 
@@ -187,14 +186,12 @@ class Neuron(Package):
                    '--without-x',
                    '--without-readline']
 
-        if spec.satisfies('+multisend'):
-            options.append('--with-multisend')
-
         if spec.satisfies('~rx3d'):
             options.append('--disable-rx3d')
 
         if spec.satisfies('+mpi'):
             options.append('--with-paranrn')
+            options.append('--with-multisend')
             if spec.satisfies('+profile'):
                 options.extend(['MPICC=%s' % 'tau_cc',
                                 'MPICXX=%s' % 'tau_cxx'])

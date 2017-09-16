@@ -1,0 +1,67 @@
+compilers:
+- compiler:
+    modules:
+    - intel/icomposer-2015.0.090
+    operating_system: rhel6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/icpc
+      f77: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/ifort
+      fc: /gpfs/bbp.cscs.ch/apps/viz/intel/composer_xe_2015.0.090/bin/intel64/ifort
+    spec: intel@15.0.0
+- compiler:
+    modules:
+    - intel/icomposer-2017.0.098
+    operating_system: rhel6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/icc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/icpc
+      f77: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/ifort
+      fc: /gpfs/bbp.cscs.ch/apps/viz/intel2017/compilers_and_libraries_2017/linux/bin/intel64/ifort
+    spec: intel@17.0.0
+- compiler:
+    modules:
+    - pgi/pgi64/16.5
+    operating_system: rhel6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/tools/pgi/16.5/linux86-64/16.5/bin/pgcc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/tools/pgi/16.5/linux86-64/16.5/bin/pgc++
+      f77: null
+      fc: null
+    spec: pgi@16.5-0
+- compiler:
+    flags: {}
+    modules:
+    - gcc/4.9.0
+    operating_system: rhel6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/g++
+      f77: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
+    spec: gcc@4.9.0
+    #flags:
+    #  cflags: -O3 -fPIC
+    #  cxxflags: -O3 -fPIC
+    #  cppflags: -O3 -fPIC
+- compiler:
+    flags: {}
+    modules: []
+    operating_system: rhel6
+    paths:
+      cc: /usr/lib64/ccache/gcc
+      cxx: /usr/lib64/ccache/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.4.7
+- compiler:
+    flags: {}
+    modules:
+    - nix/gcc/4.9.3
+    operating_system: rhel6
+    paths:
+      cc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gcc
+      cxx: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/g++
+      f77: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
+      fc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
+    spec: gcc@4.9.3

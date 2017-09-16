@@ -49,18 +49,21 @@ class Syntool(CMakePackage):
     url      = "ssh://bbpcode.epfl.ch/hpc/synapse-tool"
 
     version('master', git=url, submodules=True)
-    variant('mpi', default=False, description="Enable MPI backend")
+    variant('mpi', default=True, description="Enable MPI backend")
 
     depends_on('hdf5')
-    depends_on('boost@1.60:')
+    depends_on('boost@1.55:')
     depends_on('python')
+    depends_on('mpi', when='+mpi')
     depends_on('cmake@2.8:', type='build')
-
-    # TODO: submodule update pending
-    patch('hadoken.patch')
 
     def cmake_args(self):
         args = []
-        if self.spec.satisfies('+mpi'):
+        spec = self.spec
+
+        if spec.satisfies('+mpi'):
             args.append('-DSYNTOOL_WITH_MPI=ON')
+            env['CC']  = spec['mpi'].mpicc
+            env['CXX'] = spec['mpi'].mpicxx
+
         return args

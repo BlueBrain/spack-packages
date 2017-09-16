@@ -1,0 +1,51 @@
+modules:
+  enable::
+      - tcl
+  prefix_inspections:
+    bin:
+      - PATH
+    bin64:
+      - PATH
+    share/man:
+      - MANPATH
+    man:
+      - MANPATH
+    lib:
+      - LD_LIBRARY_PATH
+    lib64:
+      - LD_LIBRARY_PATH
+    lib/pkgconfig:
+      - PKG_CONFIG_PATH
+    lib64/pkgconfig:
+      - PKG_CONFIG_PATH
+    '':
+      - CMAKE_PREFIX_PATH
+  tcl:
+    all:
+      autoload: 'direct'
+      suffixes:
+          '^openmpi': 'mpi'
+          '^mpich': 'mpi'
+          '^python@3': 'python3'
+          '^python@2.7': 'python2'
+          '+shared': 'shared'
+      conflict:
+          - '${PACKAGE}'
+      environment:
+        set:
+          '${PACKAGE}_ROOT': '${PREFIX}'
+    hash_length: 5
+    naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}'
+    blacklist:
+      - 'autoconf'
+      - 'libtool'
+      - 'pkg-config'
+      - 'automake'
+      - 'flex'
+      - 'bison'
+      - 'ncurses'
+      - 'mpich'
+      - 'openmpi'
+      - 'cmake'
+      - 'py-cython'
+      - 'gsl'
