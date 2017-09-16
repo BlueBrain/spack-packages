@@ -17,8 +17,8 @@ else
         packages=(
                 'coreneuron ~neurodamusmod ~report'
                 'coreneuron ~neurodamusmod ~report ~mpi'
+                'neuron@develop +shared ~mpi'
                 'neuron@develop +python ^python@2.7'
-                'neuron@develop +shared -mpi'
         )
 fi
 
@@ -48,13 +48,13 @@ do
     spack spec -I $package
 
     # install package
-    spack install $package || exit 0
+    (spack install $package; exit 0)
 
     # check if package installed properly
     if [[ `spack find $package` == *"No package matches"* ]];  then
 
         echo " == > PACKAGE INSTALLATION CHECK FAILED, BUILD LOG : "
-        cat `spack location $full_spec`/spack-build.out
+        cat `spack location $package`/spack-build.out
         exit 1
 
     fi
