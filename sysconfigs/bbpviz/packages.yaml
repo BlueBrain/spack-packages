@@ -1,17 +1,17 @@
 packages:
     intelmpi:
         paths:
-            intelmpi@2017: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64
+            intelmpi@2017%intel: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64
         version: [2017]
         buildable: False
     mpich:
         modules:
-            mpich@3.2: pgi/mpich/16.5
+            mpich@3.2%pgi: pgi/mpich/16.5
         buildable: False
         version: [3.2]
     mvapich2:
         modules:
-            mvapich2@2.0.1: mvapich2/2.0.1-nocuda
+            mvapich2@2.0.1%gcc: mvapich2/2.0.1-nocuda
         version: [2.0.1]
         buildable: False
     openmpi:
