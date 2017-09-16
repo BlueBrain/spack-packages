@@ -103,6 +103,9 @@ xl_package_group=(
   'coreneuron@perfmodels +profile +mpi'
 )
 
+xl_package_group=(
+  'coreneuron'
+)
 
 ################################ REGISTER PACKAGES ################################
 echo " == > INSTALLING (REGISTERING) PACKAGE $package "
@@ -129,11 +132,11 @@ if $viz_cluster; then
 
     compilers=('gcc')
     packages=( "${gcc_package_group[@]}" )
-    install_packages
+    #install_packages
 
     compilers=('gcc' 'intel' 'pgi')
     packages=( "${gcc_intel_pgi_package_group[@]}" )
-    install_packages
+    #install_packages
 
     compilers=('pgi')
     packages=( "${pgi_gpu_package_group[@]}" )

@@ -1,8 +1,13 @@
 #!/bin/bash
 
+set -x
+
 ################################ CLEANUP ################################
 cd $WORKSPACE
-rm -rf  $HOME/.spack spack
+mkdir -p $WORKSPACE/MY_HOME
+export HOME=$WORKSPACE/MY_HOME
+
+rm -rf spack $HOME/.spack
 
 
 ########################## CLONE REPOSITORIES ############################
@@ -32,6 +37,9 @@ else
     cp sysconfigs/bbpbgq/packages.yaml $SPACK_ROOT/etc/spack/defaults/bgq/
     cp sysconfigs/bbpbgq/compilers.yaml $SPACK_ROOT/etc/spack/defaults/bgq/
 fi
+
+ls $HOME/.spack/
+tree $HOME/.spack/
 
 ############################# START PACKAGE INSTALLATION #########################
 ./.install.sh $platform
