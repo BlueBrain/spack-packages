@@ -1,0 +1,68 @@
+compilers:
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: centos7
+    paths:
+      cc: /usr/bin/gcc
+      cxx: /usr/bin/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.8.5
+    target: x86_64
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: centos7
+    paths:
+      cc: /usr/bin/gcc
+      cxx: /usr/bin/g++
+      f77: null
+      fc: null
+    spec: gcc@4.8.5
+    target: ppc64le
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags:
+      fflags: -qzerosize
+    modules: []
+    operating_system: centos7
+    paths:
+      cc: /usr/bin/xlc
+      cxx: /usr/bin/xlC
+      f77: /usr/bin/xlf
+      fc: /usr/bin/xlf2003
+    spec: xl@14.1
+    target: ppc64le
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags:
+      fflags: -qzerosize
+    modules: []
+    operating_system: centos7
+    paths:
+      cc: /usr/bin/xlc_r
+      cxx: /usr/bin/xlC_r
+      f77: /usr/bin/xlf_r
+      fc: /usr/bin/xlf2003_r
+    spec: xl_r@14.1
+    target: ppc64le
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: [intel-ics/2017.1.132]
+    operating_system: centos7
+    paths:
+      cc: /global/opt/jsc/intel/compilers_and_libraries_2017.1.132/linux/bin/intel64/icc
+      cxx: /global/opt/jsc/intel/compilers_and_libraries_2017.1.132/linux/bin/intel64/icpc
+      f77: /global/opt/jsc/intel/compilers_and_libraries_2017.1.132/linux/bin/intel64/ifort
+      fc: /global/opt/jsc/intel/compilers_and_libraries_2017.1.132/linux/bin/intel64/ifort
+    spec: intel@17.0.1
+    target: x86_64

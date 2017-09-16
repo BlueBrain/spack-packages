@@ -1,0 +1,62 @@
+packages:
+    cmake:
+        paths:
+            cmake@3.5.1: /usr
+        version: [3.5.1]
+        buildable: False
+    qt:
+        paths:
+            qt@5.5.1: /usr
+        version: [5.5.1]
+    libunwind:
+        paths:
+            libunwind@1.1: /usr
+        version: [1.1]
+        buildable: False
+    binutils:
+        paths:
+            binutils+libiberty@2.26.1: /usr
+        version: [2.26.1]
+    libx11:
+        paths:
+            libx11@1.6.3: /usr
+        version: [1.6.3]
+    fontconfig:
+        paths:
+            fontconfig@2.11.94: /usr
+        version: [2.11.94]
+    flex:
+        paths:
+            flex@2.6.0: /usr
+        version: [2.6.0]
+    bison:
+        paths:
+            bison@3.0.4: /usr
+        version: [3.0.4]
+    autoconf:
+        paths:
+            autoconf@2.69: /usr
+        version: [2.69]
+    openssl:
+        paths:
+            openssl@1.0.2: /usr
+        version: [1.0.2]
+    libxcb:
+        paths:
+            libxcb@1.11.1: /usr
+        version: [1.11.1]
+    py-pygtk:
+        paths:
+            py-pygtk@2.24.0: /usr
+        version: [2.24.0]
+    graphviz:
+        paths:
+            graphviz@2.38.0: /usr
+        version: [2.38.0]
+    gtkplus:
+        paths:
+            gtkplus@2.24.30: /usr
+        version: [2.24.30]
+    all:
+        providers:
+            mpi: [mpich]

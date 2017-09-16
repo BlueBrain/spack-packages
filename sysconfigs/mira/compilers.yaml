@@ -1,0 +1,49 @@
+compilers:
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: rhel6
+    paths:
+      cc: /usr/bin/gcc
+      cxx: /usr/bin/g++
+      f77: /usr/bin/gfortran
+      fc: /usr/bin/gfortran
+    spec: gcc@4.4.7
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: rhel6
+    paths:
+      cc: /soft/compilers/ibmcmp-may2016/vac/bg/12.1/bin/xlc
+      cxx: /soft/compilers/ibmcmp-may2016/vacpp/bg/12.1/bin/xlC
+      f77: /soft/compilers/ibmcmp-may2016/xlf/bg/14.1/bin/xlf
+      fc: /soft/compilers/ibmcmp-may2016/xlf/bg/14.1/bin/xlf2003
+    spec: xl@12.1
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: cnk
+    paths:
+      cc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gcc
+      cxx: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-g++
+      f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+      fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
+    spec: gcc@4.4.7
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: cnk
+    paths:
+      cc: /soft/compilers/ibmcmp-may2016/vac/bg/12.1/bin/bgxlc_r
+      cxx: /soft/compilers/ibmcmp-may2016/vacpp/bg/12.1/bin/bgxlC_r
+      f77: /soft/compilers/ibmcmp-may2016/xlf/bg/14.1/bin/bgxlf_r
+      fc: /soft/compilers/ibmcmp-may2016/xlf/bg/14.1/bin/bgxlf2003_r
+    spec: xl@12.1

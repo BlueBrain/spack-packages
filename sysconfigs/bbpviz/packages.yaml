@@ -1,0 +1,124 @@
+packages:
+    intelmpi:
+        paths:
+            intelmpi@2017%intel: /gpfs/bbp.cscs.ch/apps/viz/intel/2017/compilers_and_libraries_2017.0.098/linux/mpi/intel64
+        version: [2017]
+        buildable: False
+    mpich:
+        modules:
+            mpich@3.2%pgi: pgi/mpich/16.5
+        buildable: False
+        version: [3.2]
+    mvapich2:
+        modules:
+            mvapich2@2.0.1%gcc: mvapich2/2.0.1-nocuda
+        version: [2.0.1]
+        buildable: False
+    openmpi:
+        modules:
+            openmpi@1.8.7: openmpi/1.8.7
+        version: [1.8.7]
+        buildable: False
+    cmake:
+        paths:
+            cmake@3.6.2: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/cmake/3.6.2
+        version: [3.6.2]
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@2.63: /usr
+        version: [2.63]
+        buildable: False
+    automake:
+        paths:
+            automake@1.11.1: /usr
+        version: [1.11.1]
+        buildable: False
+    m4:
+        paths:
+            m4@1.4.13: /usr
+        version: [1.4.13]
+        buildable: False
+    pkg-config:
+        paths:
+            pkg-config@0.29.1: /usr
+        version: [0.29.1]
+        buildable: False
+    libtool:
+        paths:
+            libtool@2.2.6: /usr
+        version: [2.2.6]
+        buildable: False
+    flex:
+        paths:
+            flex@2.5.35: /usr
+        version: [2.5.35]
+        buildable: False
+    bison:
+        paths:
+            bison@2.4.1: /usr
+        version: [2.4.1]
+        buildable: False
+    ncurses:
+        paths:
+            ncurses@5.7: /usr
+        version: [5.7]
+        buildable: False
+    python:
+        paths:
+            python@2.6.6: /usr
+        version: [2.6.6]
+        buildable: False
+    py-cython:
+        paths:
+            py-cython@0.24.1: /usr
+        version: [0.24.1]
+        buildable: False
+    py-sphinx:
+        paths:
+            py-sphinx@0.6.6: /usr
+        version: [0.6.6]
+        buildable: False
+    qt:
+        modules:
+            qt@4.8.5: qt/4.8.5
+            qt@5.4.1: qt/5.4.1
+        version: [5.4.1, 4.8.5]
+        buildable: False
+    cuda:
+        modules:
+            cuda@6.0: cuda/6.0
+            cuda@7.5: cuda/7.5
+        version: [7.5, 6.0]
+        buildable: False
+    boost:
+        modules:
+            boost@1.58.0: boost/1.58.0
+        version: [1.58.0]
+        buildable: False
+    hdf5:
+        paths:
+            hdf5@1.10.0%gcc: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-gcc
+            hdf5@1.10.0%intel: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-icc
+            hdf5@1.10.0%pgi: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/hdf5-pgi
+        variants: ~fortran ~shared ~cxx
+        buildable: False
+        version: [1.10.0]
+    zlib:
+        paths:
+            zlib@1.2.8%gcc: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-gcc
+            zlib@1.2.8%intel: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-icc
+            zlib@1.2.8%pgi: /gpfs/bbp.cscs.ch/project/proj16/software/viz/hpc/zlib-pgi
+        buildable: False
+        version: [1.2.8]
+
+    tau:
+        variants: ~openmp ~comm ~phase
+
+    coreneuron:
+        variants: ~openmp
+
+    all:
+        compiler: [gcc@4.9.0, intel@17.0.0]
+        providers:
+            mpi: [mvapich2, intelmpi, mpich]
