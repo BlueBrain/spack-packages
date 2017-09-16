@@ -118,7 +118,7 @@ install_packages
 
 
 ################################ SPACK INSTALL OPTIONS ################################
-install_options='--dirty'
+install_options='--dirty --log-format=junit'
 
 
 ################################ REGISTER PACKAGES ################################
@@ -140,7 +140,7 @@ if $viz_cluster; then
     packages=( "${pgi_gpu_package_group[@]}" )
     install_packages "^cuda@6.0"
 else
-    mpi['xl']='mpich'
+    mpis['xl']='mpich'
 
     compilers=('xl')
     packages=( "${xl_package_group[@]}" )
