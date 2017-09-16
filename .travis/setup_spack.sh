@@ -6,7 +6,11 @@ set -xe
 cd $TRAVIS_BUILD_DIR
 mkdir -p $HOME/.spack/
 cp .travis/packages.$TRAVIS_OS_NAME.yaml $HOME/.spack/packages.yaml
+
+
+# optional configurations for modules and naming scheme
 cp .travis/modules.yaml $HOME/.spack/
+cp .travis/config.yaml $HOME/.spack/
 
 
 # clone spack branch (stable or develop)

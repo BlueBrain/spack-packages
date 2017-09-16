@@ -34,7 +34,7 @@ modules:
       environment:
         set:
           '${PACKAGE}_ROOT': '${PREFIX}'
-    hash_length: 4
+    hash_length: 5
     naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}'
     blacklist:
       - 'autoconf'

@@ -1,6 +1,5 @@
 #!/bin/bash
 
-set -x
 
 # for nightly/weekly builds we can test multiple compilers and build options
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
