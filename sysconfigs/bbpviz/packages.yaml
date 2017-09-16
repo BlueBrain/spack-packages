@@ -11,7 +11,7 @@ packages:
         version: [3.2]
     mvapich2:
         modules:
-            mvapich2@2.0.1%gcc@4.9.0: mvapich2/2.0.1-nocuda
+            mvapich2@2.0.1: mvapich2/2.0.1-nocuda
         version: [2.0.1]
         buildable: False
     openmpi:
@@ -67,9 +67,17 @@ packages:
     python:
         paths:
             python@2.6.6: /usr
-        modules:
-            python@3.4.3: python/3.4.3
-        version: [3.4.3, 2.6.6]
+        version: [2.6.6]
+        buildable: False
+    py-cython:
+        paths:
+            py-cython@0.24.1: /usr
+        version: [0.24.1]
+        buildable: False
+    py-sphinx:
+        paths:
+            py-sphinx@0.6.6: /usr
+        version: [0.6.6]
         buildable: False
     qt:
         modules:
