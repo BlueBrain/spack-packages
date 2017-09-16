@@ -58,6 +58,7 @@ case "$TRAVIS_OS_NAME" in
         ;;
 esac
 
+
 # print python paths in case we need for debugging
 python -c "import sysconfig; print sysconfig.get_config_var('LIBDIR')"
 python3 -c "import sysconfig; print (sysconfig.get_config_var('LIBDIR'))"

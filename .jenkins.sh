@@ -45,4 +45,4 @@ fi
 
 
 ################################# START PACKAGE INSTALLATION ##############################
-./.install.sh $platform
+# ./.install.sh $platform
