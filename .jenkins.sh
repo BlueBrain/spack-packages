@@ -2,11 +2,13 @@
 
 set -x
 
-################################ CLEANUP ################################
+################################ SETUP BUILD ENVIRONMENT ################################
 cd $WORKSPACE
-mkdir -p $WORKSPACE/MY_HOME
-export HOME=$WORKSPACE/MY_HOME
+mkdir -p $WORKSPACE/BUILD_HOME
 
+# spack stores cache and configs under $HOME. In order to avoid collision with
+# other user's build we change $HOME to directory under current workspace
+export HOME=$WORKSPACE/BUILD_HOME
 rm -rf spack $HOME/.spack
 
 
@@ -40,6 +42,7 @@ fi
 
 ls $HOME/.spack/
 tree $HOME/.spack/
+
 
 ############################# START PACKAGE INSTALLATION #########################
 ./.install.sh $platform
