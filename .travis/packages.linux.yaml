@@ -66,6 +66,16 @@ packages:
             py-cython@0.20.1: /usr
         buildable: False
         version: [0.20.1]
+    boost:
+        paths:
+            boost@1.65: /usr
+        buildable: False
+        version: [1.65]
+    qt:
+        paths:
+            qt@5.9.1: /usr
+        buildable: False
+        version: [5.9.1]
     tau:
         variants: ~openmp ~comm ~phase
     coreneuron:

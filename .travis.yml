@@ -44,6 +44,10 @@ addons:
       - make
       - libncurses-dev
       - environment-modules
+      - libboost-dev
+      - cython
+      - libpython3-dev
+      - libgsl0-dev
 
 # Install software dependencies
 install:
