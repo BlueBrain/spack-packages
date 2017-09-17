@@ -15,6 +15,7 @@ cp .travis/config.yaml $HOME/.spack/
 
 # clone spack branch (stable or develop)
 cd $TRAVIS_BUILD_DIR
+rm -rf spack
 git clone --depth 1 https://github.com/pramodskumbhar/spack.git -b $TRAVIS_BRANCH
 
 
