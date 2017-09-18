@@ -25,13 +25,16 @@
 from spack import *
 
 
-class Learningengine(CMakePackage):
+class Lengine(CMakePackage):
     """Testing framework for LE"""
 
     homepage = "ssh://bbpcode.epfl.ch/hpc/learning_engine"
     url      = "ssh://bbpcode.epfl.ch/hpc/learning_engine"
 
-    version('develop', git=url)
+    version('develop', git=url, preferred=True)
+
+    # NOTE added to use system python 2.6
+    version('python26', git=url, branch='sandbox/kumbhar/master')
 
     variant('tests',        default=True,  description="Build the regression tests")
     variant('benchmark',    default=True, description="Enable benchmarks")
@@ -59,18 +62,18 @@ class Learningengine(CMakePackage):
     depends_on("intel-tbb",           when='threading=tbb')
     depends_on('py-sphinx',           when='+docs')
     depends_on('py-cython',           when='+pybinding')
-    depends_on('python@2.7:',         when='+pybinding')
-    depends_on('highfive@master~mpi', when='+syn2')
+    depends_on('python@2.6:',         when='+pybinding')
+    depends_on('highfive@develop~mpi', when='+syn2')
 
     conflicts('%gcc', when='random=mkl')
     conflicts('%clang', when='random=mkl')
 
     def get_optimization_flags(self):
-        flags = "-g -O2"
+        flags = ''
         if self.spec.satisfies('%intel'):
             flags += ' -qopt-report=5'
         if self.spec.satisfies('+knl'):
-            flags = ' -xmic-avx512'
+            flags = ' -xMIC-AVX512'
         return flags
 
     def cmake_args(self):
@@ -115,3 +118,7 @@ class Learningengine(CMakePackage):
         args.append('-DOPT_PRECISION=%s' % spec.variants['precision'].value)
 
         return args
+
+    def setup_environment(self, spack_env, run_env):
+        docs = '%s/docs'% self.prefix
+        run_env.set('LE_DOCS', docs)
