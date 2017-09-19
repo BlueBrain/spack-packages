@@ -40,6 +40,7 @@ class Tide(CMakePackage):
     depends_on('qt@5.4:')
     depends_on('boost@1.54:')
     depends_on('libjpeg-turbo')
+    depends_on('ffmpeg')
     depends_on('cmake@3:', type='build')
 
     def cmake_args(self):
