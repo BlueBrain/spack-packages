@@ -23,11 +23,13 @@ class Tide(CMakePackage):
 
     homepage = "https://github.com/BlueBrain/Tide"
     url      = "https://github.com/BlueBrain/Tide.git"
+    psurl    = "https://github.com/pramodskumbhar/Tide.git"
 
     version('1.3.1',   git=url, tag='1.3.1', submodules=True)
     version('1.3.0',   git=url, tag='1.3.0', submodules=True)
     version('1.2.2',   git=url, tag='1.2.2', submodules=True)
-    version('develop', git=url, submodules=True, preferred=True)
+    #version('develop', git=url, submodules=True, preferred=True)
+    version('develop', git=psurl, submodules=True, preferred=True)
 
     variant('knl',     default=False, description="Enable KNL specific build options")
 
