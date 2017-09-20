@@ -27,6 +27,6 @@ class Zeroeq(CMakePackage):
     version('develop', git=url, submodules=True)
 
     depends_on('servus')
-    depends_on('boost@1.54:')
+    depends_on('boost@1.58:')
     depends_on('zeromq@4:')
     depends_on('cmake@3:', type='build')

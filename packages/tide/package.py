@@ -28,8 +28,8 @@ class Tide(CMakePackage):
 
     version('1.3.1',   git=url, tag='1.3.1', submodules=True)
     version('1.3.0',   git=url, tag='1.3.0', submodules=True)
-    version('develop', git=url, submodules=True, preferred=True)
-    #version('develop', git=psurl, submodules=True, preferred=True)
+    #version('develop', git=url, submodules=True, preferred=True)
+    version('develop', git=psurl, submodules=True, preferred=True)
 
     variant('touch',    default=True,  description="Enable TUIO touch listener")
     variant('movie',    default=True,  description="Enable FFMPEG movie support")
@@ -45,7 +45,7 @@ class Tide(CMakePackage):
 
     depends_on('zeroeq', when='+rest')
     depends_on('tuio',   when='+touch')
-    depends_on('ffmpeg', when='+moview')
+    depends_on('ffmpeg', when='+movie')
     depends_on('virtualkeyboard', when='+keyboard')
     depends_on('cmake@3:', type='build')
 
