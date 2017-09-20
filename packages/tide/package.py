@@ -13,6 +13,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
+import os
 
 
 class Tide(CMakePackage):
@@ -23,41 +24,57 @@ class Tide(CMakePackage):
 
     homepage = "https://github.com/BlueBrain/Tide"
     url      = "https://github.com/BlueBrain/Tide.git"
+    psurl    = "https://github.com/pramodskumbhar/Tide.git"
 
     version('1.3.1',   git=url, tag='1.3.1', submodules=True)
     version('1.3.0',   git=url, tag='1.3.0', submodules=True)
-    version('1.2.2',   git=url, tag='1.2.2', submodules=True)
     version('develop', git=url, submodules=True, preferred=True)
+    #version('develop', git=psurl, submodules=True, preferred=True)
 
-    variant('knl',     default=False, description="Enable KNL specific build options")
-
-    depends_on('tuio')
-    depends_on('zeroeq')
-    depends_on('deflect')
-    depends_on('virtualkeyboard')
+    variant('touch',    default=True,  description="Enable TUIO touch listener")
+    variant('movie',    default=True,  description="Enable FFMPEG movie support")
+    variant('rest',     default=True,  description="Enable REST interface using ZeroEQ")
+    variant('keyboard', default=True,  description="Enable virtual keyboard support")
+    variant('knl',      default=False, description="Compile for KNL architecture")
 
     depends_on('mpi')
+    depends_on('deflect')
     depends_on('qt@5.4:')
     depends_on('boost@1.54:')
     depends_on('libjpeg-turbo')
+
+    depends_on('zeroeq', when='+rest')
+    depends_on('tuio',   when='+touch')
+    depends_on('ffmpeg', when='+moview')
+    depends_on('virtualkeyboard', when='+keyboard')
     depends_on('cmake@3:', type='build')
 
-    def cmake_args(self):
+    def get_knl_flag(self, spec):
+        flags = ""
+        if spec.satisfies('%gcc'):
+            flags = "-march=knl -mavx512f -mavx512pf -mavx512er -mavx512cd"
+        elif spec.satisfies('%intel'):
+            flags = "-xMIC-AVX512"
+        elif spec.satisfies('%clang'):
+            flags = "-march=knl"
+        return flags
 
+    def cmake_args(self):
         spec = self.spec
         args = []
 
-        if spec.satisfies('+knl'):
-            flags = "-g -O2"
+        # remove subproject file otherwise cmake try to find those
+        # targets. check with viz team.
+        subproject = self.stage.source_path+"/.gitsubprojects"
+        if os.path.isfile(subproject):
+            os.remove(subproject)
 
-            if spec.satisfies('%gcc'):
-                flags += " -march=knl -mavx512f -mavx512pf -mavx512er -mavx512cd"
-            elif spec.satisfies('%intel'):
-                flags += " -xMIC-AVX512"
-            elif spec.satisfies('%clang'):
-                flags += " -march=knl"
-
+        if '+knl' in spec:
+            flags = get_knl_flag()
             args.append('-DCMAKE_C_FLAGS=%s' % flags)
             args.append('-DCMAKE_CXX_FLAGS=%s' % flags)
 
+        args.extend(['-DTIDE_ENABLE_MOVIE_SUPPORT=%s'       % ('ON' if '+movie' in spec else 'OFF'),
+                     '-DTIDE_ENABLE_REST_INTERFACE=%s'      % ('ON' if '+rest' in spec else 'OFF'),
+                     '-DTIDE_ENABLE_TUIO_TOUCH_LISTENER=%s' % ('ON' if '+touch' in spec else 'OFF')])
         return args
