@@ -78,3 +78,9 @@ class Tide(CMakePackage):
                      '-DTIDE_ENABLE_REST_INTERFACE=%s'      % ('ON' if '+rest' in spec else 'OFF'),
                      '-DTIDE_ENABLE_TUIO_TOUCH_LISTENER=%s' % ('ON' if '+touch' in spec else 'OFF')])
         return args
+
+    def setup_environment(self, spack_env, run_env):
+        spec = self.spec
+        run_env.set('IPATH_NO_CPUAFFINITY', 1)
+        if not spec.satisfies('^openmpi'):
+            run_env.set('MV2_ENABLE_AFFINITY', 0)
