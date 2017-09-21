@@ -61,22 +61,17 @@ class Tide(CMakePackage):
 
     def cmake_args(self):
         spec = self.spec
-        args = []
 
-        # remove subproject file otherwise cmake try to find those
-        # targets. check with viz team.
-        subproject = self.stage.source_path+"/.gitsubprojects"
-        if os.path.isfile(subproject):
-            os.remove(subproject)
+        args = ['-DDISABLE_SUBPROJECTS=ON']
+        args.extend(['-DTIDE_ENABLE_MOVIE_SUPPORT=%s'       % ('ON' if '+movie' in spec else 'OFF'),
+                     '-DTIDE_ENABLE_REST_INTERFACE=%s'      % ('ON' if '+rest' in spec else 'OFF'),
+                     '-DTIDE_ENABLE_TUIO_TOUCH_LISTENER=%s' % ('ON' if '+touch' in spec else 'OFF')])
 
         if '+knl' in spec:
             flags = get_knl_flag()
             args.append('-DCMAKE_C_FLAGS=%s' % flags)
             args.append('-DCMAKE_CXX_FLAGS=%s' % flags)
 
-        args.extend(['-DTIDE_ENABLE_MOVIE_SUPPORT=%s'       % ('ON' if '+movie' in spec else 'OFF'),
-                     '-DTIDE_ENABLE_REST_INTERFACE=%s'      % ('ON' if '+rest' in spec else 'OFF'),
-                     '-DTIDE_ENABLE_TUIO_TOUCH_LISTENER=%s' % ('ON' if '+touch' in spec else 'OFF')])
         return args
 
     def setup_environment(self, spack_env, run_env):
