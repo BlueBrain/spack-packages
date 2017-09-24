@@ -1,6 +1,7 @@
 compilers:
 - compiler:
     modules:
+    - gcc/4.9.0
     - intel/icomposer-2015.0.090
     operating_system: rhel6
     paths:
@@ -11,6 +12,7 @@ compilers:
     spec: intel@15.0.0
 - compiler:
     modules:
+    - gcc/4.9.0
     - intel/icomposer-2017.0.098
     operating_system: rhel6
     paths:
