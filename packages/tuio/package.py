@@ -13,7 +13,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 ##############################################################################
 from spack import *
-
+import os
 
 class Tuio(CMakePackage):
 
@@ -25,3 +25,8 @@ class Tuio(CMakePackage):
     version('develop', git=url, submodules=True)
 
     depends_on('cmake@3:', type='build')
+
+    @run_before('cmake')
+    def common_cxx11_abi_check(self):
+        if self.spec.satisfies('%gcc@5:'):
+            os.environ["CMAKE_COMMON_USE_CXX03_ABI"] = "1"

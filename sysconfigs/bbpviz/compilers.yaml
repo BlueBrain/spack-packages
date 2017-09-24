@@ -40,10 +40,6 @@ compilers:
       f77: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
       fc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
     spec: gcc@4.9.0
-    #flags:
-    #  cflags: -O3 -fPIC
-    #  cxxflags: -O3 -fPIC
-    #  cppflags: -O3 -fPIC
 - compiler:
     flags: {}
     modules: []
@@ -65,3 +61,28 @@ compilers:
       f77: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
       fc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
     spec: gcc@4.9.3
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules:
+    - gcc/6.2.0
+    operating_system: rhel6
+    paths:
+      cc: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/g++
+      f77: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/gfortran
+    spec: gcc@6.2.0
+- compiler:
+    environment: {}
+    extra_rpaths: []
+    flags: {}
+    modules: []
+    operating_system: rhel6
+    paths:
+      cc: /usr/bin/clang
+      cxx: /usr/bin/clang++
+      f77: null
+      fc: null
+    spec: clang@3.4.2

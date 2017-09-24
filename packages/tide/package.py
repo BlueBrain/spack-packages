@@ -24,12 +24,10 @@ class Tide(CMakePackage):
 
     homepage = "https://github.com/BlueBrain/Tide"
     url      = "https://github.com/BlueBrain/Tide.git"
-    psurl    = "https://github.com/pramodskumbhar/Tide.git"
 
     version('1.3.1',   git=url, tag='1.3.1', submodules=True)
     version('1.3.0',   git=url, tag='1.3.0', submodules=True)
-    #version('develop', git=url, submodules=True, preferred=True)
-    version('develop', git=psurl, submodules=True, preferred=True)
+    version('develop', git=url, submodules=True, preferred=True)
 
     variant('touch',    default=True,  description="Enable TUIO touch listener")
     variant('movie',    default=True,  description="Enable FFMPEG movie support")
@@ -49,6 +47,11 @@ class Tide(CMakePackage):
     depends_on('virtualkeyboard', when='+keyboard')
     depends_on('cmake@3:', type='build')
 
+    @run_before('cmake')
+    def common_cxx11_abi_check(self):
+        if self.spec.satisfies('%gcc@5:'):
+            os.environ["CMAKE_COMMON_USE_CXX03_ABI"] = "1"
+
     def get_knl_flag(self, spec):
         flags = ""
         if spec.satisfies('%gcc'):
@@ -61,12 +64,10 @@ class Tide(CMakePackage):
 
     def cmake_args(self):
         spec = self.spec
-
         args = ['-DDISABLE_SUBPROJECTS=ON']
         args.extend(['-DTIDE_ENABLE_MOVIE_SUPPORT=%s'       % ('ON' if '+movie' in spec else 'OFF'),
                      '-DTIDE_ENABLE_REST_INTERFACE=%s'      % ('ON' if '+rest' in spec else 'OFF'),
                      '-DTIDE_ENABLE_TUIO_TOUCH_LISTENER=%s' % ('ON' if '+touch' in spec else 'OFF')])
-
         if '+knl' in spec:
             flags = get_knl_flag()
             args.append('-DCMAKE_C_FLAGS=%s' % flags)
