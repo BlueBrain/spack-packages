@@ -120,11 +120,12 @@ class Neuron(Package):
                 py_lib = spec['python'].prefix.lib64
 
             options.extend(['--with-nrnpython=%s' % python_exec,
-                            '--disable-pysetup',
                             'PYINCDIR=%s' % py_inc,
                             'PYLIBDIR=%s' % py_lib])
 
-            if spec.satisfies('~cross-compile'):
+            if spec.satisfies('+cross-compile'):
+                options.append('--disable-pysetup')
+            else:
                 options.append('PYTHON_BLD=%s' % python_exec)
 
             # TODO : neuron has depdendency with backend python as well as front-end
@@ -248,6 +249,12 @@ class Neuron(Package):
     def setup_environment(self, spack_env, run_env):
         arch = self.get_arch_dir()
         run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
+
+        if self.spec.satisfies('+python'):
+            eggs = find(self.prefix, 'NEURON*egg*')
+            if eggs:
+                site_packages = os.path.dirname(find(self.prefix, 'NEURON*egg*')[0])
+                run_env.prepend_path('PYTHONPATH', site_packages)
 
     def setup_dependent_environment(self, spack_env, run_env, dependent_spec):
         arch = self.get_arch_dir()
