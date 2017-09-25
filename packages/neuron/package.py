@@ -134,7 +134,9 @@ class Neuron(Package):
                             'PYINCDIR=%s' % py_inc,
                             'PYLIBDIR=%s' % py_lib])
 
-            if spec.satisfies('~cross-compile'):
+            if spec.satisfies('+cross-compile'):
+                options.append('--disable-pysetup')
+            else:
                 options.append('PYTHON_BLD=%s' % python_exec)
 
             if spec.satisfies('+cross-compile') or spec.satisfies('~shared') or spec.satisfies('%pgi'):
