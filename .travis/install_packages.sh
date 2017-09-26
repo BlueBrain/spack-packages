@@ -52,13 +52,12 @@ do
     spack spec -I $package
 
     # install package
-    (spack install $package; exit 0)
+    spack install --show-log-on-error $package
 
     # check if package installed properly
     if [[ `spack find $package` == *"No package matches"* ]];  then
 
-        echo " == > PACKAGE INSTALLATION CHECK FAILED, BUILD LOG : "
-        cat `spack location $package`/spack-build.out
+        echo " == > PACKAGE INSTALLATION CHECK FAILED!"
         exit 1
 
     fi
