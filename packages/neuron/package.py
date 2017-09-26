@@ -48,7 +48,7 @@ class Neuron(Package):
 
     variant('mpi',           default=True,  description='Enable MPI parallelism')
     variant('python',        default=True,  description='Enable python')
-    variant('shared',        default=False, description='Build shared libraries')
+    variant('shared',        default=True,  description='Build shared libraries')
     variant('cross-compile', default=False, description='Build for cross-compile environment')
     variant('rx3d',          default=False, description="Enable cython translated 3-d rxd")
     variant('profile',       default=False, description="Enable Tau profiling")

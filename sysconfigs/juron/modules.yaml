@@ -5,6 +5,7 @@ modules:
 
   tcl:
     all:
+      autoload: 'direct'
       suffixes:
           '^openmpi': 'openmpi'
       conflict:
@@ -14,4 +15,4 @@ modules:
           '${PACKAGE}_ROOT': '${PREFIX}'
     hash_length: 4
     naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}'
-    blacklist: ['pdt', 'hdf5', 'zlib', 'autoconf', 'libtool', 'pkg-config', 'cmake', 'automake', 'python']
+    blacklist: ['pdt', 'hdf5', 'zlib', 'autoconf', 'libtool', 'pkg-config', 'cmake', 'automake', 'python', 'flex', 'bison']

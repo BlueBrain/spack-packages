@@ -57,13 +57,8 @@ packages:
         version: [1.8.16]
     zlib:
         version: [1.2.8]
-
     tau:
         variants: ~openmp ~comm ~phase
-
-    neuron:
-        variants: ~python
-
     all:
         compiler: [intel]
         providers:
