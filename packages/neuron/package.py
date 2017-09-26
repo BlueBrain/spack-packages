@@ -52,6 +52,7 @@ class Neuron(Package):
     variant('cross-compile', default=False, description='Build for cross-compile environment')
     variant('rx3d',          default=False, description="Enable cython translated 3-d rxd")
     variant('profile',       default=False, description="Enable Tau profiling")
+    variant('coreneuron',    default=False, description="Patch hh.mod for CoreNEURON compatibility")
 
     depends_on('flex',       type='build')
     depends_on('bison',      type='build')
@@ -72,9 +73,9 @@ class Neuron(Package):
         newpath = 'aclocal -I m4 %s %s' % (pkgconf_inc, libtool_inc)
         filter_file(r'aclocal -I m4', r'%s' % newpath, "build.sh")
 
-        # TODO: for coreneuron, remove GLOBAL and TABLE
-        filter_file(r'GLOBAL minf', r'RANGE minf', 'src/nrnoc/hh.mod')
-        filter_file(r'TABLE minf', r':TABLE minf', "src/nrnoc/hh.mod")
+        if self.spec.satisfies('+coreneuron'):
+            filter_file(r'GLOBAL minf', r'RANGE minf', 'src/nrnoc/hh.mod')
+            filter_file(r'TABLE minf', r':TABLE minf', "src/nrnoc/hh.mod")
 
     def get_arch_options(self, spec):
         options = []
