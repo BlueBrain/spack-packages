@@ -34,12 +34,12 @@ class Coreneuron(CMakePackage):
     version('checkpoint', git=url, branch='checkpoint-restart_prototype')
 
     # development version from bbp
-    version('hdf', git=bbpurl, branch='sandbox/kumbhar/nrnh5')
+    version('hdf',    git=bbpurl, branch='sandbox/kumbhar/nrnh5')
     version('devopt', git=bbpurl, branch='sandbox/kumbhar/dev')
 
     variant('mpi',           default=True,  description="Enable MPI support")
     variant('openmp',        default=True,  description="Enable OpenMP support")
-    variant('neurodamusmod', default=True,  description="Build only MOD files from Neurodamus")
+    variant('neurodamus',    default=True,  description="Build only MOD files from Neurodamus")
     variant('report',        default=True,  description="Enable reports using ReportingLib")
     variant('gpu',           default=False, description="Enable GPU build")
     variant('knl',           default=False, description="Enable KNL specific flags")
@@ -62,8 +62,8 @@ class Coreneuron(CMakePackage):
     depends_on('mod2c@checkpoint', type='build', when='@checkpoint')
 
     # granular dependency selection for neurodamus
-    depends_on('neurodamus@develop~compile', when='+neurodamusmod~gpu')
-    depends_on('neurodamus@gpu~compile', when='+gpu')
+    depends_on('neurodamus@coreneuron~special', when='+neurodamus~gpu')
+    depends_on('neurodamus@gpu~special', when='+gpu')
 
     # neuron models for benchmarking
     depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
@@ -171,7 +171,7 @@ class Coreneuron(CMakePackage):
         if spec.satisfies('@perfmodels'):
             modlib_dir = self.nrnperf_modfiles
             mech_dir_set = True
-        elif spec.satisfies('+neurodamusmod'):
+        elif spec.satisfies('+neurodamus'):
             neurodamus_dir = self.spec['neurodamus'].prefix
             modlib_dir = '%s;%s/lib/modlib' % (modlib_dir, neurodamus_dir)
             modfile_list = '%s/lib/modlib/coreneuron_modlist.txt' % (neurodamus_dir)

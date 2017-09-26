@@ -78,7 +78,7 @@ function install_packages {
 gcc_package_group=(
   'neuron ~shared ~python ~mpi'
   'neuron +shared +python +mpi'
-  'neurodamus@master +compile'
+  'neurodamus@master +special'
   'coreneuron ~mpi'
   'coreneuron +mpi'
   'nest@develop +python'
@@ -88,6 +88,7 @@ gcc_package_group=(
 gcc_intel_pgi_package_group=(
   'neuronperfmodels@neuron'
   'coreneuron@perfmodels +mpi'
+  'coreneuron ~neurodamus +mpi'
   'neuronperfmodels@neuron +profile'
   'coreneuron@perfmodels +profile +mpi'
 )
