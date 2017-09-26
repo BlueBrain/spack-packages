@@ -51,7 +51,7 @@ packages:
         #    hdf5@1.10.0%intel@17.0.0.098 arch=cray-CNL-mic_knl: cray-hdf5/1.10.0
         paths:
             hdf5@1.8.10%cce@8.6.0 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/1.10.0/CRAY/8.6/
-            hdf5@1.8.10%intel@17.0.0.098 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/1.10.0/INTEL/16.0/
+            hdf5@1.8.10%intel@17.0.0.098 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/default/INTEL/16.0/
         buildable: False
         version: [1.10.0]
     zlib:
