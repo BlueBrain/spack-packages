@@ -32,14 +32,13 @@ SOURCE_HOME_DIR=$HOME/workarena/software/sources
 
 
 #### Clone Repository ####
-Clone Spack repository from GitHub. We could use [official repository](https://github.com/LLNL/spack) from LLNL but few modifications have been added to our fork (for existing bugs on some systems like BBP IV BG-Q) and hence we will use following repository:
+Clone Spack repository from GitHub. We could use [official repository](https://github.com/LLNL/spack) from LLNL but few modifications have been added to our fork (for existing bugs on some systems like BBP IV BG-Q) and we test it via Jenkins plan. Hence we will use following fork:
 
 ```bash
 cd $SOURCE_HOME_DIR
 git clone https://github.com/pramodskumbhar/spack.git
 
 cd spack
-git checkout upstream
 
 # if you want to track upstream development branch
 git remote add llnl https://github.com/llnl/spack.git
@@ -993,6 +992,23 @@ As indicated by message *"Due to MODULEPATH changes, the following have been rel
 ![spack lmod av](.images/lmod_llvm_swap_gcc_avail.png)
 
 The same will be the case if we have different mpi and switch to that. Lmod offers rich functionality to make entire workflow easy. You can find more information [here](http://lmod.readthedocs.io/en/latest/).
+
+### Bootstrapping Spack on Ubuntu 16 ###
+
+TODO : Various aspects described in OS X tutorial remains same for Ubuntu. We will add ste-by-step instructions to bootstrap Spack on Ubuntu 16 later.
+
+Here are quick notes:
+
+- To install environmental modules do:
+
+```
+sudo apt-get -y install environment-modules
+echo "source  /etc/profile.d/modules.sh" >> $HOME/.bashrc
+source $HOME/.bashrc
+```
+
+- When we create `packages.yaml` with system installed packages on Ubuntu 16, we have to be careful due to [MultiArch](https://help.ubuntu.com/community/MultiArch) aspect. For example, when we install HDF5 and put path in `packages.yaml` as `/usr`, Spack expects HDF5 libraries to be in `/usr/lib` or `/usr/lib64`. But due to multiarch, `apt-get` installs libraries in `/usr/lib/x86_64-linux-gnu`. And now Spack can't find necessary libraries. For this type of libraries (HDF5, Boost) it would better to install them via Spack.
+
 
 <details>
   <summary>TODO/WIP</summary>
