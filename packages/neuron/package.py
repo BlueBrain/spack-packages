@@ -123,10 +123,11 @@ class Neuron(Package):
                             'PYINCDIR=%s' % py_inc,
                             'PYLIBDIR=%s' % py_lib])
 
-            if spec.satisfies('+cross-compile') or spec.satisfies('~shared') or spec.satisfies('+profile'):
-                options.append('--disable-pysetup')
-            else:
+            if spec.satisfies('~cross-compile'):
                 options.append('PYTHON_BLD=%s' % python_exec)
+
+            if spec.satisfies('+cross-compile') or spec.satisfies('~shared') or spec.satisfies('%pgi'):
+                options.append('--disable-pysetup')
 
             # TODO : neuron has depdendency with backend python as well as front-end
             # while building for python3 we see issue because neuron use python from
