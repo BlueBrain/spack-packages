@@ -44,6 +44,7 @@ class Neurodamus(Package):
     depends_on("hdf5", when='+compile')
     depends_on("zlib", when='+compile')
     depends_on("neuron", when='+compile')
+    depends_on("neuron~shared", when='+compile+profile')
     depends_on("mpi", when='+compile')
     depends_on('reportinglib', when='+compile')
 

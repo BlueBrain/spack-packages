@@ -60,8 +60,8 @@ function install_packages {
             spack spec -I $full_spec
 
             # install package
-            echo " == > INSTALLING PACKAGE : spack install $install_options $full_spec"
-            spack install $install_options $full_spec
+            echo " == > INSTALLING PACKAGE : spack install $opts $full_spec"
+            spack install $opts $full_spec
 
             # if there is no matching package then show build log
             if [[ `spack find $full_spec` == *"No package matches"* ]]; then
@@ -118,7 +118,7 @@ install_packages
 
 
 ########################################## SPACK INSTALL OPTIONS ########################################
-install_options='--dirty --log-format=junit'
+opts='--dirty --show-log-on-error'
 
 
 ############################################ REGISTER PACKAGES ###########################################

@@ -65,10 +65,6 @@ packages:
 
     tau:
         variants: ~openmp ~comm ~phase
-
-    neuron:
-        variants: ~python
-
     all:
         compiler: [xl@14.1]
         providers:

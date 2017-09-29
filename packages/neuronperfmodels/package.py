@@ -33,7 +33,7 @@ class Neuronperfmodels(Package):
     depends_on('reportinglib',  when='@neuron')
     depends_on('reportinglib+profile',  when='@neuron+profile')
     depends_on('neuron', when='@neuron')
-    depends_on('neuron+profile', when='@neuron+profile')
+    depends_on('neuron~shared+profile', when='@neuron+profile')
     depends_on('hdf5', when='@neuron')
     depends_on('zlib', when='@neuron')
     depends_on('mpi', when='@neuron')
