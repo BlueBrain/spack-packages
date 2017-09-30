@@ -1,0 +1,8 @@
+config:
+  install_path_scheme: ${ARCHITECTURE}/${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH:6}
+  install_tree: /marconi/home/userexternal/pkumbhar/HBP/install/knl
+  module_roots:
+    tcl: /marconi/home/userexternal/pkumbhar/HBP/install/knl/tcl
+    lmod: /marconi/home/userexternal/pkumbhar/HBP/install/knl/lmod
+  build_stage:
+    - $spack/var/spack/stage

@@ -53,6 +53,7 @@ class Neuron(Package):
     variant('rx3d',          default=False, description="Enable cython translated 3-d rxd")
     variant('profile',       default=False, description="Enable Tau profiling")
     variant('coreneuron',    default=False, description="Patch hh.mod for CoreNEURON compatibility")
+    variant('knl',           default=False, description="Add KNL specific compiler flags")
 
     depends_on('flex',       type='build')
     depends_on('bison',      type='build')
@@ -148,6 +149,9 @@ class Neuron(Package):
 
         if self.spec.satisfies('%pgi'):
             flags += ' ' + self.compiler.pic_flag
+
+        if self.spec.satisfies('+knl'):
+            flags += ' ' + '-xMIC-AVX512'
 
         return ['CFLAGS=%s' % flags,
                 'CXXFLAGS=%s' % flags]
