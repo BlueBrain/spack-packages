@@ -60,8 +60,8 @@ function install_packages {
             spack spec -I $full_spec
 
             # install package
-            echo " == > INSTALLING PACKAGE : spack install $install_options $full_spec"
-            spack install $install_options $full_spec
+            echo " == > INSTALLING PACKAGE : spack install $opts $full_spec"
+            spack install $opts $full_spec
 
             # if there is no matching package then show build log
             if [[ `spack find $full_spec` == *"No package matches"* ]]; then
@@ -78,7 +78,10 @@ function install_packages {
 gcc_package_group=(
   'neuron ~shared ~python ~mpi'
   'neuron +shared +python +mpi'
-  'neurodamus@master +compile'
+  'neurodamus@master +special'
+  'neurodamus@coreneuron +special'
+  'neurodamus@plasticity +special'
+  'neurodamus@hippocampus +special'
   'coreneuron ~mpi'
   'coreneuron +mpi'
   'nest@develop +python'
@@ -88,6 +91,7 @@ gcc_package_group=(
 gcc_intel_pgi_package_group=(
   'neuronperfmodels@neuron'
   'coreneuron@perfmodels +mpi'
+  'coreneuron ~neurodamus +mpi'
   'neuronperfmodels@neuron +profile'
   'coreneuron@perfmodels +profile +mpi'
 )
@@ -118,7 +122,7 @@ install_packages
 
 
 ########################################## SPACK INSTALL OPTIONS ########################################
-install_options='--dirty --log-format=junit'
+opts='--dirty --show-log-on-error'
 
 
 ############################################ REGISTER PACKAGES ###########################################

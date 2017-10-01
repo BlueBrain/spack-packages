@@ -4,13 +4,13 @@
 # for stable branch we always build all packages
 packages=(
         'mod2c'
-        'coreneuron ~neurodamusmod ~report'
-        'coreneuron ~neurodamusmod ~report ~mpi'
-        'coreneuron ~neurodamusmod ~report ~openmp ~mpi'
-        'neuron@develop +python ^python@3'
-        'neuron@develop +python ^python@2.7'
-        'neuron@develop ~python'
-        'neuron@develop +shared ~mpi'
+        'coreneuron ~neurodamus ~report'
+        'coreneuron ~neurodamus ~report ~openmp ~mpi'
+        'neuron@develop +python +shared ^python@3'
+        'neuron@develop +python +shared ^python@2.7'
+        'neuron@develop +python -shared ^python@2.7'
+        'neuron@develop +python -shared ^python@3'
+        'neuron@develop -python -shared -mpi'
 )
 
 
@@ -39,13 +39,12 @@ do
     spack spec -I $package
 
     # install package
-    (spack install $package; exit 0)
+    spack install --show-log-on-error $package
 
     # check if package installed properly
     if [[ `spack find $package` == *"No package matches"* ]];  then
 
-        echo " == > PACKAGE INSTALLATION CHECK FAILED, BUILD LOG : "
-        cat `spack location $package`/spack-build.out
+        echo " == > PACKAGE INSTALLATION CHECK FAILED!"
         exit 1
 
     fi

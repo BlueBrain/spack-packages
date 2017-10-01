@@ -26,7 +26,7 @@ class Reportinglib(CMakePackage):
     version('develop', git=url, preferred=True)
 
     # temporary version for branch being tested for INCITE
-    version('gather', git=url, branch='sandbox/king/gatherMappingREP-31')
+    version('mapping', git=url, branch='sandbox/king/gatherMappingREP-31')
 
     variant('profile', default=False, description="Enable profiling using Tau")
     variant('static',  default=False, description="Build static library")

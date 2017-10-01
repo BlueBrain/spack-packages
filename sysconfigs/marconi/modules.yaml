@@ -3,9 +3,9 @@ modules:
       - tcl
   tcl:
     all:
-      autoload: 'direct'
       suffixes:
           '^intelmpi': 'intelmpi'
+          '^python': 'python'
       conflict:
           - '${PACKAGE}'
       environment:
@@ -13,4 +13,17 @@ modules:
           '${PACKAGE}_ROOT': '${PREFIX}'
     hash_length: 0
     naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}'
-    blacklist: ['pdt', 'hdf5', 'zlib', 'autoconf', 'libtool', 'pkg-config', 'cmake', 'automake', 'flex', 'bison']
+    blacklist:
+    - 'pdt'
+    - 'hdf5'
+    - 'zlib'
+    - 'autoconf'
+    - 'libtool'
+    - 'pkg-config'
+    - 'cmake'
+    - 'automake'
+    - 'flex'
+    - 'bison'
+    - 'intelmpi'
+    - 'ncurses'
+    - 'python'
