@@ -1,0 +1,29 @@
+modules:
+  enable::
+      - tcl
+  tcl:
+    all:
+      suffixes:
+          '^intelmpi': 'intelmpi'
+          '^python': 'python'
+      conflict:
+          - '${PACKAGE}'
+      environment:
+        set:
+          '${PACKAGE}_ROOT': '${PREFIX}'
+    hash_length: 0
+    naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}'
+    blacklist:
+    - 'pdt'
+    - 'hdf5'
+    - 'zlib'
+    - 'autoconf'
+    - 'libtool'
+    - 'pkg-config'
+    - 'cmake'
+    - 'automake'
+    - 'flex'
+    - 'bison'
+    - 'intelmpi'
+    - 'ncurses'
+    - 'python'
