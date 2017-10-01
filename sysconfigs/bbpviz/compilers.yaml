@@ -62,6 +62,6 @@ compilers:
     paths:
       cc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gcc
       cxx: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/g++
-      f77: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
-      fc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gfortran
+      f77: /nix/store/62b4xd2lhcrmmi6p9f6nbdykr2g29wdr-gfortran-wrapper-4.9.3/bin/gfortran
+      fc: /nix/store/62b4xd2lhcrmmi6p9f6nbdykr2g29wdr-gfortran-wrapper-4.9.3/bin/gfortran
     spec: gcc@4.9.3

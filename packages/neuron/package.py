@@ -48,10 +48,11 @@ class Neuron(Package):
 
     variant('mpi',           default=True,  description='Enable MPI parallelism')
     variant('python',        default=True,  description='Enable python')
-    variant('shared',        default=False, description='Build shared libraries')
+    variant('shared',        default=True,  description='Build shared libraries')
     variant('cross-compile', default=False, description='Build for cross-compile environment')
     variant('rx3d',          default=False, description="Enable cython translated 3-d rxd")
     variant('profile',       default=False, description="Enable Tau profiling")
+    variant('coreneuron',    default=False, description="Patch hh.mod for CoreNEURON compatibility")
 
     depends_on('flex',       type='build')
     depends_on('bison',      type='build')
@@ -72,9 +73,9 @@ class Neuron(Package):
         newpath = 'aclocal -I m4 %s %s' % (pkgconf_inc, libtool_inc)
         filter_file(r'aclocal -I m4', r'%s' % newpath, "build.sh")
 
-        # TODO: for coreneuron, remove GLOBAL and TABLE
-        filter_file(r'GLOBAL minf', r'RANGE minf', 'src/nrnoc/hh.mod')
-        filter_file(r'TABLE minf', r':TABLE minf', "src/nrnoc/hh.mod")
+        if self.spec.satisfies('+coreneuron'):
+            filter_file(r'GLOBAL minf', r'RANGE minf', 'src/nrnoc/hh.mod')
+            filter_file(r'TABLE minf', r':TABLE minf', "src/nrnoc/hh.mod")
 
     def get_arch_options(self, spec):
         options = []
@@ -119,12 +120,14 @@ class Neuron(Package):
                 py_lib = spec['python'].prefix.lib64
 
             options.extend(['--with-nrnpython=%s' % python_exec,
-                            '--disable-pysetup',
                             'PYINCDIR=%s' % py_inc,
                             'PYLIBDIR=%s' % py_lib])
 
             if spec.satisfies('~cross-compile'):
                 options.append('PYTHON_BLD=%s' % python_exec)
+
+            if spec.satisfies('+cross-compile') or spec.satisfies('~shared') or spec.satisfies('%pgi'):
+                options.append('--disable-pysetup')
 
             # TODO : neuron has depdendency with backend python as well as front-end
             # while building for python3 we see issue because neuron use python from
@@ -247,6 +250,12 @@ class Neuron(Package):
     def setup_environment(self, spack_env, run_env):
         arch = self.get_arch_dir()
         run_env.prepend_path('PATH', join_path(self.prefix, arch, 'bin'))
+
+        if self.spec.satisfies('+python'):
+            eggs = find(self.prefix, 'NEURON*egg*')
+            if eggs:
+                site_packages = os.path.dirname(find(self.prefix, 'NEURON*egg*')[0])
+                run_env.prepend_path('PYTHONPATH', site_packages)
 
     def setup_dependent_environment(self, spack_env, run_env, dependent_spec):
         arch = self.get_arch_dir()
