@@ -24,41 +24,40 @@ class Neurodamus(Package):
     homepage = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
     url      = "ssh://bbpcode.epfl.ch/sim/neurodamus/bbp"
 
-    version('master',       git=url)
-    version('develop',      git=url, branch='coreneuronsetup')
-    version('saveupdate',   git=url, branch='sandbox/king/saveupdate')
-
-    # version being tested for incite
-    version('saveupdateIO', git=url, branch='sandbox/king/saveupdate')
-
-    # versions for development of coreneuron
-    version('devopt',       git=url, branch='sandbox/kumbhar/coreneuronsetupopt')
-    version('gpu',          git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
+    version('master',      git=url, preferred=True)
+    version('coreneuron',  git=url, branch='coreneuronsetup')
+    version('hippocampus', git=url, branch='sandbox/king/hippocampus')
+    version('plasticity',  git=url, branch='sandbox/king/saveupdate')
     version('simplification', git=url, branch='sandbox/roessert/MegaPaperCompatibility_simplification')
-    version('parspike',     git=url, branch='sandbox/kumbhar/parspike')
 
-    variant('compile', default=True, description='Compile and create executable using nrnivmodl')
+    # version being tested for incite and coreneuron
+    version('gpu',      git=url, branch='sandbox/kumbhar/coreneuronsetup_gpu')
+    version('parspike', git=url, branch='sandbox/kumbhar/parspike')
+    version('plasticitymapping', git=url, branch='sandbox/king/saveupdate')
+
+    variant('special', default=True, description='Compile & create special using nrnivmodl')
     variant('profile', default=False, description="Enable profiling using Tau")
 
     # basic dependencies
-    depends_on("hdf5", when='+compile')
-    depends_on("zlib", when='+compile')
-    depends_on("neuron", when='+compile')
-    depends_on("neuron~shared", when='+compile+profile')
-    depends_on("mpi", when='+compile')
-    depends_on('reportinglib', when='+compile')
+    depends_on("hdf5",   when='+special')
+    depends_on("zlib",   when='+special')
+    depends_on("neuron", when='+special')
+    depends_on("mpi",    when='+special')
+    depends_on('reportinglib', when='+special')
 
     # when we want to profile
     depends_on('tau', when='+profile')
 
-    # additional neuron version selections
-    depends_on("neuron+profile", when='+compile+profile')
+    # additional neuron variant selections
+    depends_on("neuron~shared+profile", when='+special+profile')
+    depends_on("neuron+coreneuron", when='@coreneuron')
+
     # additional reportinglib selections
-    depends_on('reportinglib@gather', when='@saveupdateIO+compile')
-    depends_on('reportinglib+profile', when='+compile+profile')
+    depends_on('reportinglib@mapping', when='@plasticitymapping+special')
+    depends_on('reportinglib+profile', when='+special+profile')
 
     # develop version is for coreneuron which needs neuron compiled with python
-    conflicts('^neuron~python', when='@develop+compile')
+    conflicts('^neuron~python', when='@coreneuron+special')
 
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):
@@ -72,7 +71,7 @@ class Neurodamus(Package):
         # copy lib directory containing modlib and hoclib
         shutil.copytree('lib', '%s/lib' % (prefix), symlinks=False)
 
-        if spec.satisfies('+compile'):
+        if spec.satisfies('+special'):
             with working_dir(prefix):
                 modlib = 'lib/modlib'
                 extra_flags = ''
@@ -97,13 +96,13 @@ class Neurodamus(Package):
 
     @run_after('install')
     def check_install(self):
-        if self.spec.satisfies('+compile'):
+        if self.spec.satisfies('+special'):
             # after install check if special is created
             special = '%s/special' % join_path(self.prefix, self.nrnarchdir)
             if not os.path.isfile(special):
                 raise RuntimeError("Neurodamus installion check failed!")
 
     def setup_environment(self, spack_env, run_env):
-        if self.spec.satisfies('+compile'):
+        if self.spec.satisfies('+special'):
             run_env.prepend_path('PATH', join_path(self.prefix, self.nrnarchdir))
             run_env.set('HOC_LIBRARY_PATH', join_path(self.prefix, 'lib/hoclib'))

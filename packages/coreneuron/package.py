@@ -27,19 +27,15 @@ class Coreneuron(CMakePackage):
     url      = "https://github.com/BlueBrain/CoreNeuron"
     bbpurl   = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop', git=url, preferred=True)
+    version('develop',    git=url, preferred=True)
+    version('checkpoint', git=url, branch='checkpoint-restart_prototype')
 
     # TODO: same as develop but for legacy reasons
     version('perfmodels', git=url)
-    version('checkpoint', git=url, branch='checkpoint-restart_prototype')
-
-    # development version from bbp
-    version('hdf', git=bbpurl, branch='sandbox/kumbhar/nrnh5')
-    version('devopt', git=bbpurl, branch='sandbox/kumbhar/dev')
 
     variant('mpi',           default=True,  description="Enable MPI support")
     variant('openmp',        default=True,  description="Enable OpenMP support")
-    variant('neurodamusmod', default=True,  description="Build only MOD files from Neurodamus")
+    variant('neurodamus',    default=True,  description="Build only MOD files from Neurodamus")
     variant('report',        default=True,  description="Enable reports using ReportingLib")
     variant('gpu',           default=False, description="Enable GPU build")
     variant('knl',           default=False, description="Enable KNL specific flags")
@@ -47,23 +43,18 @@ class Coreneuron(CMakePackage):
     variant('profile',       default=False, description="Enable profiling using Tau")
 
     # mandatory dependencies
-    depends_on('cmake@2.8.12:', type='build')
-    depends_on('mod2c', type='build')
     depends_on('mpi', when='+mpi')
-    depends_on('reportinglib', when='+report')
     depends_on('cuda', when='+gpu')
     depends_on('boost', when='+tests')
-
-    depends_on('mod2c@devopt', type='build', when='@devopt')
-    depends_on('nrnh5', when='@hdf')
-    depends_on('hdf5', when='@hdf')
-    depends_on('zlib', when='@hdf')
+    depends_on('reportinglib', when='+report')
+    depends_on('cmake@2.8.12:', type='build')
+    depends_on('mod2c', type='build')
 
     depends_on('mod2c@checkpoint', type='build', when='@checkpoint')
 
     # granular dependency selection for neurodamus
-    depends_on('neurodamus@develop~compile', when='+neurodamusmod~gpu')
-    depends_on('neurodamus@gpu~compile', when='+gpu')
+    depends_on('neurodamus@coreneuron~special', when='+neurodamus~gpu')
+    depends_on('neurodamus@gpu~special', when='+gpu')
 
     # neuron models for benchmarking
     depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
@@ -125,13 +116,6 @@ class Coreneuron(CMakePackage):
         else:
             options.append('-DENABLE_REPORTINGLIB=OFF')
 
-        if spec.satisfies('@hdf'):
-            options.extend(['-DENABLE_HDF5=ON',
-                            '-DZLIB_ROOT=%s' % spec['zlib'].prefix,
-                            '-DENABLE_ZLIB_LINK=ON'])
-        else:
-            options.append('-DENABLE_HDF5=OFF')
-
         if spec.satisfies('+mpi'):
             options.append('-DENABLE_MPI=ON')
         else:
@@ -171,7 +155,7 @@ class Coreneuron(CMakePackage):
         if spec.satisfies('@perfmodels'):
             modlib_dir = self.nrnperf_modfiles
             mech_dir_set = True
-        elif spec.satisfies('+neurodamusmod'):
+        elif spec.satisfies('+neurodamus'):
             neurodamus_dir = self.spec['neurodamus'].prefix
             modlib_dir = '%s;%s/lib/modlib' % (modlib_dir, neurodamus_dir)
             modfile_list = '%s/lib/modlib/coreneuron_modlist.txt' % (neurodamus_dir)
