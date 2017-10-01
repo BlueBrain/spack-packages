@@ -5,8 +5,8 @@
 if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
         packages=(
                 'mod2c'
-                'coreneuron ~neurodamusmod ~report'
-                'coreneuron ~neurodamusmod ~report ~mpi'
+                'coreneuron ~neurodamus ~report'
+                'coreneuron ~neurodamus ~report ~mpi'
                 'neuron@develop +python +shared ^python@3'
                 'neuron@develop +python +shared ^python@2.7'
                 'neuron@develop +python -shared ^python@2.7'
@@ -16,8 +16,8 @@ if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then
 # for PRs do minumum builds
 else
         packages=(
-                'coreneuron ~neurodamusmod ~report'
-                'coreneuron ~neurodamusmod ~report ~mpi'
+                'coreneuron ~neurodamus ~report'
+                'coreneuron ~neurodamus ~report ~mpi'
                 'neuron@develop +python +shared ^python@3'
                 'neuron@develop +python +shared ^python@2.7'
                 'neuron@develop +python -shared ^python@2.7'
