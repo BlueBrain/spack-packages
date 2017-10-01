@@ -1,7 +1,8 @@
 packages:
     openmpi:
         modules:
-            openmpi@2.0.2: openmpi/2.0.2-xl
+            openmpi@2.0.2%xl: openmpi/2.0.2-xl
+            openmpi@2.0.2%gcc: openmpi/2.0.2-gcc_5.4.0
         version: [2.0.2]
         buildable: False
     openblas:
