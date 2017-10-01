@@ -27,7 +27,6 @@ class Neurodamus(Package):
     version('master',       git=url)
     version('develop',      git=url, branch='coreneuronsetup')
     version('saveupdate',   git=url, branch='sandbox/king/saveupdate')
-    version('hippocampus',  git=url, branch='sandbox/king/hippocampus')
 
     # version being tested for incite
     version('saveupdateIO', git=url, branch='sandbox/king/saveupdate')
