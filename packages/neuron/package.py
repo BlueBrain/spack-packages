@@ -149,6 +149,11 @@ class Neuron(Package):
         if self.spec.satisfies('%pgi'):
             flags += ' ' + self.compiler.pic_flag
 
+        # NOTE for gcc build on OS X where setup.py uses clang
+        # specific flags during make install
+        env['CFLAGS'] = flags
+        env['CXXFLAGS'] = flags
+
         return ['CFLAGS=%s' % flags,
                 'CXXFLAGS=%s' % flags]
 
