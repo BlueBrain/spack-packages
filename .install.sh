@@ -101,6 +101,10 @@ pgi_gpu_package_group=(
 )
 
 xl_package_group=(
+  'neurodamus@master +special'
+  'neurodamus@coreneuron +special'
+  'neurodamus@plasticity +special'
+  'neurodamus@hippocampus +special'
   'neuronperfmodels@neuron'
   'coreneuron@perfmodels +mpi'
   'neuronperfmodels@neuron +profile'
