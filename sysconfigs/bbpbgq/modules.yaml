@@ -1,0 +1,31 @@
+modules:
+  enable::
+      - tcl
+  tcl:
+    all:
+      suffixes:
+          '^python': 'python'
+          '+profile': 'profile'
+      conflict:
+          - '${PACKAGE}'
+      environment:
+        set:
+          '${PACKAGE}_ROOT': '${PREFIX}'
+      filter:
+        environment_blacklist: ['CPATH', 'LIBRARY_PATH']
+    naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}'
+    hash_length: 4
+    blacklist:
+    - pdt
+    - hdf5
+    - zlib
+    - autoconf
+    - automake
+    - flex
+    - bison
+    - libtool
+    - pkg-config
+    - cmake
+    - python
+    - mpich
+    - neurodamus~special

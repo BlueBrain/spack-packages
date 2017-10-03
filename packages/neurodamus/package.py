@@ -50,7 +50,6 @@ class Neurodamus(Package):
 
     # additional neuron variant selections
     depends_on("neuron~shared+profile", when='+special+profile')
-    depends_on("neuron+coreneuron", when='@coreneuron')
 
     # additional reportinglib selections
     depends_on('reportinglib@mapping', when='@plasticitymapping+special')
