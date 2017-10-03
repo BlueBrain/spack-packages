@@ -1,7 +1,9 @@
 config:
-  install_tree: ~/spack_install/bgq/
+  install_tree: ~/spack_home/install/bgq/
   module_roots:
-    tcl: ~/spack_modules/bgq/tcl/
-    lmod: ~/spack_modules/bgq/lmod/
+    tcl: ~/spack_home/install/bgq/tcl/
+    lmod: ~/spack_home/install/bgq/lmod/
   build_stage:
+    - $tempdir
     - $spack/var/spack/stage
+  install_path_scheme: '${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH:8}'
