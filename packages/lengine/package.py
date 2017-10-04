@@ -33,6 +33,7 @@ class Lengine(CMakePackage):
 
     version('develop', git=url)
 
+
     variant('tests',        default=True,  description="Build the regression tests")
     variant('benchmark',    default=True, description="Enable benchmarks")
     variant('pybinding',    default=True, description="Enable Python Binding")
@@ -91,7 +92,12 @@ class Lengine(CMakePackage):
             args.append('-DLEARNING_ENGINE_BENCHMARK=OFF')
 
         if spec.satisfies('+pybinding'):
-            args.append('-DLEARNING_ENGINE_PYTHON_BINDING=ON')
+            py_exe = spec['python'].command.path
+            py_inc = spec['python'].headers.directories[0]
+            py_version = spec['python'].version.up_to(2)
+            args.extend(['-DLEARNING_ENGINE_PYTHON_BINDING=ON',
+			 '-DPYTHON_EXECUTABLE=%s' % py_exe,
+			 '-DPython_ADDITIONAL_VERSIONS=%s' % py_version])
         else:
             args.append('-DLEARNING_ENGINE_PYTHON_BINDING=OFF')
 
@@ -117,5 +123,12 @@ class Lengine(CMakePackage):
         return args
 
     def setup_environment(self, spack_env, run_env):
-        docs = '%s/docs'% self.prefix
-        run_env.set('LE_DOCS', docs)
+        if self.spec.satisfies('+pybinding'):
+            pypath = self.prefix.lib64
+            if pypath:
+                pypath= self.prefix.lib
+            run_env.prepend_path('PYTHONPATH', pypath)
+
+        if self.spec.satisfies('+docs'):
+            docs = '%s/docs'% self.prefix
+            run_env.set('LE_DOCS', docs)
