@@ -53,8 +53,8 @@ packages:
     python:
         paths:
             python@2.7.12: /System/Library/Frameworks/Python.framework/Versions/2.7
-            python@3.6.2: /usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6
-        version: [2.7.12, 3.6.2]
+            python@3.6: /usr/local/opt/python3
+        version: [2.7.12, 3.6]
         buildable: False
     gsl:
         paths:
