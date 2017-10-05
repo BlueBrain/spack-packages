@@ -75,9 +75,9 @@ packages:
     python:
         paths:
             python@2.7.10: /System/Library/Frameworks/Python.framework/Versions/2.7
-            python@3.6.2: /usr/local/Cellar/python3/3.6.2/Frameworks/Python.framework/Versions/3.6
+            python@3.6: /usr/local/opt/python3
         buildable: False
-        version: [2.7.10, 3.6.2]
+        version: [2.7.10, 3.6]
 
     hdf5:
         paths:
