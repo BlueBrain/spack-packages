@@ -89,11 +89,11 @@ gcc_package_group=(
 )
 
 gcc_intel_pgi_package_group=(
+  'neuronperfmodels@neuron +profile'
+  'coreneuron@perfmodels +profile +mpi'
   'neuronperfmodels@neuron'
   'coreneuron@perfmodels +mpi'
   'coreneuron ~neurodamus +mpi'
-  'neuronperfmodels@neuron +profile'
-  'coreneuron@perfmodels +profile +mpi'
 )
 
 pgi_gpu_package_group=(
@@ -101,14 +101,14 @@ pgi_gpu_package_group=(
 )
 
 xl_package_group=(
+  'neuronperfmodels@neuron +profile'
+  'coreneuron@perfmodels +profile +mpi'
   'neurodamus@master +special'
   'neurodamus@coreneuron +special'
   'neurodamus@plasticity +special'
   'neurodamus@hippocampus +special'
   'neuronperfmodels@neuron'
   'coreneuron@perfmodels +mpi'
-  'neuronperfmodels@neuron +profile'
-  'coreneuron@perfmodels +profile +mpi'
 )
 
 
@@ -126,21 +126,21 @@ install_packages
 
 
 ########################################## SPACK INSTALL OPTIONS ########################################
-opts='--dirty --show-log-on-error'
+opts='--show-log-on-error'
 
 
 ############################################ REGISTER PACKAGES ###########################################
 if $viz_cluster; then
-    mpis['gcc']='mvapich2'
     mpis['intel']='intelmpi'
     mpis['pgi']='mpich'
+    mpis['gcc']='mvapich2'
+
+    compilers=('intel' 'pgi' 'gcc')
+    packages=( "${gcc_intel_pgi_package_group[@]}" )
+    install_packages
 
     compilers=('gcc')
     packages=( "${gcc_package_group[@]}" )
-    install_packages
-
-    compilers=('gcc' 'intel' 'pgi')
-    packages=( "${gcc_intel_pgi_package_group[@]}" )
     install_packages
 
     compilers=('pgi')
