@@ -1,5 +1,14 @@
 #!/bin/bash
 
+NEW_WORKSPACE=/gpfs/bbp.cscs.ch/scratch/gss/viz/kumbhar/JENKINS/$platform
+mkdir -p $NEW_WORKSPACE
+
+cp -r . $NEW_WORKSPACE/
+export WORKSPACE=$NEW_WORKSPACE
+
+cd $WORKSPACE
+
+
 ################################ SETUP BUILD ENVIRONMENT ################################
 cd $WORKSPACE
 mkdir -p $WORKSPACE/BUILD_HOME
@@ -37,12 +46,14 @@ then
     mkdir -p  $SPACK_ROOT/etc/spack/defaults/linux/
     cp sysconfigs/bbpviz/packages.yaml $SPACK_ROOT/etc/spack/defaults/linux/
     cp sysconfigs/bbpviz/compilers.yaml $SPACK_ROOT/etc/spack/defaults/linux/
+    spack install -v --keep-stage tau %intel
 else
     mkdir -p  $SPACK_ROOT/etc/spack/defaults/bgq/
     cp sysconfigs/bbpbgq/packages.yaml $SPACK_ROOT/etc/spack/defaults/bgq/
     cp sysconfigs/bbpbgq/compilers.yaml $SPACK_ROOT/etc/spack/defaults/bgq/
+    spack install -v --keep-stage tau %xl
 fi
 
 
 ################################# START PACKAGE INSTALLATION ##############################
-./.install.sh $platform
+# ./.install.sh $platform
