@@ -1,15 +1,5 @@
 #!/bin/bash
 
-NEW_WORKSPACE=/gpfs/bbp.cscs.ch/scratch/gss/viz/kumbhar/JENKINS/$platform
-mkdir -p $NEW_WORKSPACE
-rm -rf $NEW_WORKSPACE/*
-
-cp -r . $NEW_WORKSPACE/
-export WORKSPACE=$NEW_WORKSPACE
-
-cd $WORKSPACE
-
-
 ################################ SETUP BUILD ENVIRONMENT ################################
 cd $WORKSPACE
 mkdir -p $WORKSPACE/BUILD_HOME
