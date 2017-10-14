@@ -27,11 +27,11 @@ class Coreneuron(CMakePackage):
     url      = "https://github.com/BlueBrain/CoreNeuron"
     bbpurl   = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop',    git=url, preferred=True)
+    version('develop',    git=url, preferred=True, submodules=True)
     version('checkpoint', git=url, branch='checkpoint-restart_prototype')
 
     # TODO: same as develop but for legacy reasons
-    version('perfmodels', git=url)
+    version('perfmodels', git=url, submodules=True)
 
     variant('mpi',           default=True,  description="Enable MPI support")
     variant('openmp',        default=True,  description="Enable OpenMP support")
@@ -48,8 +48,6 @@ class Coreneuron(CMakePackage):
     depends_on('boost', when='+tests')
     depends_on('reportinglib', when='+report')
     depends_on('cmake@2.8.12:', type='build')
-    depends_on('mod2c', type='build')
-
     depends_on('mod2c@checkpoint', type='build', when='@checkpoint')
 
     # granular dependency selection for neurodamus

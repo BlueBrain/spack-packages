@@ -92,8 +92,8 @@ gcc_intel_pgi_package_group=(
   'neuronperfmodels@neuron'
   'coreneuron@perfmodels +mpi'
   'coreneuron ~neurodamus +mpi'
-  'neuronperfmodels@neuron +profile'
-  'coreneuron@perfmodels +profile +mpi'
+  #'neuronperfmodels@neuron +profile'
+  #'coreneuron@perfmodels +profile +mpi'
 )
 
 pgi_gpu_package_group=(
@@ -107,8 +107,8 @@ xl_package_group=(
   'neurodamus@hippocampus +special'
   'neuronperfmodels@neuron'
   'coreneuron@perfmodels +mpi'
-  'neuronperfmodels@neuron +profile'
-  'coreneuron@perfmodels +profile +mpi'
+  #'neuronperfmodels@neuron +profile'
+  #'coreneuron@perfmodels +profile +mpi'
 )
 
 
