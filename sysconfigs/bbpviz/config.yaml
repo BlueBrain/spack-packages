@@ -1,9 +1,3 @@
 config:
-  install_tree: ~/spack_home/install/viz/
-  module_roots:
-    tcl: ~/spack_home/install/viz/tcl/
-    lmod: ~/spack_home/install/viz/lmod/
   build_stage:
-    - $tempdir
     - $spack/var/spack/stage
-  install_path_scheme: '${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH:8}'
