@@ -29,6 +29,7 @@ class Coreneuron(CMakePackage):
 
     version('develop',    git=url, preferred=True, submodules=True)
     version('checkpoint', git=url, branch='checkpoint-restart_prototype')
+    version('vtune', git=url, branch='profiler_support')
 
     # TODO: same as develop but for legacy reasons
     version('perfmodels', git=url, submodules=True)
@@ -41,6 +42,7 @@ class Coreneuron(CMakePackage):
     variant('knl',           default=False, description="Enable KNL specific flags")
     variant('tests',         default=False, description="Enable building tests")
     variant('profile',       default=False, description="Enable profiling using Tau")
+    variant('vtune',         default=False, description="Enable selective profiling using Intel vtune")
 
     # mandatory dependencies
     depends_on('mpi', when='+mpi')
@@ -60,6 +62,11 @@ class Coreneuron(CMakePackage):
     # granular dependency selection for profiling
     depends_on('tau', when='+profile')
     depends_on('reportinglib+profile', when='+report+profile')
+
+    @run_before('cmake')
+    def init_submodules(self):
+      from subprocess import call
+      call(["git", "submodule","update","--init","--remote"])
 
     @run_before('build')
     def profiling_wrapper_on(self):
@@ -113,6 +120,16 @@ class Coreneuron(CMakePackage):
             options.append('-DENABLE_REPORTINGLIB=ON')
         else:
             options.append('-DENABLE_REPORTINGLIB=OFF')
+
+        if spec.satisfies('+vtune') or spec.satisfies('@vtune'):
+            options.extend(['-DENABLE_VTUNE=ON'])
+
+        if spec.satisfies('@hdf'):
+            options.extend(['-DENABLE_HDF5=ON',
+                            '-DZLIB_ROOT=%s' % spec['zlib'].prefix,
+                            '-DENABLE_ZLIB_LINK=ON'])
+        else:
+            options.append('-DENABLE_HDF5=OFF')
 
         if spec.satisfies('+mpi'):
             options.append('-DENABLE_MPI=ON')
