@@ -47,7 +47,7 @@ class Coreneuron(CMakePackage):
     depends_on('cuda', when='+gpu')
     depends_on('boost', when='+tests')
     depends_on('reportinglib', when='+report')
-    depends_on('cmake@2.8.12:', type='build')
+    depends_on('cmake@3:', type='build')
     depends_on('mod2c@checkpoint', type='build', when='@checkpoint')
 
     # granular dependency selection for neurodamus
@@ -78,7 +78,7 @@ class Coreneuron(CMakePackage):
             flags = '-O3 -qtune=qp -qarch=qp -q64 -qhot=simd -qsmp -qthreaded -g'
 
         if self.spec.satisfies('+knl') and '%intel' in self.spec:
-            flags = '-g -xMIC-AVX512 -O3 -qopt-report=5'
+            flags = '-g -xMIC-AVX512 -O2 -qopt-report=5'
 
         return flags
 
