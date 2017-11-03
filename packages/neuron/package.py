@@ -53,6 +53,7 @@ class Neuron(Package):
     variant('rx3d',          default=False, description="Enable cython translated 3-d rxd")
     variant('profile',       default=False, description="Enable Tau profiling")
     variant('coreneuron',    default=False, description="Patch hh.mod for CoreNEURON compatibility")
+    variant('knl',           default=False, description="Enable KNL specific flags")
 
     depends_on('flex',       type='build')
     depends_on('bison',      type='build')
@@ -146,6 +147,9 @@ class Neuron(Package):
         if 'bgq' in self.spec.architecture:
             flags = '-O3 -qtune=qp -qarch=qp -q64 -qstrict -qnohot -g'
 
+        if self.spec.satisfies('+knl') and '%intel' in self.spec:
+            flags = '-g -xMIC-AVX512 -O2 -qopt-report=5'
+
         if self.spec.satisfies('%pgi'):
             flags += ' ' + self.compiler.pic_flag
 
@@ -218,17 +222,18 @@ class Neuron(Package):
 							'CC=%s' % 'tau_cc',
 							'CXX=%s' % 'tau_cxx'])
 
-        options.extend(self.get_arch_options(spec))
-        options.extend(self.get_python_options(spec))
-        options.extend(self.get_compiler_options(spec))
-
         build = Executable('./build.sh')
         build()
 
         with working_dir('build', create=True):
             if spec.satisfies('+cross-compile'):
                 self.build_nmodl(spec, prefix)
+
+            options.extend(self.get_arch_options(spec))
+            options.extend(self.get_python_options(spec))
+            options.extend(self.get_compiler_options(spec))
             srcpath = self.stage.source_path
+
             configure = Executable(join_path(srcpath, 'configure'))
             configure(*options)
             self.profiling_wrapper_on()

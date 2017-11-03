@@ -1,0 +1,7 @@
+config:
+  install_tree: ~/HBP/julia/install
+  module_roots:
+    tcl: ~/HBP/julia/modules
+  build_stage:
+    - $spack/var/spack/stage
+  install_path_scheme: ${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH:6}

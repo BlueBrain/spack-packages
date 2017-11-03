@@ -1,12 +1,12 @@
 packages:
     intelmpi:
         modules:
-            intelmpi@5.1.3: intel-impi/5.1.3
+            intelmpi@5.1.3: intel-impi/2017.1.132
         version: [5.1.3]
         buildable: False
     mvapich2:
         modules:
-            mvapich2@2.2: mvapich2_ics/2.2rc1
+            mvapich2@2.2: mvapich2/2.3b
         version: [2.2]
         buildable: False
     cmake:
@@ -51,7 +51,7 @@ packages:
         buildable: False
     hdf5:
         paths:
-            hdf5@1.8.16%intel: /global/hdf5/1.8.16/intel-16
+            hdf5@1.8.16%intel: /cm/shared/global/opt/hdf5/hdf5-1.8.17_intel-impi_gcc-6.1.0_serial/
         variants: ~fortran ~cxx
         buildable: False
         version: [1.8.16]
