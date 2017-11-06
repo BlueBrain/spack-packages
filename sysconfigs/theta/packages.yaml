@@ -1,10 +1,9 @@
 packages:
     mpich:
         paths:
-            mpich@7.6.0%cce@8.6.0 arch=cray-CNL-mic_knl: /opt/cray/pe/mpt/7.6.0/gni/mpich-intel/16.0
-            mpich@7.6.0%intel@17.0.0.098 arch=cray-CNL-mic_knl: /opt/cray/pe/mpt/7.6.0/gni/mpich-intel/16.0
+            mpich@7.6.0: /opt/cray/pe/mpt/7.6.0/gni/mpich-intel/16.0
         buildable: False
-        version: [3.2]
+        version: [7.6.0]
     autoconf:
         paths:
             autoconf@system: /usr
@@ -51,7 +50,7 @@ packages:
         #    hdf5@1.10.0%intel@17.0.0.098 arch=cray-CNL-mic_knl: cray-hdf5/1.10.0
         paths:
             hdf5@1.8.10%cce@8.6.0 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/1.10.0/CRAY/8.6/
-            hdf5@1.8.10%intel@17.0.0.098 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/default/INTEL/16.0/
+            hdf5@1.8.10%intel@17.0.0.098 arch=cray-CNL-mic_knl: /opt/cray/pe/hdf5/1.10.0/INTEL/16.0/
         buildable: False
         version: [1.10.0]
     zlib:
@@ -69,7 +68,7 @@ packages:
     reportinglib:
         variants: +static
 
-    all:
-        compiler: [intel@17.0.0.098, cce@8.6.0]
-        providers:
-            mpi: [mpich@7.6.0]
+    #all:
+    #    compiler: [intel@17.0.0.098, cce@8.6.0]
+    #    providers:
+    #        mpi: [mpich@7.6.0]
