@@ -52,6 +52,7 @@ class Syntool(CMakePackage):
     variant('mpi', default=True, description="Enable MPI backend")
 
     depends_on('hdf5')
+    depends_on('highfive@develop')
     depends_on('boost@1.55:')
     depends_on('python')
     depends_on('mpi', when='+mpi')
