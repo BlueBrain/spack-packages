@@ -25,7 +25,7 @@
 import os
 import sys
 from spack import *
-
+from spack.operating_systems.mac_os import macOS_version
 
 class Neuron(Package):
 
@@ -73,9 +73,18 @@ class Neuron(Package):
         newpath = 'aclocal -I m4 %s %s' % (pkgconf_inc, libtool_inc)
         filter_file(r'aclocal -I m4', r'%s' % newpath, "build.sh")
 
+        # patch hh.mod to be compatible with coreneuron
         if self.spec.satisfies('+coreneuron'):
             filter_file(r'GLOBAL minf', r'RANGE minf', 'src/nrnoc/hh.mod')
             filter_file(r'TABLE minf', r':TABLE minf', "src/nrnoc/hh.mod")
+
+        # python header path changed on highsierra
+        if sys.platform == 'darwin' and macOS_version() >= Version('10.13'):
+            files = ['src/nrnpython/grids.c',
+                     'src/nrnpython/grids.h',
+                     'src/nrnpython/rxd.c',
+                     'src/nrnpython/rxd_vol.c']
+            filter_file(r'<Python/Python.h>', r'<Python.h>', *files)
 
     def get_arch_options(self, spec):
         options = []
