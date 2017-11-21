@@ -5,6 +5,12 @@ modules:
     all:
       suffixes:
           '^python': 'python'
+          'fabrics=mrail': 'mrail'
+          'fabrics=nemesisibtcp': 'nemesisibtcp'
+          'threads=single': 'single'
+          'threads=multiple': 'multiple'
+          '^mvapich2 threads=single': 'mvapich-single'
+          '^mvapich2 threads=multiple': 'mvapich-multiple'
       conflict:
           - '${PACKAGE}'
       environment:
