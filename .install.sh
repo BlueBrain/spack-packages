@@ -126,7 +126,7 @@ install_packages
 
 
 ########################################## SPACK INSTALL OPTIONS ########################################
-opts='--dirty --show-log-on-error'
+opts='--show-log-on-error --keep-stage'
 
 
 ############################################ REGISTER PACKAGES ###########################################
