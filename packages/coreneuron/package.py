@@ -78,7 +78,7 @@ class Coreneuron(CMakePackage):
             flags = '-O3 -qtune=qp -qarch=qp -q64 -qhot=simd -qsmp -qthreaded -g'
 
         if self.spec.satisfies('+knl') and '%intel' in self.spec:
-            flags = '-g -xmic-avx512 -O3 -qopt-report=5'
+            flags = '-g -xMIC-AVX512 -O3 -qopt-report=5'
 
         return flags
 

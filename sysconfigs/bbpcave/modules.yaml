@@ -1,0 +1,41 @@
+modules:
+  enable::
+      - tcl
+  tcl:
+    all:
+      suffixes:
+          '^python': 'python'
+          'fabrics=mrail': 'mrail'
+          'fabrics=nemesisibtcp': 'nemesisibtcp'
+          'threads=single': 'single'
+          'threads=multiple': 'multiple'
+          '^mvapich2 threads=single': 'mvapich-single'
+          '^mvapich2 threads=multiple': 'mvapich-multiple'
+      conflict:
+          - '${PACKAGE}'
+      environment:
+        set:
+          '${PACKAGE}_ROOT': '${PREFIX}'
+      filter:
+        environment_blacklist: ['CPATH', 'LIBRARY_PATH']
+    naming_scheme: '${PACKAGE}/${VERSION}-${COMPILERNAME}-${COMPILERVER}'
+    hash_length: 0
+    mvapich2:
+      environment:
+        set:
+          MV2_ENABLE_AFFINITY: 0
+          MV2_SMP_USE_CMA: 0
+    ^mvapich2:
+      autoload: 'direct'
+    blacklist:
+    - autoconf
+    - automake
+    - flex
+    - bison
+    - pkg-config
+    - cmake
+    - python
+    - zlib
+    - tcl
+    - libpciaccess
+    - environment-modules

@@ -1,0 +1,54 @@
+packages:
+    cmake:
+        paths:
+            cmake@3.5.1: /usr
+        version: [3.5.1]
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@2.69: /usr
+        buildable: False
+        version: [2.69]
+    flex:
+        paths:
+            flex@2.6.0: /usr
+        buildable: False
+        version: [2.6.0]
+    bison:
+        paths:
+            bison@3.0.4: /usr
+        buildable: False
+        version: [3.0.4]
+    automake:
+        paths:
+            automake@1.15: /usr
+        buildable: False
+        version: [1.15]
+    libpciaccess:
+        paths:
+            libpciaccess@0.13.5: /usr
+        buildable: False
+        version: [0.13.5]
+    pkg-config:
+        paths:
+            pkg-config@0.29.1: /usr
+        buildable: False
+        version: [0.29.1]
+    python:
+        paths:
+            python@2.7.12: /usr
+        version: [2.7.12]
+    zlib:
+        paths:
+            zlib@1.2.8: /usr
+        version: [1.2.8]
+        buildable: False
+    tcl:
+        paths:
+            tcl@8.6: /usr
+        version: [8.6]
+        buildable: False
+    all:
+        compiler: [gcc]
+        providers:
+            mpi: [mvapich2]

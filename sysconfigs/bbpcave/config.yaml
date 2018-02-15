@@ -1,0 +1,9 @@
+config:
+  install_tree: ~/spack_home/install/cave/
+  module_roots:
+    tcl: ~/spack_home/install/cave/tcl/
+    lmod: ~/spack_home/install/cave/lmod/
+  build_stage:
+    - $tempdir
+    - $spack/var/spack/stage
+  install_path_scheme: '${COMPILERNAME}-${COMPILERVER}/${PACKAGE}-${VERSION}-${HASH:8}'
