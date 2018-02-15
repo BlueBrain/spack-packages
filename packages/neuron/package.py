@@ -39,6 +39,7 @@ class Neuron(Package):
     homepage = "https://www.neuron.yale.edu/"
     url      = "http://www.neuron.yale.edu/ftp/neuron/versions/v7.5/nrn-7.5.tar.gz"
     github   = "https://github.com/nrnhines/nrn"
+    github   = "https://github.com/pramodskumbhar/nrn"
 
     version('7.5', '1641ae7a7cd02728e5ae4c8aa93b3749')
     version('7.4', '2c0bbee8a9e55d60fa26336f4ab7acbf')

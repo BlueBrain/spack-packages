@@ -26,8 +26,8 @@ class Neurodamus(Package):
 
     version('master',      git=url, preferred=True)
     version('coreneuron',  git=url, branch='coreneuronsetup')
-    version('hippocampus', git=url, branch='sandbox/king/hippocampus')
-    version('plasticity',  git=url, branch='sandbox/king/saveupdate')
+    version('hippocampus', git=url, branch='sandbox/kumbhar/hippocampus')
+    version('plasticity',  git=url, branch='sandbox/kumbhar/saveupdate_v6support')
     version('simplification', git=url, branch='sandbox/roessert/MegaPaperCompatibility_simplification')
 
     # version being tested for incite and coreneuron
