@@ -180,7 +180,8 @@ class Neuronperfmodels(Package):
             ringtest_exe = '%s/%s/bin/nrniv' % (self.spec['neuron'].prefix, archdir)
             tqperf_exe = '%s/tqperf/%s/special' % (prefix, archdir)
             nrnperf_exe = '%s/%s/special' % (prefix, archdir)
-            pythonpath = "%s/tqperf" % prefix
+            tqperf_pythonpath = "%s/tqperf" % prefix
+            ring_pythonpath = "%s/ringtest" % prefix
 
             neurodamus_hoc_path = '%s/neurodamus/lib/hoclib' % prefix
             traub_hoc_path = '%s/nrntraub:%s/nrntraub/hoc' % (prefix, prefix)
@@ -196,7 +197,8 @@ class Neuronperfmodels(Package):
             run_env.set('NRNPERF_EXE', nrnperf_exe)
 
             run_env.set('BLUECONFIG', blueconfig)
-            run_env.prepend_path('PYTHONPATH', pythonpath)
+            run_env.prepend_path('PYTHONPATH', tqperf_pythonpath)
+            run_env.prepend_path('PYTHONPATH', ring_pythonpath)
 
             run_env.set('BBP_HOC_PATH', neurodamus_hoc_path)
             run_env.set('TRAUB_HOC_PATH', traub_hoc_path)
