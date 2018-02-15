@@ -28,6 +28,8 @@ class Coreneuron(CMakePackage):
     bbpurl   = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
     version('develop',    git=url, preferred=True, submodules=True)
+    version('hippocampus',git=url, preferred=True, submodules=True)
+    version('plasticity', git=url, preferred=True, submodules=True)
     version('checkpoint', git=url, branch='checkpoint-restart_prototype')
 
     # TODO: same as develop but for legacy reasons
@@ -51,8 +53,10 @@ class Coreneuron(CMakePackage):
     depends_on('mod2c@checkpoint', type='build', when='@checkpoint')
 
     # granular dependency selection for neurodamus
-    depends_on('neurodamus@coreneuron~special', when='+neurodamus~gpu')
     depends_on('neurodamus@gpu~special', when='+gpu')
+    depends_on('neurodamus@plasticity~special', when='@plasticity+neurodamus~gpu')
+    depends_on('neurodamus@hippocampus~special', when='@hippocampus+neurodamus~gpu')
+    depends_on('neurodamus@coreneuron~special', when='@develop+neurodamus~gpu')
 
     # neuron models for benchmarking
     depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
