@@ -107,12 +107,14 @@ Ca_LVA.c
 Ca_LVAs.c
 Ca_LVAst.c
 cacum_hip.c
+CaDynamics_DC0.c
 CaDynamics_DC0_hip.c
 CaDynamics_DC1.c
 CaDynamics_DC2.c
 CaDynamics_DC_hip.c
 CaDynamics_E.c
 CaDynamics_E2.c
+CaDynamics_E3.c
 cagk_hip.c
 cahva_hip.c
 cal_hip.c
@@ -249,9 +251,11 @@ ALU.c
 ASCIIrecord.c
 BinReportHelper.c
 BinReports.c
+SpikeWriter.c
 BK.c
 Ca.c
 Ca_HVA.c
+Ca_HVA2.c
 Ca_LVA.c
 Ca_LVAs.c
 Ca_LVAst.c
@@ -294,6 +298,7 @@ HHK3.c
 HHK_MC.c
 Ih.c
 Im.c
+IM2.c
 ISynAMPAEx.c
 ISynNMDAEx.c
 K_P.c
@@ -353,6 +358,7 @@ Nap_Et2.c
 NaTa_t.c
 NaTaxon.c
 NaTg.c
+NaTg2.c
 NaTs.c
 NaTs2_t.c
 Nav1_6.c
@@ -377,10 +383,31 @@ SKv3_1t.c
 StdpWADoublet.c
 StdpWATriplet.c
 StochKv.c
+StochKv2.c
+StochKv3.c
 tmgExSyn.c
 tmgInhSyn.c
 traub.c
 TTXDynamicsSwitch.c
+KahpM95.c
+cacumm.c
+cagk.c
+cal2.c
+can2.c
+cat.c
+h.c
+kadist.c
+kaprox.c
+kca.c
+kd.c
+kd2.c
+kdb.c
+kdrbca1.c
+kdrca1.c
+km.c
+kmb.c
+na3n.c
+naxn.c
 utility.c
 VecStim.c
 xtra.c
@@ -502,6 +529,13 @@ vecevent.c
 halfgap.c
 invlfire.c
 ProfileHelper.c
+khh.c
+nahh.c
+if3.c
+khh.c
+nahh.c
+intfirecur.c
+spikeout.c
 END_FILE_INCLUDE_LIST
 
 BEGIN_INCLUDE_LIST
@@ -542,7 +576,6 @@ BEGIN_INCLUDE_LIST
  int nrnmpi_bgp_single_advance(NRNMPI_Spike *) C
  void nrnmpi_send_doubles(double *, int, int, int) C
  void nrnmpi_postrecv_doubles(double *, int, int, int, void **) C
- void NetParEvent::send(double, NetCvode *, NrnThread *)
  void nrn_promote() C
  void nrnmpi_bgp_multisend(NRNMPI_Spike *, int, int *) C
 
@@ -559,7 +592,11 @@ void nrn_setup(const char *, const char *, int, int) C
 void *setup_tree_matrix_minimal(NrnThread *) C
 void nrn_rhs(NrnThread *) C
 void nrn_solve_minimal(NrnThread *) C
+void triang(NrnThread *) C
+void bksub(NrnThread *) C
 void output_spikes(const char *)
+void nrn_lhs(NrnThread *) C
+void update(NrnThread *) C
 void deliver_net_events(NrnThread *) C
 void nrn_deliver_events(NrnThread *) C
 void nrn_spike_exchange(NrnThread *) C
@@ -571,14 +608,12 @@ int savestate__BinReportHelper() C
 int restorestate__BinReportHelper() C
 void _net_receive__BinReportHelper(Point_process*, double*, double) C
 
+
 # for ReportingLib
 int AllReports::flush(double)
 int Report::flush(double)
 int AllReports::recData(double)
 int Report::recData(double)
-bool Report::isDueToReport(double)
-bool Report::isDueToReport(double)
-bool AllReports::isEmpty()
 int CellData::fillMapping(float *, int)
 
 END_INCLUDE_LIST

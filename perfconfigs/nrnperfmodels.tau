@@ -107,12 +107,14 @@ Ca_LVA.c
 Ca_LVAs.c
 Ca_LVAst.c
 cacum_hip.c
+CaDynamics_DC0.c
 CaDynamics_DC0_hip.c
 CaDynamics_DC1.c
 CaDynamics_DC2.c
 CaDynamics_DC_hip.c
 CaDynamics_E.c
 CaDynamics_E2.c
+CaDynamics_E3.c
 cagk_hip.c
 cahva_hip.c
 cal_hip.c
@@ -253,6 +255,7 @@ SpikeWriter.c
 BK.c
 Ca.c
 Ca_HVA.c
+Ca_HVA2.c
 Ca_LVA.c
 Ca_LVAs.c
 Ca_LVAst.c
@@ -295,6 +298,7 @@ HHK3.c
 HHK_MC.c
 Ih.c
 Im.c
+IM2.c
 ISynAMPAEx.c
 ISynNMDAEx.c
 K_P.c
@@ -354,6 +358,7 @@ Nap_Et2.c
 NaTa_t.c
 NaTaxon.c
 NaTg.c
+NaTg2.c
 NaTs.c
 NaTs2_t.c
 Nav1_6.c

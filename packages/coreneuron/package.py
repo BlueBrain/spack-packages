@@ -27,13 +27,12 @@ class Coreneuron(CMakePackage):
     url      = "https://github.com/BlueBrain/CoreNeuron"
     bbpurl   = "ssh://bbpcode.epfl.ch/sim/coreneuron"
 
-    version('develop',    git=url, preferred=True, submodules=True)
-    version('hippocampus',git=url, preferred=True, submodules=True)
-    version('plasticity', git=url, preferred=True, submodules=True)
-    version('checkpoint', git=url, branch='checkpoint-restart_prototype')
+    version('develop',    git=url, submodules=True)
+    version('hippocampus',git=url, branch='report_checkpoint', submodules=True)
+    version('plasticity', git=url, branch='report_checkpoint', submodules=True, preferred=True)
 
     # TODO: same as develop but for legacy reasons
-    version('perfmodels', git=url, submodules=True)
+    version('perfmodels', git=url, branch='report_checkpoint', submodules=True)
 
     variant('mpi',           default=True,  description="Enable MPI support")
     variant('openmp',        default=True,  description="Enable OpenMP support")
@@ -63,6 +62,8 @@ class Coreneuron(CMakePackage):
 
     # granular dependency selection for profiling
     depends_on('tau', when='+profile')
+    depends_on('tau~openmp', when='+profile~openmp')
+    depends_on('tau+openmp', when='+profile+openmp')
     depends_on('reportinglib+profile', when='+report+profile')
 
     @run_before('build')
@@ -79,7 +80,7 @@ class Coreneuron(CMakePackage):
         flags = "-g -O2"
 
         if 'bgq' in self.spec.architecture and '%xl' in self.spec:
-            flags = '-O3 -qtune=qp -qarch=qp -q64 -qhot=simd -qsmp -qthreaded -g'
+            flags = '-O3 -qtune=qp -qarch=qp -q64 -qhot=simd -qthreaded -g'
 
         if self.spec.satisfies('+knl') and '%intel' in self.spec:
             flags = '-g -xMIC-AVX512 -O3 -qopt-report=5'
@@ -93,10 +94,14 @@ class Coreneuron(CMakePackage):
         if spec.satisfies('+profile'):
             env['CC']  = 'tau_cc'
             env['CXX'] = 'tau_cxx'
+            optflag += ' -DENABLE_SELECTIVE_PROFILING -DTAU'
         # for bg-q, our cmake needs mpi compilers as c, cxx compiler
         elif 'bgq' in spec.architecture and spec.satisfies('+mpi'):
             env['CC']  = spec['mpi'].mpicc
             env['CXX'] = spec['mpi'].mpicxx
+        else:
+            env['CC']  = self.compiler.cc
+            env['CXX'] = self.compiler.cxx
 
         options = ['-DCOMPILE_LIBRARY_TYPE=STATIC',
                    '-DCMAKE_C_FLAGS=%s' % optflag,

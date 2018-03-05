@@ -46,6 +46,11 @@ BEGIN_INCLUDE_LIST
  void nrnmpi_postrecv_doubles(double *, int, int, int, void **) C
  void nrn_promote() C
  void nrnmpi_bgp_multisend(NRNMPI_Spike *, int, int *) C
+ void write_checkpoint(NrnThread *, int, const char *, bool)
+ void output_spikes(const char *)
+ void output_spikes_parallel(const char *)
+ void all_wait_for_spike_exchange() C
+ int main(int, char **, char **)
 
 # directly copied from coreneuron
 int main(int, char **, char **)
@@ -73,10 +78,16 @@ void deliver_net_events(NrnThread *) C
 void nrn_deliver_events(NrnThread *) C
 void nrn_cap_jacob(NrnThread *, Memb_list *) C
 void nrn_spike_exchange(NrnThread *) C
+void all_wait_for_spike_exchange() C
 int nrnmpi_spike_exchange() C
 void _nrn_state#(_NrnThread *, _Memb_list *, int) C
 void _nrn_cur__#(_NrnThread *, _Memb_list *, int) C
 void _nrn_jacob__#(_NrnThread *, _Memb_list *, int) C
+void write_checkpoint(NrnThread *, int, const char*, bool) C
+void nrn_flush_reports(double) C
+void setup_report_engine(double, double)
+void triang_interleaved(NrnThread *, int, int, int, int *, int *)
+void solve_interleaved1(int)
 
 # for reporting in neurodamus
 int flush__BinReportHelper() C
@@ -92,11 +103,32 @@ int AllReports::recData(double)
 int Report::recData(double)
 bool Report::isDueToReport(double)
 bool Report::isDueToReport(double)
-bool AllReports::isEmpty()
 int CellData::fillMapping(float *, int)
 
-int neurox::Branch::backwardEuler_handler(int const*, unsigned long)
-void neurox::Branch::backwardEulerStep()
-void neurox::Branch::setupTreeMatrix()
+# for reporting in neurodamus
+int flush__BinReportHelper() C
+int savestate__BinReportHelper() C
+int restorestate__BinReportHelper() C
+void _net_receive__BinReportHelper(Point_process*, double*, double) C
 
+# for ReportingLib
+int AllReports::flush(double)
+int Report::flush(double)
+int AllReports::recData(double)
+bool AllReports::isEmpty()
+int CellData::fillMapping(float *, int)
+void AllReports::ShareAndPrepare(int, int)
+void AllReports::createAll()
+int AllReports::recData(double, int, int *, std::string &)
+int AllReports::flush(double)
+void Report::writeHeaderExtraMapping()
+int Report::recData(double, int, int *)
+int Report::writeHeaderCellInfo()
+int Report::createHeader()
+int Report::createFile()
+int Report::flush(double)
+int Report::recData(double)
+int records_finish_and_share() C
+int records_flush(double) C
+int records_nrec(double, int, int *, const char *) C
 END_INCLUDE_LIST
