@@ -61,7 +61,6 @@ class Coreneuron(CMakePackage):
     depends_on('neuronperfmodels@coreneuron', when='@perfmodels')
 
     # granular dependency selection for profiling
-    depends_on('tau', when='+profile')
     depends_on('tau~openmp', when='+profile~openmp')
     depends_on('tau+openmp', when='+profile+openmp')
     depends_on('reportinglib+profile', when='+report+profile')

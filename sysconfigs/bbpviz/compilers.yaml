@@ -40,28 +40,16 @@ compilers:
       f77: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
       fc: /gpfs/bbp.cscs.ch/apps/viz/tools/gcc/gcc-4.9.0/install/bin/gfortran
     spec: gcc@4.9.0
-    #flags:
-    #  cflags: -O3 -fPIC
-    #  cxxflags: -O3 -fPIC
-    #  cppflags: -O3 -fPIC
 - compiler:
+    environment: {}
+    extra_rpaths: []
     flags: {}
     modules: []
     operating_system: rhel6
     paths:
-      cc: /usr/lib64/ccache/gcc
-      cxx: /usr/lib64/ccache/g++
-      f77: /usr/bin/gfortran
-      fc: /usr/bin/gfortran
-    spec: gcc@4.4.7
-- compiler:
-    flags: {}
-    modules:
-    - nix/gcc/4.9.3
-    operating_system: rhel6
-    paths:
-      cc: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/gcc
-      cxx: /nix/store/p2v9zv3j8y08falmjb1v4zsbrj6ghrwk-generated-env-module-gcc/bin/g++
-      f77: /nix/store/62b4xd2lhcrmmi6p9f6nbdykr2g29wdr-gfortran-wrapper-4.9.3/bin/gfortran
-      fc: /nix/store/62b4xd2lhcrmmi6p9f6nbdykr2g29wdr-gfortran-wrapper-4.9.3/bin/gfortran
-    spec: gcc@4.9.3
+      cc: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/gcc
+      cxx: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/g++
+      f77: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/gfortran
+      fc: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/gcc/6.2.0/bin/gfortran
+    spec: gcc@6.2.0
+    target: x86_64

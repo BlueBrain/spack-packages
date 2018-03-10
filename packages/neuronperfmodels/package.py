@@ -38,7 +38,8 @@ class Neuronperfmodels(Package):
     depends_on('zlib', when='@neuron')
     depends_on('mpi', when='@neuron')
     depends_on('cmake', when='@neuron', type='build')
-    depends_on('tau', when='+profile')
+    depends_on('neuron+profile', when='@neuron+profile')
+    depends_on('tau~openmp', when='@neuron+profile')
 
     def profiling_wrapper_on(self):
         if self.spec.satisfies('+profile'):

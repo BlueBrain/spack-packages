@@ -1,14 +1,5 @@
 compilers:
 - compiler:
-    modules: [bg-xl]
-    operating_system: cnk
-    paths:
-      cc: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc
-      cxx: /opt/ibmcmp/vacpp/bg/12.1/bin/bgxlc++
-      f77: /opt/ibmcmp/xlf/bg/14.1/bin/xlf
-      fc: /opt/ibmcmp/xlf/bg/14.1/bin/xlf2008
-    spec: xl@12.1
-- compiler:
     modules:
     - bg-xl
     operating_system: cnk
@@ -28,15 +19,6 @@ compilers:
       f77: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
       fc: /bgsys/drivers/ppcfloor/gnu-linux/bin/powerpc64-bgq-linux-gfortran
     spec: gcc@4.4.7
-- compiler:
-    modules: []
-    operating_system: cnk
-    paths:
-      cc: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/kk74kgiq4rxhv8sf5ln3lr5sdx6761km-generated-env-module-mpich2/bin/powerpc64-bgq-linux-gcc
-      cxx: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/kk74kgiq4rxhv8sf5ln3lr5sdx6761km-generated-env-module-mpich2/bin/powerpc64-bgq-linux-g++
-      f77: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/kk74kgiq4rxhv8sf5ln3lr5sdx6761km-generated-env-module-mpich2/bin/powerpc64-bgq-linux-gfortran
-      fc: /gpfs/bbp.cscs.ch/apps/bgq/nix/nix-root/store/kk74kgiq4rxhv8sf5ln3lr5sdx6761km-generated-env-module-mpich2/bin/powerpc64-bgq-linux-gfortran
-    spec: gcc@4.7.4
 - compiler:
     environment: {}
     extra_rpaths: []

@@ -21,7 +21,7 @@ packages:
         buildable: False
     cmake:
         paths:
-            cmake@3.6.2: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/cmake/3.6.2
+            cmake@3.6.2: /gpfs/bbp.cscs.ch/apps/viz/bbp/dev/cmake/3.2.3
         version: [3.6.2]
         buildable: False
     autoconf:
@@ -33,6 +33,11 @@ packages:
         paths:
             automake@1.11.1: /usr
         version: [1.11.1]
+        buildable: False
+    openssl:
+        paths:
+            openssl@system: /usr
+        version: [system]
         buildable: False
     m4:
         paths:
@@ -48,6 +53,11 @@ packages:
         paths:
             libtool@2.2.6: /usr
         version: [2.2.6]
+        buildable: False
+    gettext:
+        paths:
+            gettext@0.19.8: /usr
+        version: [0.19.8]
         buildable: False
     flex:
         paths:
@@ -113,12 +123,12 @@ packages:
         version: [1.2.8]
 
     tau:
-        variants: ~openmp ~comm ~phase
+        variants: +comm ~phase
 
-    coreneuron:
-        variants: ~openmp
+    neuron:
+        variants: +coreneuron
 
     all:
-        compiler: [gcc@4.9.0, intel@17.0.0]
+        compiler: [intel@17.0.0, gcc@4.9.0]
         providers:
             mpi: [mvapich2, intelmpi, mpich]
