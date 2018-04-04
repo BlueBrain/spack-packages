@@ -1,0 +1,83 @@
+packages:
+    mpich:
+        paths:
+            mpich@3.2%xl@12.1 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/xl
+            mpich@3.2%xl@12.r.1 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/xl
+            mpich@3.2%gcc@4.4.7 arch=bgq-cnk-ppc64: /bgsys/drivers/ppcfloor/comm/gcc
+        buildable: False
+    autoconf:
+        paths:
+            autoconf@system: /usr
+        buildable: False
+        version: [system]
+    flex:
+        paths:
+            flex@system: /usr
+        buildable: False
+        version: [system]
+    bison:
+        paths:
+            bison@system: /usr
+        buildable: False
+        version: [system]
+    automake:
+        paths:
+            automake@system: /usr
+        buildable: False
+        version: [system]
+    ncurses:
+        paths:
+            ncurses@system: /usr
+        buildable: False
+        version: [system]
+    m4:
+        paths:
+            m4@1.4.13: /usr
+        buildable: False
+        version: [1.4.13]
+    openssl:
+        paths:
+            openssl@system: /usr
+        buildable: False
+        version: [system]
+    pkg-config:
+        paths:
+            pkg-config@0.23: /usr
+        buildable: False
+        version: [0.23]
+    libtool:
+        paths:
+            libtool@system: /usr
+        buildable: False
+        version: [system]
+    cmake:
+        paths:
+            cmake@2.8.11: /usr/local/cmake/2.8.11
+            cmake@3.1.0: /homeb/pra098/pra09805/HBP/juqeen/install/extra/install/gcc-4.4.7/cmake-3.1.0-43pabewv
+        version: [3.1.0, 2.8.11]
+    hdf5:
+        paths:
+            hdf5@1.8.15%xl@12.1 arch=bgq-cnk-ppc64: /bgsys/local/hdf5/v1.8.15/
+        buildable: False
+        version: [1.8.15]
+    zlib:
+        paths:
+            zlib@1.2.7%xl@12.1 arch=bgq-cnk-ppc64: /bgsys/local/zlib/v1.2.8/
+        buildable: False
+        version: [1.2.7]
+    python:
+        paths:
+            python@3.4.2 arch=bgq-cnk-ppc64: /bgsys/local/python3/3.4.2/
+        buildable: False
+        version: [3.4.1]
+    boost:
+        modules:
+            boost@1.55.0: /bgsys/local/boost/1.55.0/
+        version: [1.55.0]
+        buildable: False
+    neuron:
+        variants: +mpi +cross-compile
+    all:
+        compiler: [xl,gcc]
+        providers:
+            mpi: [mpich]
