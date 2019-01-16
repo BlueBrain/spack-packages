@@ -1,3 +1,7 @@
+# THIS REPOSITORY IS DEPRECATED. IT MAY NOT BE USED NOR REFERENCED
+# PLEASE USE [BlueBrain/spack](https://github.com/BlueBrain/spack) INSTEAD
+
+
 [![Build Status](https://travis-ci.org/pramodskumbhar/spack-packages.svg?branch=master)](https://travis-ci.org/pramodskumbhar/spack-packages)
 
 # Repository Of Spack Packages And System Configurations
